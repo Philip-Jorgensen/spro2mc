@@ -9,4 +9,4 @@ The code for the 2nd semester project. <br>
 </ul>
 
 ## Description of the program.
-Write the description here.
+Write the description of how the program operates and what the functions of it are here.
