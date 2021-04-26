@@ -1,5 +1,0 @@
-#ifndef ROBOT_FUNCTIONS_H_INCLUDED
-#define ROBOT_FUNCTIONS_H_INCLUDED
-
-
-#endif
