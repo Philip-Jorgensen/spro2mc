@@ -10,10 +10,12 @@ Remember to add proper comments and explanations when you make changes.
 #define F_CPU 16E6
 
 // Imports
-#import <avr/io.h>
-#import <stdio.h>
-#import <stdlib.h>
-#import "usart.h"
+#include <avr/io.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "usart.h"
+
+#include "functions/functions.h"
 
 // Function Prototypes
 
