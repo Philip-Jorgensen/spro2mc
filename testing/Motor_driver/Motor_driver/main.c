@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "PCA9685_ext.c"
 #include "twimaster.c"
-
+void control_motor(unsigned char , unsigned char , unsigned int , unsigned int );
 
 int main(void)
 {
@@ -30,4 +30,7 @@ int main(void)
 		
     }
 }
-
+void control_motor(unsigned char motor_id, unsigned char state, unsigned int on_value, unsigned int off_value){
+	motor_set_state(motor_id, state);
+	motor_set_pwm(motor_id,on_value,off_value);
+}
