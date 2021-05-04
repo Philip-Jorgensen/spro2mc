@@ -1,5 +1,7 @@
 # SPRO2MC Code
 The code for the 2nd semester project. <br>
+[![](https://opencollective.com/html-react-parser/contributors.svg?width=890&button=false)](https://github.com/remarkablemark/html-react-parser/graphs/contributors)
+<br>
 
 ## Rules to making changes to the code.
 <ul>
