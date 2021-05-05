@@ -11,5 +11,7 @@ The code for the 2nd semester project. <br>
 ## Description of the program.
 Write the description of how the program operates and what the functions of it are here.
 
+![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
+
 ## Notion
 Here is the link for the main notion page. <a href='https://www.notion.so/monkebarz/Project-Homepage-c1e33d0b30b54b6a9481396cfa540514'>LINK</a>
