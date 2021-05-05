@@ -11,7 +11,7 @@ The code for the 2nd semester project. <br>
 ## Description of the program.
 Write the description of how the program operates and what the functions of it are here.
 
-![Continuous brachiation](https://i.imgur.com/1T1NAIP.gif)
+<img src="https://i.imgur.com/1T1NAIP.gif" width="40" height="40" />
 
 ## Notion
 Here is the link for the main notion page. <a href='https://www.notion.so/monkebarz/Project-Homepage-c1e33d0b30b54b6a9481396cfa540514'>LINK</a>
