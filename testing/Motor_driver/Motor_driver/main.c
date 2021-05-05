@@ -7,8 +7,8 @@
 
 #include <avr/io.h>
 #include <stdio.h>
-#include "PCA9685_ext.c"
-#include "twimaster.c"
+#include "PCA9685_ext.h"
+#include "i2cmaster.h"
 void control_motor(unsigned char , unsigned char , unsigned int , unsigned int );
 
 int main(void)

@@ -1,0 +1,742 @@
+
+Motor_driver.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000000  00800100  00800100  000004ba  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         00000446  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .bss          00000001  00800100  00800100  000004ba  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  000004ba  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000004ec  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 000000c0  00000000  00000000  0000052c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   00000f27  00000000  00000000  000005ec  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 0000080e  00000000  00000000  00001513  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   000006d6  00000000  00000000  00001d21  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  0000018c  00000000  00000000  000023f8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    000004ad  00000000  00000000  00002584  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    0000086e  00000000  00000000  00002a31  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000090  00000000  00000000  0000329f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 44 00 	jmp	0x88	; 0x88 <__ctors_end>
+   4:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+   8:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+   c:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  10:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  14:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  18:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  1c:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  20:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  24:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  28:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  2c:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  30:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  34:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  38:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  3c:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  40:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  44:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  48:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  4c:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  50:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  54:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  58:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  5c:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  60:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  64:	0c 94 61 00 	jmp	0xc2	; 0xc2 <__bad_interrupt>
+  68:	47 01       	movw	r8, r14
+  6a:	e4 00       	.word	0x00e4	; ????
+  6c:	4a 01       	movw	r8, r20
+  6e:	e7 00       	.word	0x00e7	; ????
+  70:	41 01       	movw	r8, r2
+  72:	e1 00       	.word	0x00e1	; ????
+  74:	44 01       	movw	r8, r8
+  76:	ea 00       	.word	0x00ea	; ????
+  78:	6b 01       	movw	r12, r22
+  7a:	70 01       	movw	r14, r0
+  7c:	75 01       	movw	r14, r10
+  7e:	7a 01       	movw	r14, r20
+  80:	7f 01       	movw	r14, r30
+  82:	84 01       	movw	r16, r8
+  84:	89 01       	movw	r16, r18
+  86:	8e 01       	movw	r16, r28
+
+00000088 <__ctors_end>:
+  88:	11 24       	eor	r1, r1
+  8a:	1f be       	out	0x3f, r1	; 63
+  8c:	cf ef       	ldi	r28, 0xFF	; 255
+  8e:	d8 e0       	ldi	r29, 0x08	; 8
+  90:	de bf       	out	0x3e, r29	; 62
+  92:	cd bf       	out	0x3d, r28	; 61
+
+00000094 <__do_copy_data>:
+  94:	11 e0       	ldi	r17, 0x01	; 1
+  96:	a0 e0       	ldi	r26, 0x00	; 0
+  98:	b1 e0       	ldi	r27, 0x01	; 1
+  9a:	e6 e4       	ldi	r30, 0x46	; 70
+  9c:	f4 e0       	ldi	r31, 0x04	; 4
+  9e:	02 c0       	rjmp	.+4      	; 0xa4 <__do_copy_data+0x10>
+  a0:	05 90       	lpm	r0, Z+
+  a2:	0d 92       	st	X+, r0
+  a4:	a0 30       	cpi	r26, 0x00	; 0
+  a6:	b1 07       	cpc	r27, r17
+  a8:	d9 f7       	brne	.-10     	; 0xa0 <__do_copy_data+0xc>
+
+000000aa <__do_clear_bss>:
+  aa:	21 e0       	ldi	r18, 0x01	; 1
+  ac:	a0 e0       	ldi	r26, 0x00	; 0
+  ae:	b1 e0       	ldi	r27, 0x01	; 1
+  b0:	01 c0       	rjmp	.+2      	; 0xb4 <.do_clear_bss_start>
+
+000000b2 <.do_clear_bss_loop>:
+  b2:	1d 92       	st	X+, r1
+
+000000b4 <.do_clear_bss_start>:
+  b4:	a1 30       	cpi	r26, 0x01	; 1
+  b6:	b2 07       	cpc	r27, r18
+  b8:	e1 f7       	brne	.-8      	; 0xb2 <.do_clear_bss_loop>
+  ba:	0e 94 63 00 	call	0xc6	; 0xc6 <main>
+  be:	0c 94 21 02 	jmp	0x442	; 0x442 <_exit>
+
+000000c2 <__bad_interrupt>:
+  c2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+000000c6 <main>:
+#include "i2cmaster.h"
+void control_motor(unsigned char , unsigned char , unsigned int , unsigned int );
+
+int main(void)
+{
+    motor_init_pwm(PWM_FREQUENCY_1500);
+  c6:	83 e0       	ldi	r24, 0x03	; 3
+  c8:	0e 94 ae 01 	call	0x35c	; 0x35c <motor_init_pwm>
+	
+	// Making sure that all the motors are stopped when it starts.
+	motor_set_state(M1, STOP);
+  cc:	60 e0       	ldi	r22, 0x00	; 0
+  ce:	81 e0       	ldi	r24, 0x01	; 1
+  d0:	0e 94 d4 00 	call	0x1a8	; 0x1a8 <motor_set_state>
+	motor_set_state(M2, STOP);
+  d4:	60 e0       	ldi	r22, 0x00	; 0
+  d6:	82 e0       	ldi	r24, 0x02	; 2
+  d8:	0e 94 d4 00 	call	0x1a8	; 0x1a8 <motor_set_state>
+	motor_set_state(M3, STOP);
+  dc:	60 e0       	ldi	r22, 0x00	; 0
+  de:	83 e0       	ldi	r24, 0x03	; 3
+  e0:	0e 94 d4 00 	call	0x1a8	; 0x1a8 <motor_set_state>
+	motor_set_state(M4, STOP);
+  e4:	60 e0       	ldi	r22, 0x00	; 0
+  e6:	84 e0       	ldi	r24, 0x04	; 4
+  e8:	0e 94 d4 00 	call	0x1a8	; 0x1a8 <motor_set_state>
+	
+	// Starting the first motor
+	motor_set_state(M1, CCW); // CCCW -> Counter clockwise
+  ec:	62 e0       	ldi	r22, 0x02	; 2
+  ee:	81 e0       	ldi	r24, 0x01	; 1
+  f0:	0e 94 d4 00 	call	0x1a8	; 0x1a8 <motor_set_state>
+	motor_set_pwm(M1, 0, 0x1ff); // PWM: stop = 0, start = 511 (0x1ff)
+  f4:	4f ef       	ldi	r20, 0xFF	; 255
+  f6:	51 e0       	ldi	r21, 0x01	; 1
+  f8:	60 e0       	ldi	r22, 0x00	; 0
+  fa:	70 e0       	ldi	r23, 0x00	; 0
+  fc:	81 e0       	ldi	r24, 0x01	; 1
+  fe:	0e 94 4f 01 	call	0x29e	; 0x29e <motor_set_pwm>
+ 102:	ff cf       	rjmp	.-2      	; 0x102 <main+0x3c>
+
+00000104 <motor_set8574_controlpin>:
+#include "i2cmaster.h"
+
+void motor_set8574_controlpin(unsigned char bit_number, unsigned char level)
+{
+	static unsigned char out_byte = 0;
+	if(level == LOW)
+ 104:	61 11       	cpse	r22, r1
+ 106:	10 c0       	rjmp	.+32     	; 0x128 <motor_set8574_controlpin+0x24>
+		out_byte &= ~(1<<bit_number);
+ 108:	21 e0       	ldi	r18, 0x01	; 1
+ 10a:	30 e0       	ldi	r19, 0x00	; 0
+ 10c:	a9 01       	movw	r20, r18
+ 10e:	02 c0       	rjmp	.+4      	; 0x114 <motor_set8574_controlpin+0x10>
+ 110:	44 0f       	add	r20, r20
+ 112:	55 1f       	adc	r21, r21
+ 114:	8a 95       	dec	r24
+ 116:	e2 f7       	brpl	.-8      	; 0x110 <motor_set8574_controlpin+0xc>
+ 118:	ca 01       	movw	r24, r20
+ 11a:	80 95       	com	r24
+ 11c:	90 91 00 01 	lds	r25, 0x0100	; 0x800100 <__data_end>
+ 120:	89 23       	and	r24, r25
+ 122:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <__data_end>
+ 126:	10 c0       	rjmp	.+32     	; 0x148 <motor_set8574_controlpin+0x44>
+	if(level==HIGH)
+ 128:	61 30       	cpi	r22, 0x01	; 1
+ 12a:	71 f4       	brne	.+28     	; 0x148 <motor_set8574_controlpin+0x44>
+		out_byte |= (1<<bit_number);
+ 12c:	21 e0       	ldi	r18, 0x01	; 1
+ 12e:	30 e0       	ldi	r19, 0x00	; 0
+ 130:	a9 01       	movw	r20, r18
+ 132:	02 c0       	rjmp	.+4      	; 0x138 <motor_set8574_controlpin+0x34>
+ 134:	44 0f       	add	r20, r20
+ 136:	55 1f       	adc	r21, r21
+ 138:	8a 95       	dec	r24
+ 13a:	e2 f7       	brpl	.-8      	; 0x134 <motor_set8574_controlpin+0x30>
+ 13c:	ca 01       	movw	r24, r20
+ 13e:	90 91 00 01 	lds	r25, 0x0100	; 0x800100 <__data_end>
+ 142:	89 2b       	or	r24, r25
+ 144:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <__data_end>
+	i2c_start(PCF8574_ADR + I2C_WRITE);
+ 148:	80 e7       	ldi	r24, 0x70	; 112
+ 14a:	0e 94 d9 01 	call	0x3b2	; 0x3b2 <i2c_start>
+	i2c_write(out_byte);
+ 14e:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__data_end>
+ 152:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+	i2c_stop();
+ 156:	0e 94 00 02 	call	0x400	; 0x400 <i2c_stop>
+ 15a:	08 95       	ret
+
+0000015c <motor_set1438_controlpin>:
+}
+
+
+void motor_set1438_controlpin(unsigned char pin_adr, unsigned char level)
+{
+ 15c:	cf 93       	push	r28
+ 15e:	df 93       	push	r29
+ 160:	d8 2f       	mov	r29, r24
+ 162:	c6 2f       	mov	r28, r22
+	i2c_start(PCA_ADR + I2C_WRITE);
+ 164:	80 ec       	ldi	r24, 0xC0	; 192
+ 166:	0e 94 d9 01 	call	0x3b2	; 0x3b2 <i2c_start>
+	i2c_write(pin_adr);
+ 16a:	8d 2f       	mov	r24, r29
+ 16c:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+	if(level == LOW)
+ 170:	c1 11       	cpse	r28, r1
+ 172:	0a c0       	rjmp	.+20     	; 0x188 <motor_set1438_controlpin+0x2c>
+	{
+		i2c_write(0x00); i2c_write(0x00); i2c_write(0x10);
+ 174:	80 e0       	ldi	r24, 0x00	; 0
+ 176:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+ 17a:	80 e0       	ldi	r24, 0x00	; 0
+ 17c:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+ 180:	80 e1       	ldi	r24, 0x10	; 16
+ 182:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+ 186:	0b c0       	rjmp	.+22     	; 0x19e <motor_set1438_controlpin+0x42>
+	}
+	if(level==HIGH)
+ 188:	c1 30       	cpi	r28, 0x01	; 1
+ 18a:	49 f4       	brne	.+18     	; 0x19e <motor_set1438_controlpin+0x42>
+	{
+		i2c_write(0x10); i2c_write(0x00); i2c_write(0x00);
+ 18c:	80 e1       	ldi	r24, 0x10	; 16
+ 18e:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+ 192:	80 e0       	ldi	r24, 0x00	; 0
+ 194:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+ 198:	80 e0       	ldi	r24, 0x00	; 0
+ 19a:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+	}
+	i2c_stop();
+ 19e:	0e 94 00 02 	call	0x400	; 0x400 <i2c_stop>
+}
+ 1a2:	df 91       	pop	r29
+ 1a4:	cf 91       	pop	r28
+ 1a6:	08 95       	ret
+
+000001a8 <motor_set_state>:
+
+void motor_set_state(unsigned char motor_number, unsigned char state)
+{
+ 1a8:	cf 93       	push	r28
+ 1aa:	96 2f       	mov	r25, r22
+	unsigned char in1=0, in2=0;
+	
+	switch(motor_number)
+ 1ac:	48 2f       	mov	r20, r24
+ 1ae:	50 e0       	ldi	r21, 0x00	; 0
+ 1b0:	fa 01       	movw	r30, r20
+ 1b2:	31 97       	sbiw	r30, 0x01	; 1
+ 1b4:	e8 30       	cpi	r30, 0x08	; 8
+ 1b6:	f1 05       	cpc	r31, r1
+ 1b8:	80 f4       	brcc	.+32     	; 0x1da <motor_set_state+0x32>
+ 1ba:	ec 5c       	subi	r30, 0xCC	; 204
+ 1bc:	ff 4f       	sbci	r31, 0xFF	; 255
+ 1be:	0c 94 1b 02 	jmp	0x436	; 0x436 <__tablejump2__>
+		case M1:	in1=M1_IN1+1; in2=M1_IN2+1; break; // High byte of reg
+		case M2: 	in1=M2_IN1+1; in2=M2_IN2+1; break; // High byte of reg
+		case M3:	in1=M3_IN1+1; in2=M3_IN2+1; break; // High byte of reg
+		case M4:	in1=M4_IN1+1; in2=M4_IN2+1; break; // High byte of reg
+		case M5:	in1=M5_IN1; in2=M5_IN2; break;		// Set bit position
+		case M6:	in1=M6_IN1; in2=M6_IN2; break;		// Set bit position
+ 1c2:	c3 e0       	ldi	r28, 0x03	; 3
+ 1c4:	82 e0       	ldi	r24, 0x02	; 2
+ 1c6:	36 c0       	rjmp	.+108    	; 0x234 <motor_set_state+0x8c>
+	unsigned char in1=0, in2=0;
+	
+	switch(motor_number)
+	{
+		case M1:	in1=M1_IN1+1; in2=M1_IN2+1; break; // High byte of reg
+		case M2: 	in1=M2_IN1+1; in2=M2_IN2+1; break; // High byte of reg
+ 1c8:	c7 e3       	ldi	r28, 0x37	; 55
+ 1ca:	83 e3       	ldi	r24, 0x33	; 51
+ 1cc:	0a c0       	rjmp	.+20     	; 0x1e2 <motor_set_state+0x3a>
+		case M3:	in1=M3_IN1+1; in2=M3_IN2+1; break; // High byte of reg
+		case M4:	in1=M4_IN1+1; in2=M4_IN2+1; break; // High byte of reg
+ 1ce:	cf e1       	ldi	r28, 0x1F	; 31
+ 1d0:	8b e1       	ldi	r24, 0x1B	; 27
+ 1d2:	07 c0       	rjmp	.+14     	; 0x1e2 <motor_set_state+0x3a>
+		case M5:	in1=M5_IN1; in2=M5_IN2; break;		// Set bit position
+		case M6:	in1=M6_IN1; in2=M6_IN2; break;		// Set bit position
+		case M7:	in1=M7_IN1; in2=M7_IN2; break;		// Set bit position
+		case M8:	in1=M8_IN1; in2=M8_IN2; break;		// Set bit position
+ 1d4:	c7 e0       	ldi	r28, 0x07	; 7
+ 1d6:	86 e0       	ldi	r24, 0x06	; 6
+ 1d8:	2d c0       	rjmp	.+90     	; 0x234 <motor_set_state+0x8c>
+	}
+	if(motor_number < 5)			// M1 - M4
+ 1da:	85 30       	cpi	r24, 0x05	; 5
+ 1dc:	48 f5       	brcc	.+82     	; 0x230 <motor_set_state+0x88>
+	i2c_stop();
+}
+
+void motor_set_state(unsigned char motor_number, unsigned char state)
+{
+	unsigned char in1=0, in2=0;
+ 1de:	c0 e0       	ldi	r28, 0x00	; 0
+ 1e0:	80 e0       	ldi	r24, 0x00	; 0
+		case M7:	in1=M7_IN1; in2=M7_IN2; break;		// Set bit position
+		case M8:	in1=M8_IN1; in2=M8_IN2; break;		// Set bit position
+	}
+	if(motor_number < 5)			// M1 - M4
+	{
+		switch(state)
+ 1e2:	92 30       	cpi	r25, 0x02	; 2
+ 1e4:	29 f0       	breq	.+10     	; 0x1f0 <motor_set_state+0x48>
+ 1e6:	93 30       	cpi	r25, 0x03	; 3
+ 1e8:	99 f0       	breq	.+38     	; 0x210 <motor_set_state+0x68>
+ 1ea:	91 30       	cpi	r25, 0x01	; 1
+ 1ec:	c9 f4       	brne	.+50     	; 0x220 <motor_set_state+0x78>
+ 1ee:	08 c0       	rjmp	.+16     	; 0x200 <motor_set_state+0x58>
+		{
+		
+			case CCW:		motor_set1438_controlpin(in1, LOW); motor_set1438_controlpin(in2, HIGH); break;  // IN1=0, IN2=1
+ 1f0:	60 e0       	ldi	r22, 0x00	; 0
+ 1f2:	0e 94 ae 00 	call	0x15c	; 0x15c <motor_set1438_controlpin>
+ 1f6:	61 e0       	ldi	r22, 0x01	; 1
+ 1f8:	8c 2f       	mov	r24, r28
+ 1fa:	0e 94 ae 00 	call	0x15c	; 0x15c <motor_set1438_controlpin>
+ 1fe:	4d c0       	rjmp	.+154    	; 0x29a <motor_set_state+0xf2>
+			case CW:		motor_set1438_controlpin(in1, HIGH); motor_set1438_controlpin(in2, LOW); break;	// IN1=1, IN2=0
+ 200:	61 e0       	ldi	r22, 0x01	; 1
+ 202:	0e 94 ae 00 	call	0x15c	; 0x15c <motor_set1438_controlpin>
+ 206:	60 e0       	ldi	r22, 0x00	; 0
+ 208:	8c 2f       	mov	r24, r28
+ 20a:	0e 94 ae 00 	call	0x15c	; 0x15c <motor_set1438_controlpin>
+ 20e:	45 c0       	rjmp	.+138    	; 0x29a <motor_set_state+0xf2>
+			case BRAKE:		motor_set1438_controlpin(in1, HIGH); motor_set1438_controlpin(in2, HIGH);break;	// IN1=1, IN2=1
+ 210:	61 e0       	ldi	r22, 0x01	; 1
+ 212:	0e 94 ae 00 	call	0x15c	; 0x15c <motor_set1438_controlpin>
+ 216:	61 e0       	ldi	r22, 0x01	; 1
+ 218:	8c 2f       	mov	r24, r28
+ 21a:	0e 94 ae 00 	call	0x15c	; 0x15c <motor_set1438_controlpin>
+ 21e:	3d c0       	rjmp	.+122    	; 0x29a <motor_set_state+0xf2>
+			case STOP:
+			default:		motor_set1438_controlpin(in1, LOW); motor_set1438_controlpin(in2, LOW);	// IN1=0, IN2=0
+ 220:	60 e0       	ldi	r22, 0x00	; 0
+ 222:	0e 94 ae 00 	call	0x15c	; 0x15c <motor_set1438_controlpin>
+ 226:	60 e0       	ldi	r22, 0x00	; 0
+ 228:	8c 2f       	mov	r24, r28
+ 22a:	0e 94 ae 00 	call	0x15c	; 0x15c <motor_set1438_controlpin>
+ 22e:	35 c0       	rjmp	.+106    	; 0x29a <motor_set_state+0xf2>
+	i2c_stop();
+}
+
+void motor_set_state(unsigned char motor_number, unsigned char state)
+{
+	unsigned char in1=0, in2=0;
+ 230:	c0 e0       	ldi	r28, 0x00	; 0
+ 232:	80 e0       	ldi	r24, 0x00	; 0
+			default:		motor_set1438_controlpin(in1, LOW); motor_set1438_controlpin(in2, LOW);	// IN1=0, IN2=0
+		}
+	}
+	else							// M5 - M8
+	{
+		switch(state)
+ 234:	92 30       	cpi	r25, 0x02	; 2
+ 236:	29 f0       	breq	.+10     	; 0x242 <motor_set_state+0x9a>
+ 238:	93 30       	cpi	r25, 0x03	; 3
+ 23a:	99 f0       	breq	.+38     	; 0x262 <motor_set_state+0xba>
+ 23c:	91 30       	cpi	r25, 0x01	; 1
+ 23e:	c9 f4       	brne	.+50     	; 0x272 <motor_set_state+0xca>
+ 240:	08 c0       	rjmp	.+16     	; 0x252 <motor_set_state+0xaa>
+		{
+			case CCW:		motor_set8574_controlpin(in1, LOW); motor_set8574_controlpin(in2, HIGH); break;  // IN1=0, IN2=1
+ 242:	60 e0       	ldi	r22, 0x00	; 0
+ 244:	0e 94 82 00 	call	0x104	; 0x104 <motor_set8574_controlpin>
+ 248:	61 e0       	ldi	r22, 0x01	; 1
+ 24a:	8c 2f       	mov	r24, r28
+ 24c:	0e 94 82 00 	call	0x104	; 0x104 <motor_set8574_controlpin>
+ 250:	24 c0       	rjmp	.+72     	; 0x29a <motor_set_state+0xf2>
+			case CW:		motor_set8574_controlpin(in1, HIGH); motor_set8574_controlpin(in2, LOW); break;	// IN1=1, IN2=0
+ 252:	61 e0       	ldi	r22, 0x01	; 1
+ 254:	0e 94 82 00 	call	0x104	; 0x104 <motor_set8574_controlpin>
+ 258:	60 e0       	ldi	r22, 0x00	; 0
+ 25a:	8c 2f       	mov	r24, r28
+ 25c:	0e 94 82 00 	call	0x104	; 0x104 <motor_set8574_controlpin>
+ 260:	1c c0       	rjmp	.+56     	; 0x29a <motor_set_state+0xf2>
+			case BRAKE:		motor_set8574_controlpin(in1, HIGH); motor_set8574_controlpin(in2, HIGH);break;	// IN1=1, IN2=1
+ 262:	61 e0       	ldi	r22, 0x01	; 1
+ 264:	0e 94 82 00 	call	0x104	; 0x104 <motor_set8574_controlpin>
+ 268:	61 e0       	ldi	r22, 0x01	; 1
+ 26a:	8c 2f       	mov	r24, r28
+ 26c:	0e 94 82 00 	call	0x104	; 0x104 <motor_set8574_controlpin>
+ 270:	14 c0       	rjmp	.+40     	; 0x29a <motor_set_state+0xf2>
+			case STOP:
+			default:		motor_set8574_controlpin(in1, LOW); motor_set8574_controlpin(in2, LOW);	// IN1=0, IN2=0
+ 272:	60 e0       	ldi	r22, 0x00	; 0
+ 274:	0e 94 82 00 	call	0x104	; 0x104 <motor_set8574_controlpin>
+ 278:	60 e0       	ldi	r22, 0x00	; 0
+ 27a:	8c 2f       	mov	r24, r28
+ 27c:	0e 94 82 00 	call	0x104	; 0x104 <motor_set8574_controlpin>
+		}
+	}
+}
+ 280:	0c c0       	rjmp	.+24     	; 0x29a <motor_set_state+0xf2>
+	{
+		case M1:	in1=M1_IN1+1; in2=M1_IN2+1; break; // High byte of reg
+		case M2: 	in1=M2_IN1+1; in2=M2_IN2+1; break; // High byte of reg
+		case M3:	in1=M3_IN1+1; in2=M3_IN2+1; break; // High byte of reg
+		case M4:	in1=M4_IN1+1; in2=M4_IN2+1; break; // High byte of reg
+		case M5:	in1=M5_IN1; in2=M5_IN2; break;		// Set bit position
+ 282:	c1 e0       	ldi	r28, 0x01	; 1
+ 284:	80 e0       	ldi	r24, 0x00	; 0
+ 286:	d6 cf       	rjmp	.-84     	; 0x234 <motor_set_state+0x8c>
+		case M6:	in1=M6_IN1; in2=M6_IN2; break;		// Set bit position
+		case M7:	in1=M7_IN1; in2=M7_IN2; break;		// Set bit position
+ 288:	c5 e0       	ldi	r28, 0x05	; 5
+ 28a:	84 e0       	ldi	r24, 0x04	; 4
+ 28c:	d3 cf       	rjmp	.-90     	; 0x234 <motor_set_state+0x8c>
+{
+	unsigned char in1=0, in2=0;
+	
+	switch(motor_number)
+	{
+		case M1:	in1=M1_IN1+1; in2=M1_IN2+1; break; // High byte of reg
+ 28e:	cb e2       	ldi	r28, 0x2B	; 43
+ 290:	8f e2       	ldi	r24, 0x2F	; 47
+ 292:	a7 cf       	rjmp	.-178    	; 0x1e2 <motor_set_state+0x3a>
+		case M2: 	in1=M2_IN1+1; in2=M2_IN2+1; break; // High byte of reg
+		case M3:	in1=M3_IN1+1; in2=M3_IN2+1; break; // High byte of reg
+ 294:	c3 e1       	ldi	r28, 0x13	; 19
+ 296:	87 e1       	ldi	r24, 0x17	; 23
+ 298:	a4 cf       	rjmp	.-184    	; 0x1e2 <motor_set_state+0x3a>
+			case BRAKE:		motor_set8574_controlpin(in1, HIGH); motor_set8574_controlpin(in2, HIGH);break;	// IN1=1, IN2=1
+			case STOP:
+			default:		motor_set8574_controlpin(in1, LOW); motor_set8574_controlpin(in2, LOW);	// IN1=0, IN2=0
+		}
+	}
+}
+ 29a:	cf 91       	pop	r28
+ 29c:	08 95       	ret
+
+0000029e <motor_set_pwm>:
+
+void motor_set_pwm(unsigned char motor_number, unsigned int on_value, unsigned int off_value)
+{
+ 29e:	ff 92       	push	r15
+ 2a0:	0f 93       	push	r16
+ 2a2:	1f 93       	push	r17
+ 2a4:	cf 93       	push	r28
+ 2a6:	df 93       	push	r29
+ 2a8:	8b 01       	movw	r16, r22
+ 2aa:	ea 01       	movw	r28, r20
+	unsigned char pwm_reg=0;
+	if(on_value > 0xFFF) on_value = 0;
+ 2ac:	61 15       	cp	r22, r1
+ 2ae:	70 41       	sbci	r23, 0x10	; 16
+ 2b0:	10 f0       	brcs	.+4      	; 0x2b6 <motor_set_pwm+0x18>
+ 2b2:	00 e0       	ldi	r16, 0x00	; 0
+ 2b4:	10 e0       	ldi	r17, 0x00	; 0
+	if(off_value > 0xFFF) off_value = 0;
+ 2b6:	c1 15       	cp	r28, r1
+ 2b8:	90 e1       	ldi	r25, 0x10	; 16
+ 2ba:	d9 07       	cpc	r29, r25
+ 2bc:	10 f0       	brcs	.+4      	; 0x2c2 <motor_set_pwm+0x24>
+ 2be:	c0 e0       	ldi	r28, 0x00	; 0
+ 2c0:	d0 e0       	ldi	r29, 0x00	; 0
+	
+	switch(motor_number)
+ 2c2:	90 e0       	ldi	r25, 0x00	; 0
+ 2c4:	fc 01       	movw	r30, r24
+ 2c6:	31 97       	sbiw	r30, 0x01	; 1
+ 2c8:	e8 30       	cpi	r30, 0x08	; 8
+ 2ca:	f1 05       	cpc	r31, r1
+ 2cc:	60 f5       	brcc	.+88     	; 0x326 <motor_set_pwm+0x88>
+ 2ce:	e4 5c       	subi	r30, 0xC4	; 196
+ 2d0:	ff 4f       	sbci	r31, 0xFF	; 255
+ 2d2:	0c 94 1b 02 	jmp	0x436	; 0x436 <__tablejump2__>
+	{
+		case M1:	pwm_reg = M1_PWM; break;
+ 2d6:	0f 2e       	mov	r0, r31
+ 2d8:	f6 e2       	ldi	r31, 0x26	; 38
+ 2da:	ff 2e       	mov	r15, r31
+ 2dc:	f0 2d       	mov	r31, r0
+ 2de:	24 c0       	rjmp	.+72     	; 0x328 <motor_set_pwm+0x8a>
+		case M2:	pwm_reg = M2_PWM; break;
+ 2e0:	0f 2e       	mov	r0, r31
+ 2e2:	fa e3       	ldi	r31, 0x3A	; 58
+ 2e4:	ff 2e       	mov	r15, r31
+ 2e6:	f0 2d       	mov	r31, r0
+ 2e8:	1f c0       	rjmp	.+62     	; 0x328 <motor_set_pwm+0x8a>
+		case M3:	pwm_reg = M3_PWM; break;
+ 2ea:	0f 2e       	mov	r0, r31
+ 2ec:	fe e0       	ldi	r31, 0x0E	; 14
+ 2ee:	ff 2e       	mov	r15, r31
+ 2f0:	f0 2d       	mov	r31, r0
+ 2f2:	1a c0       	rjmp	.+52     	; 0x328 <motor_set_pwm+0x8a>
+		case M4:	pwm_reg = M4_PWM; break;
+ 2f4:	0f 2e       	mov	r0, r31
+ 2f6:	f2 e2       	ldi	r31, 0x22	; 34
+ 2f8:	ff 2e       	mov	r15, r31
+ 2fa:	f0 2d       	mov	r31, r0
+ 2fc:	15 c0       	rjmp	.+42     	; 0x328 <motor_set_pwm+0x8a>
+		case M5:	pwm_reg = M5_PWM; break;
+ 2fe:	0f 2e       	mov	r0, r31
+ 300:	f6 e0       	ldi	r31, 0x06	; 6
+ 302:	ff 2e       	mov	r15, r31
+ 304:	f0 2d       	mov	r31, r0
+ 306:	10 c0       	rjmp	.+32     	; 0x328 <motor_set_pwm+0x8a>
+		case M6:	pwm_reg = M6_PWM; break;
+ 308:	0f 2e       	mov	r0, r31
+ 30a:	fa e0       	ldi	r31, 0x0A	; 10
+ 30c:	ff 2e       	mov	r15, r31
+ 30e:	f0 2d       	mov	r31, r0
+ 310:	0b c0       	rjmp	.+22     	; 0x328 <motor_set_pwm+0x8a>
+		case M7:	pwm_reg = M7_PWM; break;
+ 312:	0f 2e       	mov	r0, r31
+ 314:	fe e3       	ldi	r31, 0x3E	; 62
+ 316:	ff 2e       	mov	r15, r31
+ 318:	f0 2d       	mov	r31, r0
+ 31a:	06 c0       	rjmp	.+12     	; 0x328 <motor_set_pwm+0x8a>
+		case M8:	pwm_reg = M8_PWM; break;
+ 31c:	0f 2e       	mov	r0, r31
+ 31e:	f2 e4       	ldi	r31, 0x42	; 66
+ 320:	ff 2e       	mov	r15, r31
+ 322:	f0 2d       	mov	r31, r0
+ 324:	01 c0       	rjmp	.+2      	; 0x328 <motor_set_pwm+0x8a>
+	}
+}
+
+void motor_set_pwm(unsigned char motor_number, unsigned int on_value, unsigned int off_value)
+{
+	unsigned char pwm_reg=0;
+ 326:	f1 2c       	mov	r15, r1
+		case M5:	pwm_reg = M5_PWM; break;
+		case M6:	pwm_reg = M6_PWM; break;
+		case M7:	pwm_reg = M7_PWM; break;
+		case M8:	pwm_reg = M8_PWM; break;
+	}
+	i2c_start(PCA_ADR + I2C_WRITE);
+ 328:	80 ec       	ldi	r24, 0xC0	; 192
+ 32a:	0e 94 d9 01 	call	0x3b2	; 0x3b2 <i2c_start>
+	i2c_write(pwm_reg);
+ 32e:	8f 2d       	mov	r24, r15
+ 330:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+	i2c_write(on_value&0x0FF);
+ 334:	80 2f       	mov	r24, r16
+ 336:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+	on_value >>= 8;
+	i2c_write(on_value);
+ 33a:	81 2f       	mov	r24, r17
+ 33c:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+	i2c_write(off_value & 0x0FF);
+ 340:	8c 2f       	mov	r24, r28
+ 342:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+	off_value >>= 8;
+	i2c_write(off_value);
+ 346:	8d 2f       	mov	r24, r29
+ 348:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+	i2c_stop();
+ 34c:	0e 94 00 02 	call	0x400	; 0x400 <i2c_stop>
+}
+ 350:	df 91       	pop	r29
+ 352:	cf 91       	pop	r28
+ 354:	1f 91       	pop	r17
+ 356:	0f 91       	pop	r16
+ 358:	ff 90       	pop	r15
+ 35a:	08 95       	ret
+
+0000035c <motor_init_pwm>:
+
+void motor_init_pwm(unsigned char frequency)  // INIT PCA9685 AND PCA8574
+{
+ 35c:	cf 93       	push	r28
+ 35e:	c8 2f       	mov	r28, r24
+	i2c_start(PCA_ADR + I2C_WRITE);
+ 360:	80 ec       	ldi	r24, 0xC0	; 192
+ 362:	0e 94 d9 01 	call	0x3b2	; 0x3b2 <i2c_start>
+	i2c_write(0x00);
+ 366:	80 e0       	ldi	r24, 0x00	; 0
+ 368:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+	i2c_write(0b00110000);					// sleep and autoinc
+ 36c:	80 e3       	ldi	r24, 0x30	; 48
+ 36e:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+	i2c_stop();
+ 372:	0e 94 00 02 	call	0x400	; 0x400 <i2c_stop>
+	
+	i2c_start(PCA_ADR + I2C_WRITE);
+ 376:	80 ec       	ldi	r24, 0xC0	; 192
+ 378:	0e 94 d9 01 	call	0x3b2	; 0x3b2 <i2c_start>
+	i2c_write(0xFE);
+ 37c:	8e ef       	ldi	r24, 0xFE	; 254
+ 37e:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+	i2c_write(frequency);						
+ 382:	8c 2f       	mov	r24, r28
+ 384:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+	
+	i2c_start(PCA_ADR + I2C_WRITE);
+ 388:	80 ec       	ldi	r24, 0xC0	; 192
+ 38a:	0e 94 d9 01 	call	0x3b2	; 0x3b2 <i2c_start>
+	i2c_write(0x00);
+ 38e:	80 e0       	ldi	r24, 0x00	; 0
+ 390:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+	i2c_write(0b00100000);					// autoinc
+ 394:	80 e2       	ldi	r24, 0x20	; 32
+ 396:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+	i2c_stop();	
+ 39a:	0e 94 00 02 	call	0x400	; 0x400 <i2c_stop>
+	
+	i2c_start(PCF8574_ADR + I2C_WRITE);		// All PCF8574 outputs low
+ 39e:	80 e7       	ldi	r24, 0x70	; 112
+ 3a0:	0e 94 d9 01 	call	0x3b2	; 0x3b2 <i2c_start>
+	i2c_write(0x00);
+ 3a4:	80 e0       	ldi	r24, 0x00	; 0
+ 3a6:	0e 94 09 02 	call	0x412	; 0x412 <i2c_write>
+	i2c_stop();
+ 3aa:	0e 94 00 02 	call	0x400	; 0x400 <i2c_stop>
+ 3ae:	cf 91       	pop	r28
+ 3b0:	08 95       	ret
+
+000003b2 <i2c_start>:
+*************************************************************************/
+unsigned char i2c_rep_start(unsigned char address)
+{
+    return i2c_start( address );
+
+}/* i2c_rep_start */
+ 3b2:	94 ea       	ldi	r25, 0xA4	; 164
+ 3b4:	90 93 bc 00 	sts	0x00BC, r25	; 0x8000bc <__DATA_REGION_ORIGIN__+0x5c>
+ 3b8:	ec eb       	ldi	r30, 0xBC	; 188
+ 3ba:	f0 e0       	ldi	r31, 0x00	; 0
+ 3bc:	90 81       	ld	r25, Z
+ 3be:	99 23       	and	r25, r25
+ 3c0:	ec f7       	brge	.-6      	; 0x3bc <i2c_start+0xa>
+ 3c2:	90 91 b9 00 	lds	r25, 0x00B9	; 0x8000b9 <__DATA_REGION_ORIGIN__+0x59>
+ 3c6:	98 7f       	andi	r25, 0xF8	; 248
+ 3c8:	98 30       	cpi	r25, 0x08	; 8
+ 3ca:	11 f0       	breq	.+4      	; 0x3d0 <i2c_start+0x1e>
+ 3cc:	90 31       	cpi	r25, 0x10	; 16
+ 3ce:	a1 f4       	brne	.+40     	; 0x3f8 <i2c_start+0x46>
+ 3d0:	80 93 bb 00 	sts	0x00BB, r24	; 0x8000bb <__DATA_REGION_ORIGIN__+0x5b>
+ 3d4:	84 e8       	ldi	r24, 0x84	; 132
+ 3d6:	80 93 bc 00 	sts	0x00BC, r24	; 0x8000bc <__DATA_REGION_ORIGIN__+0x5c>
+ 3da:	ec eb       	ldi	r30, 0xBC	; 188
+ 3dc:	f0 e0       	ldi	r31, 0x00	; 0
+ 3de:	80 81       	ld	r24, Z
+ 3e0:	88 23       	and	r24, r24
+ 3e2:	ec f7       	brge	.-6      	; 0x3de <i2c_start+0x2c>
+ 3e4:	90 91 b9 00 	lds	r25, 0x00B9	; 0x8000b9 <__DATA_REGION_ORIGIN__+0x59>
+ 3e8:	98 7f       	andi	r25, 0xF8	; 248
+ 3ea:	98 31       	cpi	r25, 0x18	; 24
+ 3ec:	39 f0       	breq	.+14     	; 0x3fc <i2c_start+0x4a>
+ 3ee:	81 e0       	ldi	r24, 0x01	; 1
+ 3f0:	90 34       	cpi	r25, 0x40	; 64
+ 3f2:	29 f4       	brne	.+10     	; 0x3fe <i2c_start+0x4c>
+ 3f4:	80 e0       	ldi	r24, 0x00	; 0
+ 3f6:	08 95       	ret
+ 3f8:	81 e0       	ldi	r24, 0x01	; 1
+ 3fa:	08 95       	ret
+ 3fc:	80 e0       	ldi	r24, 0x00	; 0
+ 3fe:	08 95       	ret
+
+00000400 <i2c_stop>:
+ Terminates the data transfer and releases the I2C bus
+*************************************************************************/
+void i2c_stop(void)
+{
+    /* send stop condition */
+	TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWSTO);
+ 400:	84 e9       	ldi	r24, 0x94	; 148
+ 402:	80 93 bc 00 	sts	0x00BC, r24	; 0x8000bc <__DATA_REGION_ORIGIN__+0x5c>
+	
+	// wait until stop condition is executed and bus released
+	while(TWCR & (1<<TWSTO));
+ 406:	ec eb       	ldi	r30, 0xBC	; 188
+ 408:	f0 e0       	ldi	r31, 0x00	; 0
+ 40a:	80 81       	ld	r24, Z
+ 40c:	84 fd       	sbrc	r24, 4
+ 40e:	fd cf       	rjmp	.-6      	; 0x40a <i2c_stop+0xa>
+
+}/* i2c_stop */
+ 410:	08 95       	ret
+
+00000412 <i2c_write>:
+unsigned char i2c_write( unsigned char data )
+{	
+    uint8_t   twst;
+    
+	// send data to the previously addressed device
+	TWDR = data;
+ 412:	80 93 bb 00 	sts	0x00BB, r24	; 0x8000bb <__DATA_REGION_ORIGIN__+0x5b>
+	TWCR = (1<<TWINT) | (1<<TWEN);
+ 416:	84 e8       	ldi	r24, 0x84	; 132
+ 418:	80 93 bc 00 	sts	0x00BC, r24	; 0x8000bc <__DATA_REGION_ORIGIN__+0x5c>
+
+	// wait until transmission completed
+	while(!(TWCR & (1<<TWINT)));
+ 41c:	ec eb       	ldi	r30, 0xBC	; 188
+ 41e:	f0 e0       	ldi	r31, 0x00	; 0
+ 420:	80 81       	ld	r24, Z
+ 422:	88 23       	and	r24, r24
+ 424:	ec f7       	brge	.-6      	; 0x420 <i2c_write+0xe>
+
+	// check value of TWI Status Register. Mask prescaler bits
+	twst = TW_STATUS & 0xF8;
+ 426:	90 91 b9 00 	lds	r25, 0x00B9	; 0x8000b9 <__DATA_REGION_ORIGIN__+0x59>
+ 42a:	98 7f       	andi	r25, 0xF8	; 248
+ 42c:	81 e0       	ldi	r24, 0x01	; 1
+ 42e:	98 32       	cpi	r25, 0x28	; 40
+ 430:	09 f4       	brne	.+2      	; 0x434 <i2c_write+0x22>
+ 432:	80 e0       	ldi	r24, 0x00	; 0
+	if( twst != TW_MT_DATA_ACK) return 1;
+	return 0;
+
+}/* i2c_write */
+ 434:	08 95       	ret
+
+00000436 <__tablejump2__>:
+ 436:	ee 0f       	add	r30, r30
+ 438:	ff 1f       	adc	r31, r31
+ 43a:	05 90       	lpm	r0, Z+
+ 43c:	f4 91       	lpm	r31, Z
+ 43e:	e0 2d       	mov	r30, r0
+ 440:	09 94       	ijmp
+
+00000442 <_exit>:
+ 442:	f8 94       	cli
+
+00000444 <__stop_program>:
+ 444:	ff cf       	rjmp	.-2      	; 0x444 <__stop_program>
