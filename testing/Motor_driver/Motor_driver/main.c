@@ -24,7 +24,7 @@ int main(void)
 	io_redirect(); // Redirect the input/output to the computer.
 	
 	// Make sure all the motors are stopped from the beginning (Initialization)
-	motor_init_pwm(PWM_FREQUENCY_200);
+	motor_init_pwm(PWM_FREQUENCY_50);
 	
 	printf("Adafruit 1438");
 	
@@ -39,7 +39,43 @@ int main(void)
 	motor_set_pwm(M1, 0, 0x1ff);
 	*/
 	
+	// Initializing variables
+	int spe, flag;
+	flag = 0;
+	
 	while(1){
+		
+		
+		// Asking the user to control the motor.
+		printf("Motor speed:\n"); // Asking for the speed
+		scanf("%d", &spe);
+		
+		if(spe>=0 && flag==0){
+			motor_set_state(M1, CW);
+			flag = 1;
+		}
+		if(spe<0 && flag==1){
+			motor_set_state(M1, CCW);
+			spe = spe * (-1);
+			flag = 0;
+		}
+		motor_set_pwm(M2, spe, 0);
+		
+		
+		
+		/*
+		// Sweeping through speed values.
+		for(int i=0; i<5000; i += 50){
+			if(i<2500){
+				control_motor(M2, CW, i, 0);
+			}
+			if(i>2500){
+				control_motor(M2, CCW, i-2500, 0);
+			}
+			printf("Speed: %d\r", i);
+			_delay_ms(250);
+		}
+		*/
 		
 	}
 }
