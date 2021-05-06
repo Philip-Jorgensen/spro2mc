@@ -17,7 +17,7 @@
 #include <util/delay.h>
 
 // Function prototypes
-void control_motor(unsigned char, unsigned int);
+void control_motor(unsigned char, int);
 
 int main(void)
 {
@@ -29,13 +29,16 @@ int main(void)
 	// Make sure all the motors are stopped from the beginning (Initialization)
 	motor_init_pwm(PWM_FREQUENCY_1500);
 	
-	printf("Adafruit 1438");
+	printf("Adafruit 1438\n");
 	
 	// M1,..,M4 are ports on the "Adafruit 1438"
 	motor_set_state(M1, STOP);
 	motor_set_state(M2, STOP);
 	motor_set_state(M3, STOP);
 	motor_set_state(M4, STOP);
+	motor_set_state(M5, STOP);
+	motor_set_state(M6, STOP);
+	motor_set_state(M7, STOP);
 	
 	/* This piece of code does make the motor turn, but very slow.
 	motor_set_state(M1, CW);
@@ -45,6 +48,8 @@ int main(void)
 	// Initializing variables
 	int spe, motor_n;
 	motor_n = 1;
+	printf("Motor number:\n"); // Ask for what motor you want to test.
+	scanf("%d", &motor_n);
 	
 	while(1){
 		
@@ -53,22 +58,8 @@ int main(void)
 		printf("Motor speed:\n"); // Asking for the speed
 		scanf("%d", &spe);
 		
-		switch (motor_n)
-		{
-		case 1:
-			control_motor(M1, spe);
-			break;
-		case 2:
-			control_motor(M2, spe);
-			break;
-		case 3:
-			control_motor(M3, spe);
-			break;
-		case 4:
-			control_motor(M4, spe);
-		}
-		
-		
+		// Runs motor (number: motor_n) with speed 'spe'
+		control_motor(motor_n, spe);
 		
 		
 		/*
@@ -88,8 +79,8 @@ int main(void)
 	}
 }
 // A control motor function.
-void control_motor(unsigned char motor_id, unsigned int on_value){
-	if(on_value>0){ // If the run value (speed?) is greater than 0, make it run clockwise.
+void control_motor(unsigned char motor_id, int on_value){
+	if(on_value>=0){ // If the run value (speed?) is greater than 0, make it run clockwise.
 		motor_set_state(motor_id,CW);
 		motor_set_pwm(motor_id,on_value,0);
 	}
