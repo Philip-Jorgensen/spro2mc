@@ -5,8 +5,10 @@
  * Author : Philip J
  */ 
 
+// Definitions
 #define F_CPU 16000000UL
 
+// Libraries
 #include <avr/io.h>
 #include <stdio.h>
 #include "PCA9685_ext.h"
@@ -14,7 +16,8 @@
 #include "usart.h"
 #include <util/delay.h>
 
-void control_motor(unsigned char , unsigned char , unsigned int , unsigned int );
+// Function prototypes
+void control_motor(unsigned char, unsigned int);
 
 int main(void)
 {
@@ -24,7 +27,7 @@ int main(void)
 	io_redirect(); // Redirect the input/output to the computer.
 	
 	// Make sure all the motors are stopped from the beginning (Initialization)
-	motor_init_pwm(PWM_FREQUENCY_50);
+	motor_init_pwm(PWM_FREQUENCY_1500);
 	
 	printf("Adafruit 1438");
 	
@@ -40,8 +43,8 @@ int main(void)
 	*/
 	
 	// Initializing variables
-	int spe, flag;
-	flag = 0;
+	int spe, motor_n;
+	motor_n = 1;
 	
 	while(1){
 		
@@ -50,16 +53,21 @@ int main(void)
 		printf("Motor speed:\n"); // Asking for the speed
 		scanf("%d", &spe);
 		
-		if(spe>=0 && flag==0){
-			motor_set_state(M1, CW);
-			flag = 1;
+		switch (motor_n)
+		{
+		case 1:
+			control_motor(M1, spe);
+			break;
+		case 2:
+			control_motor(M2, spe);
+			break;
+		case 3:
+			control_motor(M3, spe);
+			break;
+		case 4:
+			control_motor(M4, spe);
 		}
-		if(spe<0 && flag==1){
-			motor_set_state(M1, CCW);
-			spe = spe * (-1);
-			flag = 0;
-		}
-		motor_set_pwm(M2, spe, 0);
+		
 		
 		
 		
@@ -79,7 +87,14 @@ int main(void)
 		
 	}
 }
-void control_motor(unsigned char motor_id, unsigned char state, unsigned int on_value, unsigned int off_value){
-	motor_set_state(motor_id, state);
-	motor_set_pwm(motor_id,on_value,off_value);
+// A control motor function.
+void control_motor(unsigned char motor_id, unsigned int on_value){
+	if(on_value>0){ // If the run value (speed?) is greater than 0, make it run clockwise.
+		motor_set_state(motor_id,CW);
+		motor_set_pwm(motor_id,on_value,0);
+	}
+	if(on_value<0){
+		motor_set_state(motor_id,CCW); // If speed is less than 0, make it run counter clockwise.
+		motor_set_pwm(motor_id,(-1)*on_value,0); // Since 'on_value' is below 0, it is multiplied by (-1) to make it positive.
+	}
 }
