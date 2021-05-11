@@ -12,7 +12,7 @@
 #include "PCA9685_ext.h"
 #include "i2cmaster.h"
 
-volatile uint16_t pulse=0;//time echo pin signal is high
+volatile unsigned int pulse=0;//time echo pin signal is high
 volatile int i=0;//used for identifying edge type
 
 double AverageDistance(double );
@@ -29,21 +29,19 @@ int main(void) {
 	EICRA |= 1<<ISC00;//set INT0(PD2) to trigger on any logic change
 	EIMSK |=1<<INT0;//turn on interrupt
 	sei();//enable global interrups
-
+	PORTD|=1<<PIND4;//trig pin output to ultrasonic, set PD4 high
+	_delay_us(10);//needs 10us pulse to start
+	PORTD&=~(1<<PIND4);//set PD4 to low
+	
 	while(1){
-		PORTD|=1<<PIND4;//trig pin output to ultrasonic, set PD4 high
-		_delay_us(10);//needs 10us pulse to start
-		
-		PORTD&=~(1<<PIND4);//set PD4 to low
-		
+	
 		distance=((double)pulse)*0.0000000625*342.2/2;//pulse*time for one tick (1/16mhz)*speed of sound(20C)/2 
-		
 		counter++;//just for printf
 		if(counter-lstC>50000){//do the printfs every half a second or so
 		lstC=counter;
 		printf("distance %f \n",distance);
-		printf("pulse %ld \n",pulse);
-		printf("average: %f \n",AverageDistance(distance));
+		printf("pulse %u \n\n",pulse);
+		//printf("average: %f \n",AverageDistance(distance));
 		}
 	
 	}
