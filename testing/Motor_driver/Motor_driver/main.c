@@ -15,9 +15,11 @@
 #include "i2cmaster.h"
 #include "usart.h"
 #include <util/delay.h>
+#include <math.h>
 
 // Function prototypes
 void control_motor(unsigned char, int);
+int grabber_rps_to_spe(float);
 
 int main(void)
 {
@@ -25,6 +27,11 @@ int main(void)
 	uart_init(); // Open the communication to the micro controller
 	i2c_init(); // Initialize the i2c communication.
 	io_redirect(); // Redirect the input/output to the computer.
+	
+	DDRD = 0xFF; //I/O board:PD4…7 as outputs, for LEDs
+	DDRC = 0xF0; //I/O board PC0…3 as inputs, for buttons
+	PORTC = 0x3F; // Enable internal pull at PC0..3 inputs
+	PORTD = 0x00; // Set output LEDs to off
 	
 	// Make sure all the motors are stopped from the beginning (Initialization)
 	motor_init_pwm(PWM_FREQUENCY_1500);
@@ -46,20 +53,41 @@ int main(void)
 	*/
 	
 	// Initializing variables
-	int spe, motor_n;
+	int spe, motor_n, flag;
 	motor_n = 1;
 	printf("Motor number:\n"); // Ask for what motor you want to test.
 	scanf("%d", &motor_n);
 	
+	spe = 0;
+	control_motor(5, grabber_rps_to_spe(1.5));
 	while(1){
+		flag = 0; // Checks whether a button has been pressed.
+		
+		if(PINC == 0b00111110){ // First button on the SDU Nano shield
+			spe += 50;
+			flag = 1;
+			printf("Speed: %d\n", spe);
+			_delay_ms(100);
+		}
+		if(PINC == 0b00111101){ // Second button on the SDU Nano shield 
+			spe -= 50;
+			flag = 1;
+			printf("Speed: %d\n", spe);
+			_delay_ms(100);
+		}
+		if(flag){
+			control_motor(motor_n, spe);
+		}
 		
 		
+		/* Running it through the serial monitor
 		// Asking the user to control the motor.
 		printf("Motor speed:\n"); // Asking for the speed
 		scanf("%d", &spe);
 		
 		// Runs motor (number: motor_n) with speed 'spe'
 		control_motor(motor_n, spe);
+		*/
 		
 		
 		/*
@@ -81,11 +109,14 @@ int main(void)
 // A control motor function.
 void control_motor(unsigned char motor_id, int on_value){
 	if(on_value>=0){ // If the run value (speed?) is greater than 0, make it run clockwise.
-		motor_set_state(motor_id,CW);
+		motor_set_state(motor_id,CCW);
 		motor_set_pwm(motor_id,on_value,0);
 	}
 	if(on_value<0){
-		motor_set_state(motor_id,CCW); // If speed is less than 0, make it run counter clockwise.
+		motor_set_state(motor_id,CW); // If speed is less than 0, make it run counter clockwise (It is opposite of what it does irl).
 		motor_set_pwm(motor_id,(-1)*on_value,0); // Since 'on_value' is below 0, it is multiplied by (-1) to make it positive.
 	}
+}
+int grabber_rps_to_spe(float rps){
+	return 22314*pow(rps,3)-114919*pow(rps,2)+189965*rps-99601;
 }
