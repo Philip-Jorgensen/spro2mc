@@ -20,6 +20,8 @@
 // Function prototypes
 void control_motor(unsigned char, int);
 int grabber_rps_to_spe(float);
+void grabber_open(void);
+void grabber_close(void);
 
 int main(void)
 {
@@ -55,8 +57,8 @@ int main(void)
 	// Initializing variables
 	int spe, motor_n, flag, rps;
 	motor_n = 1;
-	printf("Motor number:\n"); // Ask for what motor you want to test.
-	scanf("%d", &motor_n);
+	//printf("Motor number:\n"); // Ask for what motor you want to test.
+	//scanf("%d", &motor_n);
 	
 	spe = 0;
 	
@@ -82,8 +84,19 @@ int main(void)
 		}
 		*/
 		
+		// Testing the opening and closing of the grabber.
+		int open;
+		printf("Open (1) or Close (0)?\n"); // Asks if the user wants to open or close the grabber.
+		scanf("%d", &open);
+		if(open){
+			grabber_open();
+		}
+		else{
+			grabber_close();
+		}
 		
 		
+		/*
 		 // Running it through the serial monitor
 		// Asking the user to control the motor.
 		printf("Motor speed:\n"); // Asking for the speed
@@ -91,6 +104,7 @@ int main(void)
 		
 		// Runs motor (number: motor_n) with speed 'spe'
 		control_motor(motor_n, spe);
+		*/
 		
 		
 		/*
@@ -134,4 +148,18 @@ int grabber_rps_to_spe(float rps){
 	long long int out =2218*pow(rps,5)-14100*pow(rps,4)+3158*pow(rps,3)-32810*pow(rps,2)+15180*rps+1012;
 	if(rps==0){return 0;} // The function doesn't work at 0, so if the input is 0, return 0.
 	else{return out;} // Returns the value of the function.
+}
+void grabber_open(void){
+	control_motor(5,-1);
+	_delay_ms(130);
+	control_motor(5,1);
+	_delay_ms(20);
+	control_motor(5,0);
+}
+void grabber_close(void){
+	control_motor(5,1);
+	_delay_ms(130);
+	control_motor(5,-1);
+	_delay_ms(20);
+	control_motor(5,0);
 }
