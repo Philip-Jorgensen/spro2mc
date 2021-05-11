@@ -8,4 +8,5 @@ double detectBarGrabbers(void);
 double readUltrasonic(void);
 void moveMotor(unsigned char motor_id, int on_value, int time_on);
 double readAccleration(char axis);
+double readUltrasonic(void);
 #endif

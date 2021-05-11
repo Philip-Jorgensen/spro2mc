@@ -35,8 +35,8 @@ void control_motor(unsigned char motor_id, int on_value){
 	}
 }
 double readUltrasonic(){
-	double distance;
-	//when the test code works copy it in here
+	double distance=0;
+	distance=((double)pulse)*0.0000000625*342.2/2;//pulse*time for one tick (1/16mhz)*speed of sound(20C)/2 
 	return distance;
 }
 double readAccleration(char axis){//axis is 'y'or'x'or'z'
