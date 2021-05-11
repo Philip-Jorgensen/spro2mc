@@ -85,7 +85,8 @@ int main(void){
 	motor_set_state(M7, STOP);
   while(1){
     //start with the movement
-	moveMotor(motors.GR_Elbow_L,-50,500);//example move the left green elbow motor counterclockwise with signal of 50 for 500ms
+	moveMotor(motors.GR_Elbow_L,2500,500);//example move the left green elbow motor counterclockwise with signal of 50 for 500ms
+	moveMotor(motors.GR_Elbow_R,2500,500);
   }
 }
 ISR(INT0_vect){//interrupt routine for ultrasonic sensor
