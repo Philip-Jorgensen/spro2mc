@@ -53,14 +53,16 @@ int main(void)
 	*/
 	
 	// Initializing variables
-	int spe, motor_n, flag;
+	int spe, motor_n, flag, rps;
 	motor_n = 1;
 	printf("Motor number:\n"); // Ask for what motor you want to test.
 	scanf("%d", &motor_n);
 	
 	spe = 0;
-	control_motor(5, grabber_rps_to_spe(1.5));
+	
+	// control_motor(5, grabber_rps_to_spe(1.5));
 	while(1){
+		/*
 		flag = 0; // Checks whether a button has been pressed.
 		
 		if(PINC == 0b00111110){ // First button on the SDU Nano shield
@@ -78,17 +80,27 @@ int main(void)
 		if(flag){
 			control_motor(motor_n, spe);
 		}
+		*/
 		
 		
-		/* Running it through the serial monitor
+		
+		 // Running it through the serial monitor
 		// Asking the user to control the motor.
 		printf("Motor speed:\n"); // Asking for the speed
 		scanf("%d", &spe);
 		
 		// Runs motor (number: motor_n) with speed 'spe'
 		control_motor(motor_n, spe);
-		*/
 		
+		
+		/*
+		// Run the servo using RPS values
+		// Asking the user for an RPS value.
+		printf("Motor RPS:\n");
+		scanf("%d", &rps);
+		
+		control_motor(motor_n, grabber_rps_to_spe(rps));
+		*/
 		
 		/*
 		// Sweeping through speed values.
@@ -118,5 +130,8 @@ void control_motor(unsigned char motor_id, int on_value){
 	}
 }
 int grabber_rps_to_spe(float rps){
-	return 22314*pow(rps,3)-114919*pow(rps,2)+189965*rps-99601;
+	// To know how this function is derived look on notion.
+	long long int out =2218*pow(rps,5)-14100*pow(rps,4)+3158*pow(rps,3)-32810*pow(rps,2)+15180*rps+1012;
+	if(rps==0){return 0;} // The function doesn't work at 0, so if the input is 0, return 0.
+	else{return out;} // Returns the value of the function.
 }
