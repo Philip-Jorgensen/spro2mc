@@ -57,8 +57,8 @@ int main(void)
 	// Initializing variables
 	int spe, motor_n, flag, rps;
 	motor_n = 1;
-	//printf("Motor number:\n"); // Ask for what motor you want to test.
-	//scanf("%d", &motor_n);
+	printf("Motor number:\n"); // Ask for what motor you want to test.
+	scanf("%d", &motor_n);
 	
 	spe = 0;
 	
@@ -84,6 +84,7 @@ int main(void)
 		}
 		*/
 		
+		/*
 		// Testing the opening and closing of the grabber.
 		int open;
 		printf("Open (1) or Close (0)?\n"); // Asks if the user wants to open or close the grabber.
@@ -94,9 +95,10 @@ int main(void)
 		else{
 			grabber_close();
 		}
+		*/
 		
 		
-		/*
+		
 		 // Running it through the serial monitor
 		// Asking the user to control the motor.
 		printf("Motor speed:\n"); // Asking for the speed
@@ -104,7 +106,7 @@ int main(void)
 		
 		// Runs motor (number: motor_n) with speed 'spe'
 		control_motor(motor_n, spe);
-		*/
+		
 		
 		
 		/*
