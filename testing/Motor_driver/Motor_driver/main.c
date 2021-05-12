@@ -22,6 +22,7 @@ void control_motor(unsigned char, int);
 int grabber_rps_to_spe(float);
 void grabber_open(void);
 void grabber_close(void);
+int joint30_rps_spe(float);
 
 int main(void)
 {
@@ -108,6 +109,7 @@ int main(void)
 		control_motor(motor_n, spe);
 		*/
 		
+		/*	
 		// Sweeps through the speed values with increment of 50, when the user tells it to.
 		printf("Start?\n");
 		scanf("%d", &flag);
@@ -120,6 +122,15 @@ int main(void)
 		}
 		control_motor(motor_n, 0);
 		printf("Speed: 0");
+		*/
+		
+		
+		// Controlling the motor using a desired RPS value.
+		printf("Input an RPS value:\n");
+		scanf("%d", &rps);
+		
+		printf("SPE: %d", rps);
+		
 		
 		
 		
@@ -178,4 +189,10 @@ void grabber_close(void){
 	control_motor(5,-1);
 	_delay_ms(20);
 	control_motor(5,0);
+}
+int joint30_rps_spe(float rps){
+	// To know how this funciton is derived look on notion
+	long long int out = -7930*rps+4049;
+	if(rps==0){return 0;} // The function doesn't work at 0, so if the input is 0, return 0.
+	else{return out;} // Returns the value of the function.
 }
