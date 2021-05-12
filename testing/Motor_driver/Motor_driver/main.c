@@ -98,7 +98,7 @@ int main(void)
 		*/
 		
 		
-		
+		/*
 		 // Running it through the serial monitor
 		// Asking the user to control the motor.
 		printf("Motor speed:\n"); // Asking for the speed
@@ -106,6 +106,20 @@ int main(void)
 		
 		// Runs motor (number: motor_n) with speed 'spe'
 		control_motor(motor_n, spe);
+		*/
+		
+		// Sweeps through the speed values with increment of 50, when the user tells it to.
+		printf("Start?\n");
+		scanf("%d", &flag);
+		for(int i=0; i<3501; i+=50){
+			if(i==0){i=1;}
+			control_motor(motor_n, i);
+			printf("Speed: %d\n", i);
+			if(i==1){i=0;}
+			scanf("%d", &flag);
+		}
+		control_motor(motor_n, 0);
+		printf("Speed: 0");
 		
 		
 		
