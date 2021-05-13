@@ -10,5 +10,6 @@ double readUltrasonic(double);
 void moveMotor(unsigned char, int, int);
 double readAccleration(char);
 int BarDetected(void);
+int conv_j30(double); // A function to convert rps to speed for the code. (Joint motor)
 
 #endif
