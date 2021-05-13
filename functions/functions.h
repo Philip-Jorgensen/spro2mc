@@ -1,12 +1,14 @@
 #ifndef FUNCTIONS_H_INCLUDED
 #define FUNCTIONS_H_INCLUDED
 // Add the function prototypes from the "functions.c" file here.
-void closeGrabbers(void);
-void openGrabbers(void);
-void control_motor(unsigned char motor_id, int on_value);
-double detectBarGrabbers(void);
+
+void closeGrabbers(unsigned char);
+void openGrabbers(unsigned char);
+void control_motor(unsigned char, int);
+double distanceBarGrabbers(void);
 double readUltrasonic(void);
-void moveMotor(unsigned char motor_id, int on_value, int time_on);
-double readAccleration(char axis);
+void moveMotor(unsigned char, int, int);
+double readAccleration(char);
 double readUltrasonic(void);
+
 #endif
