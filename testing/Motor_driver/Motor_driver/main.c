@@ -20,8 +20,8 @@
 // Function prototypes
 void control_motor(unsigned char, int);
 int grabber_rps_to_spe(float);
-void grabber_open(void);
-void grabber_close(void);
+void grabber_open(unsigned char);
+void grabber_close(unsigned char);
 int joint30_rps_spe(float);
 
 int main(void)
@@ -56,7 +56,7 @@ int main(void)
 	*/
 	
 	// Initializing variables
-	int spe, motor_n, flag, rps;
+	int spe, flag, motor_n, rps;
 	motor_n = 1;
 	printf("Motor number:\n"); // Ask for what motor you want to test.
 	scanf("%d", &motor_n);
@@ -90,16 +90,18 @@ int main(void)
 		int open;
 		printf("Open (1) or Close (0)?\n"); // Asks if the user wants to open or close the grabber.
 		scanf("%d", &open);
-		if(open){
-			grabber_open();
+		if(open == 1){
+			grabber_open(motor_n);
+			printf("Opening\n");
 		}
-		else{
-			grabber_close();
+		if(open == 0){
+			grabber_close(motor_n);
+			printf("Closing\n");
 		}
 		*/
 		
 		
-		/*
+		
 		 // Running it through the serial monitor
 		// Asking the user to control the motor.
 		printf("Motor speed:\n"); // Asking for the speed
@@ -107,7 +109,7 @@ int main(void)
 		
 		// Runs motor (number: motor_n) with speed 'spe'
 		control_motor(motor_n, spe);
-		*/
+		
 		
 		/*	
 		// Sweeps through the speed values with increment of 50, when the user tells it to.
@@ -124,13 +126,13 @@ int main(void)
 		printf("Speed: 0");
 		*/
 		
-		
+		/*
 		// Controlling the motor using a desired RPS value.
 		printf("Input an RPS value:\n");
 		scanf("%d", &rps);
 		
-		printf("SPE: %d", rps);
-		
+		printf("SPE: %d", rps);	
+		*/
 		
 		
 		
@@ -176,19 +178,19 @@ int grabber_rps_to_spe(float rps){
 	if(rps==0){return 0;} // The function doesn't work at 0, so if the input is 0, return 0.
 	else{return out;} // Returns the value of the function.
 }
-void grabber_open(void){
-	control_motor(5,-1);
+void grabber_open(unsigned char motor_id){
+	control_motor(motor_id,-1);
 	_delay_ms(130);
-	control_motor(5,1);
+	control_motor(motor_id,1);
 	_delay_ms(20);
-	control_motor(5,0);
+	control_motor(motor_id,0);
 }
-void grabber_close(void){
-	control_motor(5,1);
+void grabber_close(unsigned char motor_id){
+	control_motor(motor_id,1);
 	_delay_ms(130);
-	control_motor(5,-1);
+	control_motor(motor_id,-1);
 	_delay_ms(20);
-	control_motor(5,0);
+	control_motor(motor_id,0);
 }
 int joint30_rps_spe(float rps){
 	// To know how this funciton is derived look on notion
