@@ -23,6 +23,7 @@ int grabber_rps_to_spe(float);
 void grabber_open(unsigned char);
 void grabber_close(unsigned char);
 int joint30_rps_spe(float);
+int conv_j30(double);
 
 int main(void)
 {
@@ -101,7 +102,7 @@ int main(void)
 		*/
 		
 		
-		
+		/*
 		 // Running it through the serial monitor
 		// Asking the user to control the motor.
 		printf("Motor speed:\n"); // Asking for the speed
@@ -109,7 +110,7 @@ int main(void)
 		
 		// Runs motor (number: motor_n) with speed 'spe'
 		control_motor(motor_n, spe);
-		
+		*/
 		
 		/*	
 		// Sweeps through the speed values with increment of 50, when the user tells it to.
@@ -126,14 +127,15 @@ int main(void)
 		printf("Speed: 0");
 		*/
 		
-		/*
+		
 		// Controlling the motor using a desired RPS value.
 		printf("Input an RPS value:\n");
 		scanf("%d", &rps);
+		double rps_dec;
+		rps_dec = (float)rps/100;
 		
-		printf("SPE: %d", rps);	
-		*/
-		
+		printf("SPE: %d\n", conv(rps_dec));
+		control_motor(motor_n, conv(rps_dec));
 		
 		
 		/*
@@ -197,4 +199,11 @@ int joint30_rps_spe(float rps){
 	long long int out = -7930*rps+4049;
 	if(rps==0){return 0;} // The function doesn't work at 0, so if the input is 0, return 0.
 	else{return out;} // Returns the value of the function.
+}
+int conv_j30(double x){
+	if(x<=0){printf("Output: %d\n", 0);}
+	if(x>0){
+		return (int)(-7930*x+4090);
+	}
+	return 0;
 }
