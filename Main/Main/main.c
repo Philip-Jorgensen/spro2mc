@@ -15,10 +15,10 @@ Remember to add proper comments and explanations when you make changes.
 #include <stdio.h>
 #include <stdlib.h>
 #include <util/delay.h>
-#include "usart.h"
-#include "PCA9685_ext.h"
-#include "i2cmaster.h"
-#include "functions.h"
+#include "../../libraries/usart.h"
+#include "../../libraries/PCA9685_ext.h"
+#include "../../libraries/i2cmaster.h"
+#include "../../functions/functions.h"
 
 // Function Prototypes
 void closeGrabbers(unsigned char);
