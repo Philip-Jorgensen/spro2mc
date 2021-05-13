@@ -4,6 +4,7 @@ The code for the 2nd semester project. <br>
 ## Rules to making changes to the code.
 <ul>
   <li> When you make a <b>new change</b> to the code, start a new branch first and edit in that. <ul>
+    <li> Except if you make a change to in /testings/ then it itsn't necessary to create a new branch first.</li>
     <li> You can find a guide to making a new branch <a href="https://guides.github.com/activities/hello-world/" target="_blank" rel="noopener noreferrer"> here.</a> </li></ul></li>
   <li> Add proper comments and explanations in your code, it makes it easier to see what that exact part does afterwards. </li>
 </ul>
