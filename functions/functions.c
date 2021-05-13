@@ -81,3 +81,12 @@ double readAccleration(char axis){//axis is 'y'or'x'or'z'
 	}
 	return acceleration;
 }
+// A function for converting rps to the speed value the motor library needs.
+// This is for the 30 RPM Joint motor.
+int conv_j30(double rps){
+	if(x>0){
+		// This function can be found in notion.
+		return (int)(-7930*x+4090);
+	}
+	else{return 0;} // The function only works when it's a positive number (not 0).
+}

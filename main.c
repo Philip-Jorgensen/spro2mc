@@ -7,27 +7,29 @@ Remember to add proper comments and explanations when you make changes.
 */
 
 // Definitions
-#define F_CPU 16E6
+#define F_CPU 16000000UL
 
 // Imports
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <util/delay.h>
 #include "usart.h"
-#include "PCA9685_ext"
+#include "PCA9685_ext.h"
 #include "i2cmaster.h"
-#include "functions/functions.h"
+#include "functions.h"
 
 // Function Prototypes
-void closeGrabbers(void);
-void openGrabbers(void);
+void closeGrabbers(unsigned char);
+void openGrabbers(unsigned char);
 void control_motor(unsigned char, int);
-double detectBarGrabbers(void);
-double readUltrasonic(void);
+double detectBarGrabbers();
+double readUltrasonic(double);
 void moveMotor(unsigned char, int, int);
 double readAccleration(char);
-double readUltrasonic(void);
+double readUltrasonic();
+int BarDetected();
 
 struct Motors 
 {
@@ -53,7 +55,7 @@ int main(void){
 	io_redirect(); // Redirect the input/output to the computer.
 	
 	//SENSOR and INTERRUPT setup
-	
+	DDRB = 0x00;
 	DDRD=0xFB;//set PD2 input, rest as output
 	double distance=0;//distance measured
 	unsigned long counter=0;//used with printfs to avoid delay
