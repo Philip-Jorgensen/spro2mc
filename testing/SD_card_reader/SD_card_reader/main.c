@@ -6,6 +6,8 @@
  */ 
 
 #include <avr/io.h>
+#include "SD.h"
+#include "SPI.h"
 
 
 int main(void)

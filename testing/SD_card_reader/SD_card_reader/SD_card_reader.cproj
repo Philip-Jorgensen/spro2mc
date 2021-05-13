@@ -108,9 +108,72 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="include\libraries\SD\src\SD.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\libraries\SD\src\utility\FatStructs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\libraries\SD\src\utility\Sd2Card.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\libraries\SD\src\utility\Sd2PinMap.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\libraries\SD\src\utility\SdFat.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\libraries\SD\src\utility\SdFatmainpage.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\libraries\SD\src\utility\SdFatUtil.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\libraries\SD\src\utility\SdInfo.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\libraries\SPI\src\SPI.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="include\" />
+    <Folder Include="include\libraries\" />
+    <Folder Include="include\libraries\SD\" />
+    <Folder Include="include\libraries\SD\src\" />
+    <Folder Include="include\libraries\SD\src\utility\" />
+    <Folder Include="include\libraries\SPI\" />
+    <Folder Include="include\libraries\SPI\src\" />
+    <Folder Include="src\" />
+    <Folder Include="src\libraries\" />
+    <Folder Include="src\libraries\SD\" />
+    <Folder Include="src\libraries\SD\src\" />
+    <Folder Include="src\libraries\SD\src\utility\" />
+    <Folder Include="src\libraries\SPI\" />
+    <Folder Include="src\libraries\SPI\src\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\libraries\SD\src\File.cpp">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\libraries\SD\src\SD.cpp">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\libraries\SD\src\utility\Sd2Card.cpp">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\libraries\SD\src\utility\SdFile.cpp">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\libraries\SD\src\utility\SdVolume.cpp">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\libraries\SPI\src\SPI.cpp">
+      <SubType>compile</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>
