@@ -30,7 +30,7 @@ int main(void) {
 	EIMSK |=1<<INT0;//turn on interrupt
 	sei();//enable global interrups
 	
-	
+	i=0;
 	while(1){
 		
 		counter++;//just for printf
@@ -57,7 +57,9 @@ int main(void) {
 }
 
 ISR(INT0_vect){//interrupt routine
-	if(i==0)// low to high
+	
+	// low to high
+	if(i==0)
 	{
 		
 		TCCR1B |= (1<<CS10);//start timer 1 (16bits) with no prescaler
