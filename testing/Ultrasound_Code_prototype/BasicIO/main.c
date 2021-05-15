@@ -12,7 +12,7 @@
 #include "PCA9685_ext.h"
 #include "i2cmaster.h"
 
-volatile unsigned int pulse=0;//time echo pin signal is high
+volatile uint16_t pulse=0;//time echo pin signal is high
 volatile int i=0;//used for identifying edge type
 
 double AverageDistance(double );
@@ -22,28 +22,36 @@ int main(void) {
 	io_redirect();
 	
 	DDRD=0xFB;//set PD2 input, rest as output
-	double distance=0;//distance measured
+	double distance=0.0;//distance measured
 	unsigned long counter=0;//used with printfs to avoid delay
 	unsigned long lstC=0;//used with printfs to avoid delay
 	
 	EICRA |= 1<<ISC00;//set INT0(PD2) to trigger on any logic change
 	EIMSK |=1<<INT0;//turn on interrupt
 	sei();//enable global interrups
-	PORTD|=1<<PIND4;//trig pin output to ultrasonic, set PD4 high
-	_delay_us(10);//needs 10us pulse to start
-	PORTD&=~(1<<PIND4);//set PD4 to low
+	
 	
 	while(1){
-	
-		distance=((double)pulse)*0.0000000625*342.2/2;//pulse*time for one tick (1/16mhz)*speed of sound(20C)/2 
+		
 		counter++;//just for printf
-		if(counter-lstC>50000){//do the printfs every half a second or so
-		lstC=counter;
-		printf("distance %f \n",distance);
-		printf("pulse %u \n\n",pulse);
-		//printf("average: %f \n",AverageDistance(distance));
+		if(counter-lstC>10){//do the printfs every half a second or so
+			lstC=counter;
+			printf("distance %f \n",distance);
+			printf("pulse %u \n",pulse);
+			//printf("average: %f \n",AverageDistance(distance));
+			
 		}
-	
+		
+		
+		PORTD&=~(1<<PIND4);
+		_delay_us(5);
+		PORTD|=1<<PIND4;//trig pin output to ultrasonic, set PD4 high
+		_delay_us(10);//needs 10us pulse to start
+		PORTD&=~(1<<PIND4);//set PD4 to low
+		distance=((double)pulse)*0.0000000625*342.2/2;//pulse*time for one tick (1/16mhz)*speed of sound(20C)/2 
+		
+
+	_delay_ms(60);
 	}
 	return 0;
 }
