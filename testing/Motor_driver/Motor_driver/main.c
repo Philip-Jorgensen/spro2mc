@@ -102,7 +102,7 @@ int main(void)
 		*/
 		
 		
-		/*
+		
 		 // Running it through the serial monitor
 		// Asking the user to control the motor.
 		printf("Motor speed:\n"); // Asking for the speed
@@ -110,7 +110,7 @@ int main(void)
 		
 		// Runs motor (number: motor_n) with speed 'spe'
 		control_motor(motor_n, spe);
-		*/
+		
 		
 		/*	
 		// Sweeps through the speed values with increment of 50, when the user tells it to.
@@ -127,7 +127,7 @@ int main(void)
 		printf("Speed: 0");
 		*/
 		
-		
+		/*
 		// Controlling the motor using a desired RPS value.
 		printf("Input an RPS value:\n");
 		scanf("%d", &rps);
@@ -136,7 +136,7 @@ int main(void)
 		
 		printf("SPE: %d\n", conv(rps_dec));
 		control_motor(motor_n, conv(rps_dec));
-		
+		*/
 		
 		/*
 		// Run the servo using RPS values
