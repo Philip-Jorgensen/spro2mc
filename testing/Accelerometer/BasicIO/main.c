@@ -14,14 +14,21 @@
 void MMA8451_init();
 void i2c_write_register8(unsigned char reg, unsigned char value);
 unsigned char i2c_read_register8(unsigned char reg);
+unsigned char getOrientation(void);
+void getPosition(void);
 
+unsigned char n = 0;
 unsigned char x, y,z,Xoffset,Yoffset,Zoffset;
 int x_val, y_val, z_val;
 float x_val_float, y_val_float, z_val_float;
 float x_angle, y_angle,z_angle;
 float x_g, y_g,z_g;
 unsigned char data_array[10];
-
+unsigned char orientation;
+//variables used to subtract gravity acceleration from our results
+float x_gravity, y_gravity, z_gravity;
+//Actual coordinates
+float X_Coordinate, Y_Coordinate, Z_Coordinate = 0;
 
 int main(void)
 {
@@ -66,28 +73,41 @@ int main(void)
 		 z_angle = atan(x_val_float/y_val_float);
 		 z_angle = z_angle*(180.0/3.141592);		
 		 
-		 //orientation = getOrientation(); //reading the detected orientation
+		 orientation = getOrientation(); //reading the detected orientation
 		 
 		 
 		 x_g = ((float) x_val) / SENSITIVITY_2G; //Calculating the x-axis acceleration
 		 y_g = ((float) y_val) / SENSITIVITY_2G; //Calculating the y-axis acceleration
 		 z_g = ((float) z_val) / SENSITIVITY_2G; //Calculating the z-axis acceleration
 		 
-		 // ***Printing the x-axis angle/acceleration***
-		 LCD_set_cursor(0,0); printf("X:%6.2f [Deg]", x_angle);  // X ANGLE
-		// LCD_set_cursor(0,0); printf("X:%7.2f [m/s^2]", x_g);  // X ACC
-		// LCD_set_cursor(0,0); printf("%7d", x_val);
-		// LCD_set_cursor(0,0); printf("%f", x_val_float);
+		 if (n == 0)
+		 {
+			 x_gravity = x_g;
+			 y_gravity = y_g;
+			 z_gravity = z_g;
+			 n=1;
+		 }
+		 getPosition();
+		 LCD_set_cursor(0,0); printf("%f", X_Coordinate);
+		 LCD_set_cursor(0,1); printf("%f", Y_Coordinate);
+		 LCD_set_cursor(0,2); printf("%f", Z_Coordinate);
 		 
+		 // ***Printing the x-axis angle/acceleration***
+		 //LCD_set_cursor(0,0); printf("X:%6.2f [Deg]", x_angle);  // X ANGLE
+		 //LCD_set_cursor(0,0); printf("X:%7.2f [m/s^2]", x_g);  // X ACC
+		 //LCD_set_cursor(0,0); printf("%7d", x_val);
+		 //LCD_set_cursor(0,0); printf("%f", x_val_float);
+
 		 // ***Printing the y-axis angle/acceleration***
-		 LCD_set_cursor(0,1); printf("Y:%6.2f", y_angle); // Y ANGLE
+		 //LCD_set_cursor(0,1); printf("Y:%6.2f [Deg]", y_angle); // Y ANGLE
 		 //LCD_set_cursor(0,1); printf("Y:%7.2f [m/s^2]", y_g);  // Y ACC
 		 //LCD_set_cursor(0,1); printf("%7d", y_val);
 		 //LCD_set_cursor(0,1); printf("%f", y_val_float);
 		 
 		 // ***Printing the z-axis angle/acceleration***
-		 LCD_set_cursor(9,1);; printf("Z:%6.2f", z_angle); // Z ANGLE
-		//LCD_set_cursor(9,1); printf("Z:%7.2f [m/s^2]", z_g);  // Z ACC
+		 //LCD_set_cursor(0,2);; printf("Z:%6.2f [Deg]", z_angle); // Z ANGLE
+		 //LCD_set_cursor(0,2); printf("Z:%7.2f [m/s^2]", z_g);  // Z ACC
+		 //LCD_set_cursor(0,2); printf("%7d", z_val);
 		 
 		 // ***Cycle counting***
 		 //LCD_set_cursor(0,0); printf("%7d", iterations);
@@ -159,4 +179,22 @@ unsigned char i2c_read_register8(unsigned char reg)
 
 unsigned char getOrientation(void) {
 	return i2c_read_register8(MMA8451_REG_PL_STATUS) & 0x07;
+}
+
+void getPosition(void)
+{
+	//calculating the distance traveled since last data received and changing the coordinate based on that change
+	//80ms between data
+	if (X_Coordinate != X_Coordinate + (0.5*((x_g-x_gravity)*0.0064)))
+	{
+		X_Coordinate = X_Coordinate + (0.5*((x_g-x_gravity)*0.0064));
+	}
+	if (Y_Coordinate != Y_Coordinate + (0.5*((y_g-y_gravity)*0.0064)))
+	{
+		Y_Coordinate = Y_Coordinate + (0.5*((y_g-y_gravity)*0.0064));
+	}
+	if (Z_Coordinate != Z_Coordinate + (0.5*((z_g-z_gravity)*0.0064)))
+	{
+		Z_Coordinate = Z_Coordinate + (0.5*((z_g-z_gravity)*0.0064));
+	}
 }
