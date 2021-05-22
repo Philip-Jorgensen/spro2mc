@@ -17,7 +17,7 @@ void i2c_write_register8(unsigned char reg, unsigned char value);
 unsigned char i2c_read_register8(unsigned char reg);
 unsigned char getOrientation(void);
 void Gravity(void);
-//void getPosition(void);
+void getPosition(void);
 //void ignoreGravity(void);
 
 //flag
@@ -81,7 +81,8 @@ int main(void)
 		 
 		 Gravity();//subtracting gravity
 		 orientation = getOrientation(); //reading the detected orientation
-	
+		 getPosition();
+		 
 		 x_g = ((float) x_val) / SENSITIVITY_2G; //Calculating the x-axis acceleration
 		 y_g = ((float) y_val) / SENSITIVITY_2G; //Calculating the y-axis acceleration
 		 z_g = ((float) z_val) / SENSITIVITY_2G; //Calculating the z-axis acceleration
@@ -104,10 +105,9 @@ int main(void)
 		 //LCD_set_cursor(0,0); printf("%f", x_val_float);
 
 		 // ***Printing the y-axis angle/acceleration***
-		 LCD_set_cursor(0,0); printf("Y:%6.2f [Deg]", y_angle); // Y ANGLE
-		 LCD_set_cursor(0,1); printf("Y:%f g", y_g);  // Y ACC
-		 LCD_set_cursor(0,2); printf("Y:%f g", y_acceleration);
-		 //LCD_set_cursor(0,2); printf("%d", y_val);
+		 //LCD_set_cursor(0,1); printf("Y:%6.2f [Deg]", y_angle); // Y ANGLE
+		 //LCD_set_cursor(0,1); printf("Y:%f g", y_g);  // Y ACC
+		 //LCD_set_cursor(0,1); printf("%d", y_val);
 		 //LCD_set_cursor(0,1); printf("%f", y_val_float);
 		 
 		 // ***Printing the z-axis angle/acceleration***
@@ -126,6 +126,16 @@ int main(void)
 		 //LCD_set_cursor(2,0); printf("%d", data_array[1]);
 		 //LCD_set_cursor(3,0); printf("%d", data_array[4]);
 		 //LCD_set_cursor(4,0); printf("%d", data_array[5]);
+		 
+		 // Printing Coordinates
+		 //LCD_set_cursor(0,0); printf("X: %f", X_Coordinate);
+		 //LCD_set_cursor(0,1); printf("Y: %f", Y_Coordinate);
+		 //LCD_set_cursor(0,2); printf("Z: %f", Z_Coordinate);
+		 
+		 // Printing acceleration minus gravity
+		 LCD_set_cursor(0,0); printf("%f", x_acceleration);
+		 LCD_set_cursor(0,1); printf("%f", y_acceleration);
+		 LCD_set_cursor(0,2); printf("%f", z_acceleration);
 	 }
 }
 
@@ -215,29 +225,20 @@ void Gravity(void)
 }
 
 
-//Old unused functions, ignore them
-/*
+
 void getPosition(void)
 {
-	//if one orientation was different we have switched at some point
-	
-	
+
 	//calculating the distance traveled since last data received and changing the coordinate based on that change
 	//80ms between data
-	if (X_Coordinate - (X_Coordinate + (0.5*((x_g-x_gravity)*0.0064))) >= 0.1)
-	{
-		X_Coordinate = X_Coordinate + (0.5*((x_g-x_gravity)*0.0064));
-	}
-	if (Y_Coordinate - (Y_Coordinate + (0.5*((x_g-x_gravity)*0.0064))) >= 0.1)
-	{
-		Y_Coordinate = Y_Coordinate + (0.5*((y_g-y_gravity)*0.0064));
-	}
-	if (Z_Coordinate - (Z_Coordinate + (0.5*((x_g-x_gravity)*0.0064))) >= 0.1)
-	{
-		Z_Coordinate = Z_Coordinate + (0.5*((z_g-z_gravity)*0.0064));
-	}
+	
+	X_Coordinate = X_Coordinate + (0.5*x_acceleration*0.0064);
+	Y_Coordinate = Y_Coordinate + (0.5*y_acceleration*0.0064);
+	Z_Coordinate = Z_Coordinate + (0.5*z_acceleration*0.0064);
 }
 
+//Old unused functions, ignore them
+/*
 void ignoreGravity(void)
 {
 	float saved_angle_x = 0;
