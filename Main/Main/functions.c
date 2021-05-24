@@ -97,3 +97,21 @@ int conv_j30(double rps){
 	}
 	else{return 0;} // The function only works when it's a positive number (not 0).
 }
+
+
+void c_brachiation(){
+}
+
+void r_brachiation(){
+}
+
+//very rough; change the variable names if you want to
+void rotatebigMotor(int motor_id, int degrees, int timeInterval){
+	
+	int rps
+	
+	rps = degrees/360/timeInterval
+	
+	moveMotor(motor_id, conv_j30(rps), timeInterval, millis);
+	
+}
