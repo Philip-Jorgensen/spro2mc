@@ -87,32 +87,21 @@ int main(void)
 		 y_g = ((float) y_val) / SENSITIVITY_2G; //Calculating the y-axis acceleration
 		 z_g = ((float) z_val) / SENSITIVITY_2G; //Calculating the z-axis acceleration
 		 
-		/*
-		 if (a == 0)
-		 {
-			 x_gravity = x_g;
-			 y_gravity = y_g;
-			 z_gravity = z_g;
-			 a++;
-		 }
-		*/
-		 //getPosition();
-		 
 		 // ***Printing the x-axis angle/acceleration***
-		 //LCD_set_cursor(0,0); printf("X:%6.2f [Deg]", x_angle);  // X ANGLE
-		 //LCD_set_cursor(0,0); printf("X:%7.2f g", x_g);  // X ACC
+		 LCD_set_cursor(0,0); printf("X:%6.2f [Deg]", x_angle);  // X ANGLE
+		 //LCD_set_cursor(0,3); printf("X:%f g", x_g);  // X ACC
 		 //LCD_set_cursor(0,0); printf("%7d", x_val);
 		 //LCD_set_cursor(0,0); printf("%f", x_val_float);
 
 		 // ***Printing the y-axis angle/acceleration***
-		 //LCD_set_cursor(0,1); printf("Y:%6.2f [Deg]", y_angle); // Y ANGLE
-		 //LCD_set_cursor(0,1); printf("Y:%f g", y_g);  // Y ACC
+		 LCD_set_cursor(0,1); printf("Y:%6.2f [Deg]", y_angle); // Y ANGLE
+		 //LCD_set_cursor(0,3); printf("Y:%f g", y_g);  // Y ACC
 		 //LCD_set_cursor(0,1); printf("%d", y_val);
 		 //LCD_set_cursor(0,1); printf("%f", y_val_float);
 		 
 		 // ***Printing the z-axis angle/acceleration***
-		  //LCD_set_cursor(0,2);; printf("Z:%6.2f [Deg]", z_angle); // Z ANGLE
-		 //LCD_set_cursor(0,2); printf("Z:%7.2f g", z_g);  // Z ACC
+		 LCD_set_cursor(0,2); printf("Z:%6.2f [Deg]", z_angle); // Z ANGLE
+		 LCD_set_cursor(0,3); printf("Z:%f g", z_g);  // Z ACC
 		 //LCD_set_cursor(0,2); printf("%7d", z_val);
 		 
 		 // ***Cycle counting***
@@ -133,9 +122,9 @@ int main(void)
 		 //LCD_set_cursor(0,2); printf("Z: %f", Z_Coordinate);
 		 
 		 // Printing acceleration minus gravity
-		 LCD_set_cursor(0,0); printf("%f", x_acceleration);
-		 LCD_set_cursor(0,1); printf("%f", y_acceleration);
-		 LCD_set_cursor(0,2); printf("%f", z_acceleration);
+		 //LCD_set_cursor(0,0); printf("%f", x_acceleration);
+		 //LCD_set_cursor(0,1); printf("%f", y_acceleration);
+		 //LCD_set_cursor(0,2); printf("%f", z_acceleration);
 	 }
 }
 
@@ -205,23 +194,184 @@ void Gravity(void)
 	y_gravity = sin(y_angle*temp);
 	z_gravity = sin(z_angle*temp);
 	
-	if ((x_gravity - x_g < 0.1 ) && (x_gravity - x_g > -0.1))
+	if (x_g > 0)
 	{
-		x_gravity = x_g;
+		if (x_gravity > 0)
+		{
+			if (((x_gravity - x_g) < 0.1) && ((x_gravity - x_g) > -0.1))
+			{
+				x_gravity = x_g;
+			}
+		}
+		if (x_gravity < 0)
+		{
+			if (((x_gravity + x_g) < 0.1) && ((x_gravity + x_g) > -0.1))
+			{
+				x_gravity = x_g;
+			}
+		}
+	}
+	if (x_g < 0)
+	{
+		if (x_gravity > 0)
+		{
+			if (((x_gravity + x_g) < 0.1) && ((x_gravity + x_g) > -0.1))
+			{
+				x_gravity = x_g;
+			}
+		}
+		if (x_gravity < 0)
+		{
+			if (((x_gravity - x_g) < 0.1) && ((x_gravity - x_g) > -0.1))
+			{
+				x_gravity = x_g;
+			}
+		}
+	}
+	if (y_g > 0)
+	{
+		if (y_gravity > 0)
+		{
+			if (((y_gravity - y_g) < 0.1) && ((y_gravity - y_g) > -0.1))
+			{
+				y_gravity = y_g;
+			}
+		}
+		if (y_gravity < 0)
+		{
+			if (((y_gravity + y_g) < 0.1) && ((y_gravity + y_g) > -0.1))
+			{
+				y_gravity = y_g;
+			}
+		}
+	}
+	if (y_g < 0)
+	{
+		if (y_gravity > 0)
+		{
+			if (((y_gravity + y_g) < 0.1) && ((y_gravity + y_g) > -0.1))
+			{
+				y_gravity = y_g;
+			}
+		}
+		if (y_gravity < 0)
+		{
+			if (((y_gravity - y_g) < 0.1) && ((y_gravity - y_g) > -0.1))
+			{
+				y_gravity = y_g;
+			}
+		}
+	}
+	if (z_g > 0)
+	{
+		if (z_gravity > 0)
+		{
+			if (((z_gravity - z_g) < 0.1) && ((z_gravity - z_g) > -0.1))
+			{
+				z_gravity = z_g;
+			}
+		}
+		if (z_gravity < 0)
+		{
+			if (((z_gravity + z_g) < 0.1) && ((z_gravity + z_g) > -0.1))
+			{
+				z_gravity = z_g;
+			}
+		}
 	}
 	
-	if ((y_gravity - y_g < 0.1) && (y_gravity - y_g > -0.1))
+	if (z_g < 0)
 	{
-		y_gravity = y_g;
+		if (z_gravity > 0)
+		{
+			if (((z_gravity + z_g) < 0.1) && ((z_gravity + z_g) > -0.1))
+			{
+				z_gravity = z_g;
+			}
+		}
+		if (z_gravity < 0)
+		{
+			if (((z_gravity - z_g) < 0.1) && ((z_gravity - z_g) > -0.1))
+			{
+				z_gravity = z_g;
+			}
+		}
 	}
 	
-	if ((z_gravity - z_g < 0.1) && (z_gravity - z_g > -0.1))
+	
+	if (x_gravity > 0)
 	{
-		z_gravity = z_g;
+		if (x_g > 0)
+		{
+			x_acceleration = x_g - x_gravity;
+		}
+	
+		if (x_g < 0)
+		{
+			x_acceleration = x_g + x_gravity;
+		}
 	}
-	x_acceleration = x_g - x_gravity;
-	y_acceleration = y_g - y_gravity;
-	z_acceleration = z_g - z_gravity;
+	
+	else
+	{
+		if (x_g > 0)
+		{
+			x_acceleration = x_g + x_gravity;
+		}
+		if (x_g < 0)
+		{
+			x_acceleration = x_g - x_gravity;
+		}
+	}
+	
+	if (y_gravity > 0)
+	{
+		if (y_g > 0)
+		{
+			y_acceleration = y_g - y_gravity;
+		}
+		if (y_g < 0)
+		{
+			y_acceleration = y_g + y_gravity;
+		}
+	}
+	
+	else
+	{
+		if (y_g > 0)
+		{
+			y_acceleration = y_g + y_gravity;
+		}
+		
+		if (y_g < 0)
+		{
+			y_acceleration = y_g - y_gravity;
+		}
+	}
+	
+	if (z_gravity > 0)
+	{
+		if (z_g > 0)
+		{
+			z_acceleration = z_g - z_gravity;
+		}
+		if (z_g < 0)
+		{
+			z_acceleration = z_g + z_gravity;
+		}
+	}
+	else
+	{
+		if (z_g > 0)
+		{
+			z_acceleration = z_g + z_gravity;
+		}
+		
+		if (z_g < 0)
+		{
+			z_acceleration = z_g - z_gravity;
+		}
+	}
 }
 
 
