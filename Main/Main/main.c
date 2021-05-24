@@ -9,6 +9,12 @@ Remember to add proper comments and explanations when you make changes.
 // Definitions
 #define F_CPU 16000000UL
 
+#define GRABBER_LENGTH 75
+#define ARM_LENGTH     110
+#define BODY_LENGTH    110
+
+#define SWING_TIME 1000
+
 // Imports
 #include <avr/io.h>
 #include <avr/interrupt.h>
