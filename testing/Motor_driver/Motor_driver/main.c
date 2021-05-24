@@ -24,6 +24,7 @@ void grabber_open(unsigned char);
 void grabber_close(unsigned char);
 int joint30_rps_spe(float);
 int conv_j30(double);
+void rotatebigMotor(int motor_id, int degrees, int timeInterval);
 
 int main(void)
 {
@@ -206,4 +207,13 @@ int conv_j30(double x){
 		return (int)(-7930*x+4090);
 	}
 	return 0;
+}
+void rotatebigMotor(int motor_id, int degrees, int timeInterval){
+	
+	int rps
+	
+	rps = degrees/360/timeInterval
+	
+	control_motor(motor_id, conv_j30(rps));
+	
 }
