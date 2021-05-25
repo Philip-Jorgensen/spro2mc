@@ -138,7 +138,7 @@ void c_brachiation(int barDistance)
 
 	//We calculate the angle that the elbows have to rotate using maffs
 
-	angleOfRotation = inversine((barDistance - BODY_LENGTH) / 2 / ARM_LENGTH);
+	angleOfRotation = asin((barDistance - BODY_LENGTH) / 2 / ARM_LENGTH);
 
 	//We either swing the "arms" or the "legs"
 
@@ -149,7 +149,7 @@ void c_brachiation(int barDistance)
 		openGrabbers(GClaws, millis);
 
 		rotatebigMotor(GELBOWS, angleOfRotation, SWING_TIME);
-		rotatebigMotor(GSHOULDERS, angleOfRotation / 2, SWING_TIME);
+		rotatebigMotor(GSHOULDERS, angleOfRotation, SWING_TIME);
 		rotatebigMotor(PELBOWS, angleOfRotation, SWING_TIME);
 		rotatebigMotor(PSHOULDERS, angleOfRotation / 2, SWING_TIME);
 
