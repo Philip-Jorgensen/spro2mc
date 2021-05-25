@@ -40,6 +40,7 @@ int BarDetected();
 
 double detectBarGrabbers (void);
 double readUltrasonic    (unsigned int);
+void distancesToBar(double,double , double*, double*);
 double readAcceleration  (char);
 
 struct Motors {
