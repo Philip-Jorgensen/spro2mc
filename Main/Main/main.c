@@ -9,9 +9,9 @@ Remember to add proper comments and explanations when you make changes.
 // Definitions
 #define F_CPU 16000000UL
 
-#define GRABBER_LENGTH 75
-#define ARM_LENGTH     110
-#define BODY_LENGTH    110
+#define GRABBER_LENGTH 75  //distance between bar and grabber joint
+#define ARM_LENGTH     110 //distance between joints on each arm segment
+#define BODY_LENGTH    110 //distance between shoulder joints on body
 
 #define SWING_TIME 1000
 
@@ -44,15 +44,15 @@ int BarDetected();
 
 double detectBarGrabbers (void);
 double readUltrasonic    (unsigned int);
-double readAcceleration   (char);
+double readAcceleration  (char);
 
 struct Motors {
 	//motor ids for the equivalent motors in the simulation
-	
+
 	unsigned char G_Grabbers  = M1;
 	unsigned char G_Elbows    = M2;
 	unsigned char G_Shoulders = M3;
-	
+
 	unsigned char P_Elbows	  = M4;
 	unsigned char P_Shoulders = M5;
 	unsigned char P_Grabbers  = M6;
@@ -65,42 +65,42 @@ volatile int i=0;				 //used for identifying edge type
 volatile unsigned long millis = 0;
 
 int main(void){
-	
+
 	uart_init(); // Open the communication to the micro controller
 	i2c_init(); // Initialize the i2c communication.
 	io_redirect(); // Redirect the input/output to the computer.
-	
+
 	//SENSOR and INTERRUPT setup
 	DDRB = 0x00;
 	DDRD=0xFB;//set PD2 input, rest as output
 	double distance=0;//distance measured
 	unsigned long counter=0;//used with printfs to avoid delay
 	unsigned long lstC=0;//used with printfs to avoid delay
-	
+
 	//for ultrasonic
 	EICRA |= 1<<ISC00;//set INT0(PD2) to trigger on any logic change
 	EIMSK |=1<<INT0;//turn on interrupt
-	
+
 	//for 1ms counter
 	TCCR0A|=(1<<WGM01);//set timer to ctc
 	OCR0A=0xF9;//set value to count to
 	TIMSK0|=(1<<OCIE0A);//enable interrupt for on compare a for timer 0
-	
+
 	sei();//enable global interrups
 	TCCR0B|=(1<<CS01)|(1<<CS00);//set prescaler to 64
 	PORTD|=1<<PIND4;//trig pin output to ultrasonic, set PD4 high
 	_delay_us(10);//needs 10us pulse to start
 	PORTD&=~(1<<PIND4);//set PD4 to low
-	
+
 	//---------------------------------------------------
-	
+
 	struct Motors motors;
-	
+
 	// Make sure all the motors are stopped from the beginning (Initialization)
 	motor_init_pwm(PWM_FREQUENCY_1500);
-	
+
 	printf("Adafruit 1438\n");
-	
+
 	// M1,..,M4 are ports on the "Adafruit 1438"
 	motor_set_state(M1, STOP);
 	motor_set_state(M2, STOP);
@@ -109,15 +109,15 @@ int main(void){
 	motor_set_state(M5, STOP);
 	motor_set_state(M6, STOP);
 	motor_set_state(M7, STOP);
-	
+
 	millis = 0;
-	
+
     while(1){
-		
+
 		//Frederik's code (time-based motion)
 		/*
 		//start with the movement
-		
+
 		moveMotor(motors.G_Elbow_L,-1,700,millis);// move the left green elbow motor counterclockwise with signal of 1 for 500ms
 		moveMotor(motors.GR_Elbow_R,-1,700,millis);
 		if(millis>1500)
@@ -135,17 +135,17 @@ int main(void){
 			closeGrabbers(motors.PR_Grabber,millis);
 		}
 		//now the green grabbers should be on the second bar and the purple grabbers on the first bar
-		
+
 		*/
-		
+
 		//New code (angle-based motion which also relies a bit on time)
-		
+
 		start_c_brachiation();
 		c_brachiation(135);
 		c_brachiation(135);
 		c_brachiation(231);
 		c_brachiation(231);
-		
+
 		start_r_brachiation();
 		r_brachiation(406);
 		r_brachiation(406);
@@ -156,7 +156,7 @@ int main(void){
 ISR(INT0_vect){//interrupt routine for ultrasonic sensor
 	if(i==0)// low to high
 	{
-		
+
 		TCCR1B |= (1<<CS10);//start timer 1 (16bits) with no prescaler
 		i = 1;
 	}
