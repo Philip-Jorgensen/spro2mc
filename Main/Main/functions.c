@@ -1,55 +1,55 @@
-// Include libraries here
+// Libraries
+
 #include "functions.h"
 #include <util/delay.h>
 #include "PCA9685_ext.h"
 
-// Function definitions below.
-void closeGrabbers(unsigned char motor_id, unsigned long millis)
-{
+// Function definitions
 
-	//Reset and start counter
+void closeGrabbers(unsigned char motor_id, unsigned long millis){
+	
+	static unsigned int timestamp = 0;
 
-	pushSolenoid();
-
-	if (generic_counter == startTime)
-	{
-		control_motor(motor_id, -1);
+	unlockGrabbers();
+	
+	switch (millis - timestamp){
+		case (10):
+			control_motor(motor_id,-1);
+			break;
+		case (140):
+			control_motor(motor_id, 1);
+			break;
+		case (160):
+			control_motor(motor_id, 0);
+			timestamp = millis;
+			break;
 	}
-
-	// Tries to stop the motor fast by making it go in reverse shortly and then stop.
-	if (generic_counter == closeTime)
-	{
-		control_motor(motor_id, 1);
-	}
-
-	// Stops the motor
-	if (generic_counter == closeTime + 10)
-	{
-		control_motor(motor_id, 0);
-	}
+	
+	lockGrabbers();
 
 	//PORTD|=1<<PIND4;//lock grabbers
 }
-void openGrabbers(unsigned char motor_id, unsigned long millis)
-{
-	pullSolenoid();
-	//unlock the solenoid.
+
+void openGrabbers(unsigned char motor_id, unsigned long millis){
+	
 	static unsigned int timestamp = 0;
-	switch (millis - timestamp)
-	{
+	
+	unlockGrabbers();
+
+	switch (millis - timestamp){
 	case (10):
 		control_motor(motor_id, 1);
 		break;
 	case (140):
-		control_motor(motor_id, -1);
+		control_motor(motor_id,-1);
 		break;
 	case (160):
 		control_motor(motor_id, 0);
 		timestamp = millis;
 		break;
 	}
-
-	// Locking the solenoid still needs to be added
+	
+	lockGrabbers();
 }
 double distanceBarGrabbers()
 {
