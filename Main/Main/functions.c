@@ -59,17 +59,6 @@ double distanceBarGrabbers()
 }
 
 // Only moves the motor for a given time, 'time_on', and then stops the motor again.
-<<<<<<< HEAD
-void moveMotor(unsigned char motor_id, int on_value, int time_on, unsigned long millis){
-	
-	static unsigned int timestamp=0;
-	
-	control_motor(motor_id, on_value);
-	
-	if(millis-timestamp>time_on){
-		timestamp=millis;
-		motor_set_pwm(motor_id,0,0);
-=======
 void moveMotor(unsigned char motor_id, int on_value, int time_on, unsigned long millis)
 {
 
@@ -87,7 +76,6 @@ void moveMotor(unsigned char motor_id, int on_value, int time_on, unsigned long 
 		timestamp = millis;
 		motor_set_pwm(motor_id, 0, 0);
 		motionInProcess = 0;
->>>>>>> f395a819eb6c642af1e26ed2213dc65488362959
 	}
 }
 
@@ -110,12 +98,8 @@ double readUltrasonic(unsigned int pulse)
 	distance = ((double)pulse) * 0.0000000625 * 342.2 / 2; //pulse*time for one tick (1/16mhz)*speed of sound(20C)/2
 	return distance;
 }
-<<<<<<< HEAD
-double readAcceleration(char axis){//axis is 'y'or'x'or'z'
-=======
 double readAccleration(char axis)
 { //axis is 'y'or'x'or'z'
->>>>>>> f395a819eb6c642af1e26ed2213dc65488362959
 	double acceleration;
 	if (axis == 'x')
 	{
@@ -153,13 +137,6 @@ void c_brachiation(int barDistance)
 	int grabBar = SWING_TIME - 40;
 
 	//We calculate the angle that the elbows have to rotate using maffs
-<<<<<<< HEAD
-	
-	angleOfRotation = asin((barDistance - BODY_LENGTH)/2/ARM_LENGTH);
-	
-	//We either swing the "arms" or the "legs"
-=======
->>>>>>> f395a819eb6c642af1e26ed2213dc65488362959
 
 	angleOfRotation = inversine((barDistance - BODY_LENGTH) / 2 / ARM_LENGTH);
 
@@ -170,15 +147,6 @@ void c_brachiation(int barDistance)
 	if (readPSensor(0) == 1)
 	{
 		openGrabbers(GClaws, millis);
-<<<<<<< HEAD
-		
-		rotateJMotor(GELBOWS,    angleOfRotation, SWING_TIME);
-		rotateJMotor(GSHOULDERS, angleOfRotation, SWING_TIME);
-		rotateJMotor(PELBOWS,    angleOfRotation, SWING_TIME);
-		rotateJMotor(PSHOULDERS, angleOfRotation, SWING_TIME);
-		
-		if(generic_counter > grabBar){
-=======
 
 		rotatebigMotor(GELBOWS, angleOfRotation, SWING_TIME);
 		rotatebigMotor(GSHOULDERS, angleOfRotation / 2, SWING_TIME);
@@ -187,7 +155,6 @@ void c_brachiation(int barDistance)
 
 		if (generic_counter > grabBar)
 		{
->>>>>>> f395a819eb6c642af1e26ed2213dc65488362959
 			closeGrabbers(GClaws, millis);
 		}
 	}
@@ -195,15 +162,6 @@ void c_brachiation(int barDistance)
 	if (readPSensor(2) == 1)
 	{
 		openGrabbers(PClaws, millis);
-<<<<<<< HEAD
-				
-		rotateJMotor(PELBOWS,    angleOfRotation, SWING_TIME);
-		rotateJMotor(PSHOULDERS, angleOfRotation, SWING_TIME);
-		rotateJMotor(GELBOWS,    angleOfRotation, SWING_TIME);
-		rotateJMotor(GSHOULDERS, angleOfRotation, SWING_TIME);
-		
-		if(generic_counter > grabBar){
-=======
 
 		rotatebigMotor(PELBOWS, angleOfRotation, SWING_TIME);
 		rotatebigMotor(PSHOULDERS, angleOfRotation / 2, SWING_TIME);
@@ -212,7 +170,6 @@ void c_brachiation(int barDistance)
 
 		if (generic_counter > grabBar)
 		{
->>>>>>> f395a819eb6c642af1e26ed2213dc65488362959
 			closeGrabbers(PClaws, millis);
 		}
 	}
@@ -223,14 +180,9 @@ void r_brachiation()
 }
 
 //very rough; change the variable names if you want to
-<<<<<<< HEAD
-void rotateJMotor(unsigned char motor_id, int degrees, int timeInterval){
-	
-=======
 void rotatebigMotor(int motor_id, int degrees, int timeInterval)
 {
 
->>>>>>> f395a819eb6c642af1e26ed2213dc65488362959
 	int rps;
 	rps = degrees / 360 / timeInterval;
 
