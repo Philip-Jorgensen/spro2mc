@@ -27,33 +27,42 @@ Remember to add proper comments and explanations when you make changes.
 #include "functions.h"
 
 // Function Prototypes
-void closeGrabbers(unsigned char,unsigned long);
-void openGrabbers(unsigned char,unsigned long);
-void control_motor(unsigned char, int);
-double detectBarGrabbers();
-double readUltrasonic(unsigned int);
-void moveMotor(unsigned char, int, int,unsigned long);
-double readAccleration(char);
+
+void control_motor (unsigned char, int);
+void moveMotor	   (unsigned char, int, int, unsigned long);
+void rotateJMotor  (unsigned char, int, int);
+void openGrabbers  (unsigned char,unsigned long);
+void closeGrabbers (unsigned char,unsigned long);
+
+void start_c_brachiation  (void);
+void c_brachiation        (int);
+void start_r_brachiation  (void);
+void r_brachiation        (int);
+void finish_r_brachiation (void);
+
 int BarDetected();
 
-struct Motors 
-{
-	unsigned char GR_Elbow_L;//motor ids for the equivalent motors in the simulation
-	unsigned char PR_Elbow_L;
-	unsigned char GR_Shoulder_L;
-	unsigned char PR_Shoulder_L;
-	unsigned char GR_Grabber;
-	unsigned char PR_Grabber;
-	unsigned char GR_Elbow_R;
-	unsigned char PR_Elbow_R;
-	unsigned char GR_Shoulder_R;
-	unsigned char PR_Shoulder_R;
-};
-//For ultrasonic
-volatile unsigned int pulse=0;//time echo pin signal is high
-volatile int i=0;//used for identifying edge type
+double detectBarGrabbers (void);
+double readUltrasonic    (unsigned int);
+double readAcceleration   (char);
 
-volatile unsigned long millis=0;
+struct Motors {
+	//motor ids for the equivalent motors in the simulation
+	
+	unsigned char G_Grabbers  = M1;
+	unsigned char G_Elbows    = M2;
+	unsigned char G_Shoulders = M3;
+	
+	unsigned char P_Elbows	  = M4;
+	unsigned char P_Shoulders = M5;
+	unsigned char P_Grabbers  = M6;
+};
+
+//For ultrasonic
+volatile unsigned int pulse = 0; //time echo pin signal is high
+volatile int i=0;				 //used for identifying edge type
+
+volatile unsigned long millis = 0;
 
 int main(void){
 	
@@ -101,29 +110,49 @@ int main(void){
 	motor_set_state(M6, STOP);
 	motor_set_state(M7, STOP);
 	
-	 millis=0;
-  while(1){
-    //start with the movement
-	moveMotor(motors.GR_Elbow_L,-1,700,millis);// move the left green elbow motor counterclockwise with signal of 1 for 500ms
-	moveMotor(motors.GR_Elbow_R,-1,700,millis);
-	if(millis>1500)
-		openGrabbers(motors.GR_Grabber,millis);
-	if(millis>2000){
-		moveMotor(motors.GR_Elbow_L,1,200,millis);
-		moveMotor(motors.GR_Elbow_R,1,200,millis);
-	if (millis>2300){
-		moveMotor(motors.PR_Shoulder_L,-1,300,millis);//example move the left green elbow motor counterclockwise with signal of 1 for 500ms
-		moveMotor(motors.PR_Shoulder_R,-1,300,millis);
-		moveMotor(motors.GR_Shoulder_L,-1,300,millis);//example move the left green elbow motor counterclockwise with signal of 1 for 500ms
-		moveMotor(motors.GR_Shoulder_R,-1,300,millis);
-	}
-	if (detectBarGrabbers())
-		closeGrabbers(motors.PR_Grabber,millis);
-	}
-	//now the green grabbers should be on the second bar and the purple grabbers on the first bar
+	millis = 0;
 	
-  }
+    while(1){
+		
+		//Frederik's code (time-based motion)
+		/*
+		//start with the movement
+		
+		moveMotor(motors.G_Elbow_L,-1,700,millis);// move the left green elbow motor counterclockwise with signal of 1 for 500ms
+		moveMotor(motors.GR_Elbow_R,-1,700,millis);
+		if(millis>1500)
+			openGrabbers(motors.GR_Grabber,millis);
+		if(millis>2000){
+			moveMotor(motors.G_Elbow_L,1,200,millis);
+			moveMotor(motors.GR_Elbow_R,1,200,millis);
+		if (millis>2300){
+			moveMotor(motors.PR_Shoulder_L,-1,300,millis);//example move the left green elbow motor counterclockwise with signal of 1 for 500ms
+			moveMotor(motors.PR_Shoulder_R,-1,300,millis);
+			moveMotor(motors.GR_Shoulder_L,-1,300,millis);//example move the left green elbow motor counterclockwise with signal of 1 for 500ms
+			moveMotor(motors.GR_Shoulder_R,-1,300,millis);
+		}
+		if (detectBarGrabbers())
+			closeGrabbers(motors.PR_Grabber,millis);
+		}
+		//now the green grabbers should be on the second bar and the purple grabbers on the first bar
+		
+		*/
+		
+		//New code (angle-based motion which also relies a bit on time)
+		
+		start_c_brachiation();
+		c_brachiation(135);
+		c_brachiation(135);
+		c_brachiation(231);
+		c_brachiation(231);
+		
+		start_r_brachiation();
+		r_brachiation(406);
+		r_brachiation(406);
+		finish_r_brachiation()
+	}
 }
+
 ISR(INT0_vect){//interrupt routine for ultrasonic sensor
 	if(i==0)// low to high
 	{
