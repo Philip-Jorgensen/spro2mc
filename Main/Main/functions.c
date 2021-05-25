@@ -164,9 +164,9 @@ void c_brachiation(int barDistance)
 		openGrabbers(PClaws, millis);
 
 		rotatebigMotor(PELBOWS, angleOfRotation, SWING_TIME);
-		rotatebigMotor(PSHOULDERS, angleOfRotation / 2, SWING_TIME);
+		rotatebigMotor(PSHOULDERS, angleOfRotation, SWING_TIME);
 		rotatebigMotor(GELBOWS, angleOfRotation, SWING_TIME);
-		rotatebigMotor(GSHOULDERS, angleOfRotation / 2, SWING_TIME);
+		rotatebigMotor(GSHOULDERS, angleOfRotation, SWING_TIME);
 
 		if (generic_counter > grabBar)
 		{
