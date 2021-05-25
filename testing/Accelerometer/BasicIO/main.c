@@ -88,24 +88,24 @@ int main(void)
 		 z_g = ((float) z_val) / SENSITIVITY_2G; //Calculating the z-axis acceleration
 		 
 		 // ***Printing the x-axis angle/acceleration***
-		 LCD_set_cursor(0,0); printf("X:%6.2f [Deg]", x_angle);  // X ANGLE
+		 //LCD_set_cursor(0,0); printf("X:%6.2f [Deg]", x_angle);  // X ANGLE
 		 //LCD_set_cursor(0,3); printf("X:%f g", x_g);  // X ACC
 		 //LCD_set_cursor(0,0); printf("%7d", x_val);
 		 //LCD_set_cursor(0,0); printf("%f", x_val_float);
 
 		 // ***Printing the y-axis angle/acceleration***
-		 LCD_set_cursor(0,1); printf("Y:%6.2f [Deg]", y_angle); // Y ANGLE
-		 //LCD_set_cursor(0,3); printf("Y:%f g", y_g);  // Y ACC
+		 //LCD_set_cursor(0,1); printf("Y:%6.2f [Deg]", y_angle); // Y ANGLE
+		 //LCD_set_cursor(0,2); printf("Y:%f g", y_g);  // Y ACC
 		 //LCD_set_cursor(0,1); printf("%d", y_val);
 		 //LCD_set_cursor(0,1); printf("%f", y_val_float);
 		 
 		 // ***Printing the z-axis angle/acceleration***
-		 LCD_set_cursor(0,2); printf("Z:%6.2f [Deg]", z_angle); // Z ANGLE
-		 LCD_set_cursor(0,3); printf("Z:%f g", z_g);  // Z ACC
+		 LCD_set_cursor(0,3); printf("Z:%6.2f [Deg]", z_angle); // Z ANGLE
+		 LCD_set_cursor(0,2); printf("Z:%f g", z_g);  // Z ACC
 		 //LCD_set_cursor(0,2); printf("%7d", z_val);
 		 
 		 // ***Cycle counting***
-		 //LCD_set_cursor(0,0); printf("%7d", iterations);
+		 //LCD_set_cursor(0,3); printf("%7d", iterations);
 		 
 		 // ***Printing the detected orientation***
 		 //LCD_set_cursor(0,3); printf("%d",orientation);
@@ -122,8 +122,8 @@ int main(void)
 		 //LCD_set_cursor(0,2); printf("Z: %f", Z_Coordinate);
 		 
 		 // Printing acceleration minus gravity
-		 //LCD_set_cursor(0,0); printf("%f", x_acceleration);
-		 //LCD_set_cursor(0,1); printf("%f", y_acceleration);
+		 LCD_set_cursor(0,0); printf("%f", x_acceleration);
+		 LCD_set_cursor(0,1); printf("%f", y_acceleration);
 		 //LCD_set_cursor(0,2); printf("%f", z_acceleration);
 	 }
 }
@@ -192,7 +192,6 @@ void Gravity(void)
 	
 	x_gravity = sin(x_angle*temp);
 	y_gravity = sin(y_angle*temp);
-	z_gravity = sin(z_angle*temp);
 	
 	if (x_g > 0)
 	{
@@ -262,42 +261,6 @@ void Gravity(void)
 			}
 		}
 	}
-	if (z_g > 0)
-	{
-		if (z_gravity > 0)
-		{
-			if (((z_gravity - z_g) < 0.1) && ((z_gravity - z_g) > -0.1))
-			{
-				z_gravity = z_g;
-			}
-		}
-		if (z_gravity < 0)
-		{
-			if (((z_gravity + z_g) < 0.1) && ((z_gravity + z_g) > -0.1))
-			{
-				z_gravity = z_g;
-			}
-		}
-	}
-	
-	if (z_g < 0)
-	{
-		if (z_gravity > 0)
-		{
-			if (((z_gravity + z_g) < 0.1) && ((z_gravity + z_g) > -0.1))
-			{
-				z_gravity = z_g;
-			}
-		}
-		if (z_gravity < 0)
-		{
-			if (((z_gravity - z_g) < 0.1) && ((z_gravity - z_g) > -0.1))
-			{
-				z_gravity = z_g;
-			}
-		}
-	}
-	
 	
 	if (x_gravity > 0)
 	{
@@ -348,30 +311,6 @@ void Gravity(void)
 			y_acceleration = y_g - y_gravity;
 		}
 	}
-	
-	if (z_gravity > 0)
-	{
-		if (z_g > 0)
-		{
-			z_acceleration = z_g - z_gravity;
-		}
-		if (z_g < 0)
-		{
-			z_acceleration = z_g + z_gravity;
-		}
-	}
-	else
-	{
-		if (z_g > 0)
-		{
-			z_acceleration = z_g + z_gravity;
-		}
-		
-		if (z_g < 0)
-		{
-			z_acceleration = z_g - z_gravity;
-		}
-	}
 }
 
 
@@ -384,7 +323,7 @@ void getPosition(void)
 	
 	X_Coordinate = X_Coordinate + (0.5*x_acceleration*0.0064);
 	Y_Coordinate = Y_Coordinate + (0.5*y_acceleration*0.0064);
-	Z_Coordinate = Z_Coordinate + (0.5*z_acceleration*0.0064);
+	//Z_Coordinate = Z_Coordinate + (0.5*z_acceleration*0.0064);
 }
 
 //Old unused functions, ignore them
