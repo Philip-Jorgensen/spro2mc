@@ -5,23 +5,30 @@
 
 // Function definitions below.
 void closeGrabbers(unsigned char motor_id, unsigned long millis){
-	// Unlock the solenoid.
-	// code.
 	
-	//rotate grabbers
-	control_motor(motor_id, -1);
-	_delay_ms(130);
+	//Reset and start counter
+	
+	pushSolenoid();
+	
+	if(generic_counter == startTime){
+		control_motor(motor_id, -1);
+	}
+	
 	// Tries to stop the motor fast by making it go in reverse shortly and then stop.
-	control_motor(motor_id, 1); 
-	_delay_ms(20);
-	control_motor(motor_id, 0); // Stops the motor
+	if(generic_counter == closeTime){
+		control_motor(motor_id, 1); 
+	}
 	
-	_delay_ms(10);
-	// The code for locking the grabbers with the solenoid.
+	// Stops the motor
+	if(generic_counter == closeTime+10){
+		control_motor(motor_id, 0);
+	}
+	
+	
 	//PORTD|=1<<PIND4;//lock grabbers
-	
 }
 void openGrabbers(unsigned char motor_id, unsigned long millis){
+	pullSolenoid();
 	//unlock the solenoid.
 	static unsigned int timestamp=0;
 	switch(millis-timestamp){
@@ -47,13 +54,22 @@ double distanceBarGrabbers(){
 
 // Only moves the motor for a given time, 'time_on', and then stops the motor again.
 void moveMotor(unsigned char motor_id, int on_value, int time_on, unsigned long millis){
+	
 	static unsigned int timestamp=0;
-	 control_motor(motor_id, on_value);
-	 if(millis-timestamp>time_on){
+	int motionInProcess = 0;
+	
+	if(motionInProcess == 0){
+		control_motor(motor_id, on_value);
+		motionInProcess = 1;
+	}
+	
+	if(millis-timestamp>time_on){
 		timestamp=millis;
 		motor_set_pwm(motor_id,0,0);
-	 }
+		motionInProcess = 0;
+	}
 }
+
 void control_motor(unsigned char motor_id, int on_value){
 	if(on_value>=0){ // If the run value (speed?) is greater than 0, make it run clockwise.
 		motor_set_state(motor_id,CW);
@@ -99,7 +115,46 @@ int conv_j30(double rps){
 }
 
 
-void c_brachiation(){
+void c_brachiation(int barDistance){
+	
+	float angleOfRotation;
+	int grabBar = SWING_TIME - 40;
+	
+	//We calculate the angle that the elbows have to rotate using maffs
+	
+	angleOfRotation = inversine((barDistance - BODY_LENGTH)/2/ARM_LENGTH);
+	
+	//We either swing the "arms" or the "legs"
+
+
+	//Start counter
+
+
+	if(readPSensor(0) == 1){
+		openGrabbers(GClaws, millis);
+		
+		rotatebigMotor(GELBOWS,    angleOfRotation, SWING_TIME);
+		rotatebigMotor(GSHOULDERS, angleOfRotation/2, SWING_TIME);
+		rotatebigMotor(PELBOWS,    angleOfRotation, SWING_TIME);
+		rotatebigMotor(PSHOULDERS, angleOfRotation/2, SWING_TIME);
+		
+		if(generic_counter > grabBar){
+			closeGrabbers(GClaws, millis);
+		}
+	}
+	
+	if(readPSensor(2) == 1){
+		openGrabbers(PClaws, millis);
+				
+		rotatebigMotor(PELBOWS,    angleOfRotation, SWING_TIME);
+		rotatebigMotor(PSHOULDERS, angleOfRotation/2, SWING_TIME);
+		rotatebigMotor(GELBOWS,    angleOfRotation, SWING_TIME);
+		rotatebigMotor(GSHOULDERS, angleOfRotation/2, SWING_TIME);
+		
+		if(generic_counter > grabBar){
+			closeGrabbers(PClaws, millis);
+		}
+	}
 }
 
 void r_brachiation(){
@@ -108,10 +163,9 @@ void r_brachiation(){
 //very rough; change the variable names if you want to
 void rotatebigMotor(int motor_id, int degrees, int timeInterval){
 	
-	int rps
+	int rps;
 	
 	rps = degrees/360/timeInterval
 	
 	moveMotor(motor_id, conv_j30(rps), timeInterval, millis);
-	
 }
