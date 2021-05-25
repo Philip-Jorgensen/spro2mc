@@ -7,6 +7,7 @@ Remember to add proper comments and explanations when you make changes.
 */
 
 // Definitions
+
 #define F_CPU 16000000UL
 
 #define GRABBER_LENGTH 75
@@ -16,6 +17,7 @@ Remember to add proper comments and explanations when you make changes.
 #define SWING_TIME 1000
 
 // Imports
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
@@ -44,10 +46,11 @@ int BarDetected();
 
 double detectBarGrabbers (void);
 double readUltrasonic    (unsigned int);
-double readAcceleration   (char);
+double readAcceleration  (char);
 
 struct Motors {
-	//motor ids for the equivalent motors in the simulation
+
+	// Motor IDs
 	
 	unsigned char G_Grabbers  = M1;
 	unsigned char G_Elbows    = M2;
@@ -58,50 +61,54 @@ struct Motors {
 	unsigned char P_Grabbers  = M6;
 };
 
-//For ultrasonic
-volatile unsigned int pulse = 0; //time echo pin signal is high
-volatile int i=0;				 //used for identifying edge type
+// ULTRASONIC SENSOR setup #1
+volatile unsigned int pulse = 0; // time echo pin signal is high
+volatile int i = 0;				 // used for identifying edge type
 
 volatile unsigned long millis = 0;
 
 int main(void){
 	
-	uart_init(); // Open the communication to the micro controller
-	i2c_init(); // Initialize the i2c communication.
-	io_redirect(); // Redirect the input/output to the computer.
+	uart_init();   // open the communication to the micro controller
+	i2c_init();    // initialize the i2c communication.
+	io_redirect(); // redirect the input/output to the computer.
 	
-	//SENSOR and INTERRUPT setup
+	// --------------------------- SENSOR and INTERRUPT setup ---------------------------
+	
 	DDRB = 0x00;
-	DDRD=0xFB;//set PD2 input, rest as output
-	double distance=0;//distance measured
-	unsigned long counter=0;//used with printfs to avoid delay
-	unsigned long lstC=0;//used with printfs to avoid delay
+	DDRD = 0xFB;			 // set PD2 input, rest as output
 	
-	//for ultrasonic
-	EICRA |= 1<<ISC00;//set INT0(PD2) to trigger on any logic change
-	EIMSK |=1<<INT0;//turn on interrupt
+	double distance=0;		 // distance measured
+	unsigned long counter=0; // used with printfs to avoid delay
+	unsigned long lstC=0;	 // used with printfs to avoid delay
 	
-	//for 1ms counter
-	TCCR0A|=(1<<WGM01);//set timer to ctc
-	OCR0A=0xF9;//set value to count to
-	TIMSK0|=(1<<OCIE0A);//enable interrupt for on compare a for timer 0
+	// ULTRASONIC SENSOR setup #2
+	EICRA |= 1<<ISC00; // set INT0(PD2) to trigger on any logic change
+	EIMSK |=1<<INT0;   // turn on interrupt
 	
-	sei();//enable global interrups
-	TCCR0B|=(1<<CS01)|(1<<CS00);//set prescaler to 64
-	PORTD|=1<<PIND4;//trig pin output to ultrasonic, set PD4 high
-	_delay_us(10);//needs 10us pulse to start
-	PORTD&=~(1<<PIND4);//set PD4 to low
+	// COUNTER (1 ms)
+	TCCR0A|=(1<<WGM01);	 // set timer to ctc
+	OCR0A=0xF9;			 // set value to count to
+	TIMSK0|=(1<<OCIE0A); // enable interrupt for on compare a for timer 0
 	
-	//---------------------------------------------------
+	sei();						 // enable global interrups
+	TCCR0B|=(1<<CS01)|(1<<CS00); // set prescaler to 64
+	PORTD|=1<<PIND4;			 // trig pin output to ultrasonic, set PD4 high
+	_delay_us(10);				 // needs 10us pulse to start
+	PORTD&=~(1<<PIND4);			 // set PD4 to low
+	
+	// --------------------------- MOTORS setup ---------------------------
 	
 	struct Motors motors;
 	
 	// Make sure all the motors are stopped from the beginning (Initialization)
+	
 	motor_init_pwm(PWM_FREQUENCY_1500);
 	
 	printf("Adafruit 1438\n");
 	
 	// M1,..,M4 are ports on the "Adafruit 1438"
+	
 	motor_set_state(M1, STOP);
 	motor_set_state(M2, STOP);
 	motor_set_state(M3, STOP);
@@ -109,6 +116,8 @@ int main(void){
 	motor_set_state(M5, STOP);
 	motor_set_state(M6, STOP);
 	motor_set_state(M7, STOP);
+	
+	// ---------------------------------------------------------------------------------
 	
 	millis = 0;
 	
@@ -153,21 +162,24 @@ int main(void){
 	}
 }
 
-ISR(INT0_vect){//interrupt routine for ultrasonic sensor
-	if(i==0)// low to high
-	{
-		
-		TCCR1B |= (1<<CS10);//start timer 1 (16bits) with no prescaler
+//INTERRUPT ROUTINE for ultrasonic sensor
+
+ISR(INT0_vect){
+	
+	if(i==0){ // low to high
+		TCCR1B |= (1<<CS10); // start timer 1 (16bits) with no prescaler
 		i = 1;
-	}
-	else//high to low
-	{
-		TCCR1B = 0;//stop timer1
-		pulse = TCNT1;//value from timer1
-		TCNT1 = 0;//reset
+	} else { //high to low
+		
+		TCCR1B = 0;     //stop timer1
+		pulse  = TCNT1; //value from timer1
+		TCNT1  = 0;     //reset
 		i = 0;
 	}
 }
+
+//INTERRUPT ROUTINE for the COUNTER (1ms)
+
 ISR(TIMER0_COMPA_vect){
 	millis++;
 }
