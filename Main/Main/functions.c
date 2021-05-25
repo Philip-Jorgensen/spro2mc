@@ -51,38 +51,33 @@ void openGrabbers(unsigned char motor_id, unsigned long millis){
 	
 	lockGrabbers();
 }
-double distanceBarGrabbers()
-{
+
+double distanceBarGrabbers(){
 	double distanceToBar;
 	//read the sensors for the grabbers
 	return distanceToBar;
 }
 
 // Only moves the motor for a given time, 'time_on', and then stops the motor again.
-void moveMotor(unsigned char motor_id, int on_value, int time_on, unsigned long millis)
-{
+void moveMotor(unsigned char motor_id, int on_value, int time_on, unsigned long millis){
 
 	static unsigned int timestamp = 0;
 	int motionInProcess = 0;
 
-	if (motionInProcess == 0)
-	{
+	if (motionInProcess == 0){
 		control_motor(motor_id, on_value);
 		motionInProcess = 1;
 	}
 
-	if (millis - timestamp > time_on)
-	{
+	if (millis - timestamp > time_on){
 		timestamp = millis;
 		motor_set_pwm(motor_id, 0, 0);
 		motionInProcess = 0;
 	}
 }
 
-void control_motor(unsigned char motor_id, int on_value)
-{
-	if (on_value >= 0)
-	{ // If the run value (speed?) is greater than 0, make it run clockwise.
+void control_motor(unsigned char motor_id, int on_value){
+	if (on_value >= 0){ // If the run value (speed?) is greater than 0, make it run clockwise.
 		motor_set_state(motor_id, CW);
 		motor_set_pwm(motor_id, on_value, 0);
 	}
