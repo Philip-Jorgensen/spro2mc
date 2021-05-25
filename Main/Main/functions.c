@@ -98,6 +98,12 @@ double readUltrasonic(unsigned int pulse)
 	distance = ((double)pulse) * 0.0000000625 * 342.2 / 2; //pulse*time for one tick (1/16mhz)*speed of sound(20C)/2
 	return distance;
 }
+void distancesToBar(double distance,double tilt_angle, double *p_ZheightToBar, double *p_XdistanceToBar){
+	double angle=180.0-90.0-tilt_angle;
+	angle*=0.01745;//degrees to radians
+	*p_ZheightToBar=sin(angle)*distance;
+	*p_XdistanceToBar=cos(angle)*distance;
+}
 double readAccleration(char axis)
 { //axis is 'y'or'x'or'z'
 	double acceleration;

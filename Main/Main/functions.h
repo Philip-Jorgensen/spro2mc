@@ -7,6 +7,7 @@ void openGrabbers(unsigned char,unsigned long);
 void control_motor(unsigned char, int);
 double distanceBarGrabbers(void);
 double readUltrasonic(unsigned int);
+void distancesToBar(double ,double, double*, double*);
 void moveMotor(unsigned char, int, int,unsigned long);
 double readAccleration(char);
 int BarDetected(void);
