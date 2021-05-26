@@ -10,6 +10,9 @@ Remember to add proper comments and explanations when you make changes.
 
 #define F_CPU 16000000UL
 
+#define RIGHT 1;
+#define LEFT -1;
+
 // Imports
 
 #include <avr/io.h>
@@ -40,6 +43,7 @@ struct Motors {
 // ULTRASONIC SENSOR setup #1
 volatile unsigned int pulse = 0; // time echo pin signal is high
 volatile int i = 0;				 // used for identifying edge type
+int bar_number = 0;
 
 volatile unsigned long millis = 0;
 
@@ -125,16 +129,34 @@ int main(void){
 		
 		//New code (angle-based motion which also relies a bit on time)
 		
-		start_c_brachiation();
-		c_brachiation(135);
-		c_brachiation(135);
-		c_brachiation(231);
-		c_brachiation(231);
-		
-		start_r_brachiation();
-		r_brachiation(406);
-		r_brachiation(406);
-		finish_r_brachiation()
+		switch(bar_number){
+			case (0):
+			start_c_brachiation();
+			break;
+			case (1):
+			c_brachiation(135, RIGHT, bar_number);
+			break;
+			case (2):
+			c_brachiation(135, RIGHT, bar_number);
+			break;
+			case (3):
+			c_brachiation(231, RIGHT, bar_number);
+			break;
+			case (4):
+			start_r_brachiation();
+			r_brachiation(406);
+			break;
+			case (5):
+			r_brachiation(406);
+			break;
+			case (6):
+			r_brachiation();
+			break;
+			case (7):
+			r_brachiation();
+			finish_r_brachiation()
+			break;																										
+		}
 	}
 }
 

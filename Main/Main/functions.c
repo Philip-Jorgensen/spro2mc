@@ -278,13 +278,14 @@ int rps_to_speedValue(double rps, int motor_type)
 void c_brachiation(int barDistance, int direction, int *bar_number){
 
 	static unsigned int timestamp = millis;
+	int offset = 10;
 
 	float angleOfRotation;
 	float grabbingArms = 1.000, swingingArms = 1.000;
 
 	// We calculate the angle that the elbows have to rotate using maffs
 
-	angleOfRotation = asin((barDistance - SHOULDER_TO_SHOULDER) / 2 / SHOULDER_TO_ELBOW);
+	angleOfRotation = (asin((barDistance - SHOULDER_TO_SHOULDER) / 2 / SHOULDER_TO_ELBOW) + offset) * direction;
 
 	// We have to decide to either swing the "arms" or the "legs"
 
