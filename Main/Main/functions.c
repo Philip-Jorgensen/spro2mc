@@ -320,6 +320,7 @@ void c_brachiation(int barDistance, int direction, int *bar_number){
 }
 
 void r_brachiation(double Zacceleration, double Yacceleration, double tilt_angle)
+void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_velocity, double tilt_angle)//y is the forward axis here
 {
 	static int state = 0;
 	switch (state)
@@ -329,6 +330,10 @@ void r_brachiation(double Zacceleration, double Yacceleration, double tilt_angle
 		moveMotor(GELBOWS, conv_j30(-1), 1000, millis);
 		moveMotor(PELBOWS, conv_j30(-1), 1000, millis);
 		moveMotor(GSHOULDERS, conv_j30(1), 400, millis);
+		openGrabbers(motors.G_Grabbers, millis); //curling body up for first swing
+		moveMotor(motors.G_Elbows, conv_j30(-1), 1000, millis);
+		moveMotor(motors.P_Elbows, conv_j30(-1), 1000, millis);
+		moveMotor(motors.G_Shoulders, conv_j30(1), 400, millis);
 		state = 1;
 
 		break;
@@ -339,11 +344,16 @@ void r_brachiation(double Zacceleration, double Yacceleration, double tilt_angle
 		moveMotor(GSHOULDERS, conv_j30(-2), 500, millis);
 		moveMotor(PSHOULDERS, conv_j30(1.2), 300, millis);
 		if (Yacceleration < 1 && Zacceleration < 1)
+		moveMotor(motors.P_Elbows, conv_j30(1.9), 1000, millis);
+		moveMotor(motors.G_Elbows, conv_j30(2), 200, millis);
+		moveMotor(motors.G_Shoulders, conv_j30(-2), 500, millis);
+		moveMotor(motors.P_Shoulders, conv_j30(1.2), 300, millis);
+		if (Y_acceleration < 1 && Z_acceleration < 1)
 			state = 2;
 
 		break;
 	case 2:
-		if (Zacceleration >= 5 && Yacceleration >= 4)
+		if (Z_acceleration >= 5 && Y_acceleration >= 4 && Y_velocity>=0.8)
 		{ //establishing two thresholds for Z and Y acceleration
 			distancesToBar(readUltrasonic(pulse), tilt_angle, &ZheightToBar, &XdistanceToBar) if (ZheightToBar <= 0.4 && XdistanceToBar <= 0.4)
 				state = 3;
@@ -351,10 +361,10 @@ void r_brachiation(double Zacceleration, double Yacceleration, double tilt_angle
 
 		break;
 	case 3: //Green grabbers on the next bar
-		moveMotor(PELBOWS, conv_j30(-1.2), 150, millis);
-		openGrabbers(GClaws, millis);
+		moveMotor(motors.P_Elbows, conv_j30(-1.2), 150, millis);
+		openGrabbers(motors.G_Grabbers, millis);
 		if (readPsensor())
-			closeGrabbers(GClaws, millis);
+			closeGrabbers(motors.G_Grabbers, millis);
 		state = 4;
 
 		break;
