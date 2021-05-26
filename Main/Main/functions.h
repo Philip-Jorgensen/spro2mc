@@ -9,7 +9,6 @@ void unlockGrabbers		(unsigned char)
 void lockGrabbers		(unsigned char)
 void openGrabbers		(unsigned char, unsigned long);
 void closeGrabbers		(unsigned char, unsigned long);
-void distancesToBar		(double, double, double, double);
 
 void start_c_brachiation  (void);
 void c_brachiation		  (int, int, int*)

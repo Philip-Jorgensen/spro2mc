@@ -7,16 +7,16 @@
 
 // Definitions
 
-#define JOINT_MOTOR 0; // 30RPS Worm gear motor
+#define JOINT_MOTOR 0 // 30RPS Worm gear motor
 
-#define SWING_TIME    1000; // Time between each swing in the continuous brachiation
-#define GRABBERS_TIME  100; // The time it takes for the grabbers to open or close
+#define SWING_TIME    1000 // Time between each swing in the continuous brachiation
+#define GRABBERS_TIME  100 // The time it takes for the grabbers to open or close
 
-#define CENTRE_TO_SHOULDER    40; // Distance in millimetres from the centre of the body to the shoulder
-#define SHOULDER_TO_SHOULDER  80; // Distance in millimetres from shoulder to shoulder
-#define SHOULDER_TO_ELBOW    110; // Distance in millimetres from shoulder to elbow
-#define ELBOW_TO_GRABBER     110; // Distance in millimetres from elbow to grabber
-#define GRABBER_TO_BAR        75; // Distance in millimetres from grabber to bar
+#define CENTRE_TO_SHOULDER    40 // Distance in millimetres from the centre of the body to the shoulder
+#define SHOULDER_TO_SHOULDER  80 // Distance in millimetres from shoulder to shoulder
+#define SHOULDER_TO_ELBOW    110 // Distance in millimetres from shoulder to elbow
+#define ELBOW_TO_GRABBER     110 // Distance in millimetres from elbow to grabber
+#define GRABBER_TO_BAR        75 // Distance in millimetres from grabber to bar
 
 struct Motors {
 
@@ -40,7 +40,7 @@ int readPSensor(unsigned int motor_id)
 	switch (motor_id)
 	{
 	case M1:
-		if (PINC == 0b00000011)
+		if ((PINC&(1<<PINC0))==0||(PINC&(1<<PINC1))==0)
 		{
 			return 1;
 		}
@@ -50,7 +50,7 @@ int readPSensor(unsigned int motor_id)
 		}
 		break;
 	case M6:
-		if (PINC == 0b00001100)
+		if ((PINC&(1<<PINC2))==0||(PINC&(1<<PINC3))==0)
 		{
 			return 1;
 		}
@@ -326,18 +326,18 @@ void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_veloci
 	{
 	case 0:
 		openGrabbers(motors.G_Grabbers, millis); //curling body up for first swing
-		moveMotor(motors.G_Elbows, conv_j30(-1), 1000, millis);
-		moveMotor(motors.P_Elbows, conv_j30(-1), 1000, millis);
-		moveMotor(motors.G_Shoulders, conv_j30(1), 400, millis);
+		timebasedRotation(motors.G_Elbows, conv_j30(-1), 1000, millis);
+		timebasedRotation(motors.P_Elbows, conv_j30(-1), 1000, millis);
+		timebasedRotation(motors.G_Shoulders, conv_j30(1), 400, millis);
 		state = 1;
 
 		break;
 	case 1:
 		//starting swing motion
-		moveMotor(motors.P_Elbows, conv_j30(1.9), 1000, millis);
-		moveMotor(motors.G_Elbows, conv_j30(2), 200, millis);
-		moveMotor(motors.G_Shoulders, conv_j30(-2), 500, millis);
-		moveMotor(motors.P_Shoulders, conv_j30(1.2), 300, millis);
+		timebasedRotation(motors.P_Elbows, conv_j30(1.9), 1000, millis);
+		timebasedRotation(motors.G_Elbows, conv_j30(2), 200, millis);
+		timebasedRotation(motors.G_Shoulders, conv_j30(-2), 500, millis);
+		timebasedRotation(motors.P_Shoulders, conv_j30(1.2), 300, millis);
 		if (Y_acceleration < 1 && Z_acceleration < 1)
 			state = 2;
 
@@ -351,9 +351,9 @@ void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_veloci
 
 		break;
 	case 3: //Green grabbers on the next bar
-		moveMotor(motors.P_Elbows, conv_j30(-1.2), 150, millis);
+		timebasedRotation(motors.P_Elbows, conv_j30(-1.2), 150, millis);
 		openGrabbers(motors.G_Grabbers, millis);
-		if (readPsensor())
+		if (readPSensor())
 			closeGrabbers(motors.G_Grabbers, millis);
 		state = 4;
 
