@@ -4,12 +4,6 @@
 #include <util/delay.h>
 #include "PCA9685_ext.h"
 
-// Definitions
-
-#define JOINT_MOTOR 0; // 30RPS Worm gear motor
-
-#define SWING_TIME 1000; // Time between each swing in the continuous brachiation
-
 // Function definitions
 
 void unlockGrabbers(unsigned char motor_id){
