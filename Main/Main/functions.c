@@ -3,7 +3,7 @@
 #include "functions.h"
 #include <util/delay.h>
 #include "PCA9685_ext.h"
-<<<<<<< HEAD
+#include <avr/io.h>
 
 // Definitions
 
@@ -11,6 +11,12 @@
 
 #define SWING_TIME    1000; // Time between each swing in the continuous brachiation
 #define GRABBERS_TIME  100; // The time it takes for the grabbers to open or close
+
+#define CENTRE_TO_SHOULDER    40; // Distance in millimetres from the centre of the body to the shoulder
+#define SHOULDER_TO_SHOULDER  80; // Distance in millimetres from shoulder to shoulder
+#define SHOULDER_TO_ELBOW    110; // Distance in millimetres from shoulder to elbow
+#define ELBOW_TO_GRABBER     110; // Distance in millimetres from elbow to grabber
+#define GRABBER_TO_BAR        75; // Distance in millimetres from grabber to bar
 
 struct Motors {
 
@@ -24,9 +30,6 @@ struct Motors {
 	unsigned char P_Shoulders = M5;
 	unsigned char P_Grabbers  = M6;
 };
-=======
-#include <avr/io.h>
->>>>>>> 9325505ff2cd408024b6a0459496042ec2223e6c
 
 struct Motors motors;
 
@@ -34,14 +37,14 @@ struct Motors motors;
 
 int readPSensor(unsigned int motor_id){
 	switch(motor_id){
-		case M1:
+		case (1):
 			if(PINC == 0b00000011){
 				return 1;
 			} else {
 				return 0;
 			}
 			break;
-		case M6:
+		case (6):
 			if(PINC == 0b00001100){
 				return 1;
 			} else {
@@ -59,25 +62,14 @@ void unlockGrabbers(unsigned char motor_id){
 	// we need to choose different solenoids (the top ones or bottom ones)
 	
 	switch(motor_id){
-<<<<<<< HEAD
-		case (M1): // Green grabbers
+		case (1): // Green grabbers
 			leftSolenoid  = 0;
 			rightSolenoid = 1;
 			break;
-		case (M6): // Purple Grabbers
+		case (6): // Purple Grabbers
 			leftSolenoid  = 2;
 			rightSolenoid = 3;
 			break;
-=======
-		case (1): // Green grabbers
-		leftSolenoid  = 0;
-		rightSolenoid = 1;
-		break;
-		case (6): // Purple Grabbers
-		leftSolenoid  = 2;
-		rightSolenoid = 3;
-		break;
->>>>>>> 9325505ff2cd408024b6a0459496042ec2223e6c
 	}
 	
 	// To retract the solenoid we set the pin to one (setting)
@@ -260,9 +252,8 @@ int rps_to_speedValue(double rps, int motor_type){
 	
 }
 
-void c_brachiation(int barDistance, int direction, int *bar_progress){
+void c_brachiation(int barDistance, int direction, int *bar_number){
 
-	int grabBar = SWING_TIME - 40;
 	static unsigned int timestamp = millis;
 	
 	float angleOfRotation;
@@ -270,38 +261,38 @@ void c_brachiation(int barDistance, int direction, int *bar_progress){
 
 	// We calculate the angle that the elbows have to rotate using maffs
 
-	angleOfRotation = asin((barDistance - BODY_LENGTH) / 2 / ARM_LENGTH);
+	angleOfRotation = asin((barDistance - SHOULDER_TO_SHOULDER) / 2 / SHOULDER_TO_ELBOW);
 
-	// We either swing the "arms" or the "legs"
+	// We have to decide to either swing the "arms" or the "legs"
 
-	if (bar_progress%2 == 0){ // We swing the arms
+	if (bar_number % 2 == 0){ // If the bar number is even, we swing the arms
 		openGrabbers(motors.G_Grabbers, millis);
 
-		anglebasedRotation(motors.G_Elbows   , angleOfRotation, SWING_TIME, swingingArms);
-		anglebasedRotation(motors.G_Shoulders, angleOfRotation, SWING_TIME, swingingArms);
+		anglebasedRotation(motors.G_Elbows   , angleOfRotation, SWING_TIME, grabbingArms);
+		anglebasedRotation(motors.G_Shoulders, angleOfRotation, SWING_TIME, grabbingArms);
 		anglebasedRotation(motors.P_Elbows   , angleOfRotation, SWING_TIME, swingingArms);
 		anglebasedRotation(motors.P_Shoulders, angleOfRotation, SWING_TIME, swingingArms);
 
-		if(millis - timestamp > SWING_TIME){
+		if(millis - timestamp > SWING_TIME - GRABBERS_TIME){ // We need to begin the closing protocol a little bit before the end of the swing
 			closeGrabbers(motors.G_Grabbers, millis);
 		}
 	}
 
-	if (bar_progress%2 == 1){ // We swing the legs
+	if (bar_number % 2 == 1){ // If the bar number is uneven, we swing the arms
 		openGrabbers(motors.P_Grabbers, millis);
 
-		anglebasedRotation(motors.G_Elbows   , angleOfRotation, SWING_TIME);
-		anglebasedRotation(motors.G_Shoulders, angleOfRotation, SWING_TIME);
-		anglebasedRotation(motors.P_Elbows   , angleOfRotation, SWING_TIME);
-		anglebasedRotation(motors.P_Shoulders, angleOfRotation, SWING_TIME);
+		anglebasedRotation(motors.G_Elbows   , angleOfRotation, SWING_TIME, swingingArms);
+		anglebasedRotation(motors.G_Shoulders, angleOfRotation, SWING_TIME, swingingArms);
+		anglebasedRotation(motors.P_Elbows   , angleOfRotation, SWING_TIME, grabbingArms);
+		anglebasedRotation(motors.P_Shoulders, angleOfRotation, SWING_TIME, grabbingArms);
 
-		if(millis - timestamp > SWING_TIME){{
+		if(millis - timestamp > SWING_TIME- GRABBERS_TIME){ // We need to begin the opening protocol a little bit before the end of the swing
 			closeGrabbers(motors.P_Grabbers, millis);
 		}
 	}
 	
-	if(millis - timestamp > SWING_TIME + GRABBERS_TIME){
-		*bar_progress++;
+	if(millis - timestamp > SWING_TIME + GRABBERS_TIME){ // We have progressed to the next bar
+		*bar_number++;
 	}
 	
 }
