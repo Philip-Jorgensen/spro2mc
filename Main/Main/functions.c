@@ -154,7 +154,7 @@ double readUltrasonic(unsigned int pulse){
 	
 	double distance = 0;
 	
-	distance = ((double)pulse) * 0.0000000625 * 342.2 / 2; // pulse (number of "ticks") * time for one tick (1/16mhz) * speed of sound(20ºC) / 2
+	distance = ((double)pulse) * 0.0000000625 * 342.2 / 2; // pulse (number of "ticks") * time for one tick (1/16mhz) * speed of sound(20ÂºC) / 2
 	
 	return distance;
 	
@@ -189,7 +189,7 @@ double readAccleration(char axis){ //axis is 'y'or'x'or'z'
 }
 
 int rps_to_speedValue(double rps, int motor_type){
-	
+	// This function only works for the 30 RPM Joint motor.
 	// A function for converting rps to the speed value the motor library needs.
 	
 	switch(motor_type){ //The conversion is different depending on what motor we are using
