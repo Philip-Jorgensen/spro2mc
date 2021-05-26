@@ -6,50 +6,96 @@
 
 // Function definitions
 
+void unlockGrabbers(unsigned char motor_id){
+	unsigned char leftSolenoid = 0, rightSolenoid = 0;
+	
+	// Depending on what grabbers we want to close ("green" ones or "purple" ones)
+	// we need to choose different solenoids (the top ones or bottom ones)
+	
+	switch(motor_id){
+		case (M1): // Green grabbers
+		leftSolenoid  = 0;
+		rightSolenoid = 1;
+		break;
+		case (M6): // Purple Grabbers
+		leftSolenoid  = 2;
+		rightSolenoid = 3;
+		break;
+	}
+	
+	// We deactivate the two solenoids, setting their pins to zero
+	
+	PORTD |= (1 << leftSolenoid) | (1 << rightSolenoid);
+}
+
+void lockGrabbers(unsigned char motor_id){
+	unsigned char leftSolenoid = 0, rightSolenoid = 0;
+	
+	// Depending on what grabbers we want to close ("green" ones or "purple" ones)
+	// we need to choose different solenoids (the top ones or bottom ones)
+	
+	switch(motor_id){
+		case (M1): // Green grabbers
+			leftSolenoid  = 0;
+			rightSolenoid = 1;
+			break;
+		case (M6): // Purple Grabbers
+			leftSolenoid  = 2;
+			rightSolenoid = 3;
+			break;
+	}
+	
+	// We activate the two solenoids, setting their pins to one
+	
+	PORTD |= (1 << leftSolenoid) | (1 << rightSolenoid);
+}
+
 void closeGrabbers(unsigned char motor_id, unsigned long millis){
 	
 	static unsigned int timestamp = 0;
 
-	unlockGrabbers();
+	unlockGrabbers(motor_id);
+	
+	// Closing protocol
 	
 	switch (millis - timestamp){
-		case (10):
+		case (10):  // We close the grabbers
 			control_motor(motor_id,-1);
 			break;
-		case (140):
+		case (140): // We counteract the inertia
 			control_motor(motor_id, 1);
 			break;
-		case (160):
+		case (160): // We stop the motors
 			control_motor(motor_id, 0);
 			timestamp = millis;
 			break;
 	}
 	
-	lockGrabbers();
-
-	//PORTD|=1<<PIND4;//lock grabbers
+	lockGrabbers(motor_id);
 }
 
 void openGrabbers(unsigned char motor_id, unsigned long millis){
 	
 	static unsigned int timestamp = 0;
 	
-	unlockGrabbers();
+	unlockGrabbers(motor_id);
+	
+	// Opening protocol
 
 	switch (millis - timestamp){
-	case (10):
+	case (10):  // We open the grabbers
 		control_motor(motor_id, 1);
 		break;
-	case (140):
+	case (140): // We counteract the inertia
 		control_motor(motor_id,-1);
 		break;
-	case (160):
+	case (160): // We stop the motors
 		control_motor(motor_id, 0);
 		timestamp = millis;
 		break;
 	}
 	
-	lockGrabbers();
+	lockGrabbers(motor_id);
 }
 
 double distanceBarGrabbers(){
