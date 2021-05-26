@@ -304,10 +304,10 @@ void c_brachiation(int barDistance, int direction, int *bar_number){
 	if (bar_number % 2 == 1){ // If the bar number is uneven, we swing the arms
 		openGrabbers(motors.P_Grabbers, millis);
 
-		anglebasedRotation(motors.G_Elbows   , angleOfRotation, SWING_TIME, swingingArms);
-		anglebasedRotation(motors.G_Shoulders, angleOfRotation, SWING_TIME, swingingArms);
 		anglebasedRotation(motors.P_Elbows   , angleOfRotation, SWING_TIME, grabbingArms);
 		anglebasedRotation(motors.P_Shoulders, angleOfRotation, SWING_TIME, grabbingArms);
+		anglebasedRotation(motors.G_Elbows   , angleOfRotation, SWING_TIME, swingingArms);
+		anglebasedRotation(motors.G_Shoulders, angleOfRotation, SWING_TIME, swingingArms);
 
 		if(millis - timestamp > SWING_TIME- GRABBERS_TIME){ // We need to begin the opening protocol a little bit before the end of the swing
 			closeGrabbers(motors.P_Grabbers, millis);
