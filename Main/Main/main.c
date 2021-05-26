@@ -10,14 +10,16 @@ Remember to add proper comments and explanations when you make changes.
 
 #define F_CPU 16000000UL
 
-#define RIGHT 1;
-#define LEFT -1;
+#define RIGHT 1
+#define LEFT -1
 
 // Imports
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
+#include <stdint.h>
+
 #include <stdlib.h>
 #include <util/delay.h>
 #include "usart.h"
@@ -27,18 +29,18 @@ Remember to add proper comments and explanations when you make changes.
 
 // Function prototypes are written in "functions.h"
 
-struct Motors {
+typedef struct{
 
 	// Motor IDs
 	
-	unsigned char G_Grabbers  = M1;
-	unsigned char G_Elbows    = M2;
-	unsigned char G_Shoulders = M3;
+	unsigned char G_Grabbers;
+	unsigned char G_Elbows;
+	unsigned char G_Shoulders;
 	
-	unsigned char P_Elbows	  = M4;
-	unsigned char P_Shoulders = M5;
-	unsigned char P_Grabbers  = M6;
-};
+	unsigned char P_Elbows;
+	unsigned char P_Shoulders;
+	unsigned char P_Grabbers;
+}Motors;
 
 // ULTRASONIC SENSOR setup #1
 volatile unsigned int pulse = 0; // time echo pin signal is high
@@ -79,7 +81,7 @@ int main(void){
 	
 	// --------------------------- MOTORS setup ---------------------------
 	
-	struct Motors motors;
+Motors motors={M1,M2,M3,M4,M5,M6};
 	
 	// Make sure all the motors are stopped from the beginning (Initialization)
 	
@@ -131,30 +133,30 @@ int main(void){
 		
 		switch(bar_number){
 			case (0):
-			start_c_brachiation();
+			//start_c_brachiation();
 			break;
 			case (1):
-			c_brachiation(135, RIGHT, bar_number);
+			c_brachiation(135, RIGHT, bar_number,millis);
 			break;
 			case (2):
-			c_brachiation(135, RIGHT, bar_number);
+			c_brachiation(135, RIGHT, bar_number,millis);
 			break;
 			case (3):
-			c_brachiation(231, RIGHT, bar_number);
+			c_brachiation(231, RIGHT, bar_number,millis);
 			break;
 			case (4):
-			start_r_brachiation();
-			r_brachiation(406);
+			//start_r_brachiation();
+			//r_brachiation(406);
 			break;
 			case (5):
-			r_brachiation(406);
+			//r_brachiation(406);
 			break;
 			case (6):
-			r_brachiation();
+			//r_brachiation();
 			break;
 			case (7):
-			r_brachiation();
-			finish_r_brachiation()
+			//r_brachiation();
+			//finish_r_brachiation();
 			break;																										
 		}
 	}

@@ -1,9 +1,17 @@
 // Libraries
-
+#define F_CPU 16000000UL
 #include "functions.h"
-#include <util/delay.h>
 #include "PCA9685_ext.h"
 #include <avr/io.h>
+#include <avr/interrupt.h>
+#include <stdio.h>
+#include <stdint.h>
+#include "math.h"
+#include <stdlib.h>
+#include <util/delay.h>
+#include "usart.h"
+#include "i2cmaster.h"
+
 
 // Definitions
 
@@ -18,20 +26,20 @@
 #define ELBOW_TO_GRABBER     110 // Distance in millimetres from elbow to grabber
 #define GRABBER_TO_BAR        75 // Distance in millimetres from grabber to bar
 
-struct Motors {
+typedef struct{
 
 	// Motor IDs
 	
-	unsigned char G_Grabbers  = M1;
-	unsigned char G_Elbows    = M2;
-	unsigned char G_Shoulders = M3;
+	unsigned char G_Grabbers;
+	unsigned char G_Elbows;
+	unsigned char G_Shoulders;
 	
-	unsigned char P_Elbows	  = M4;
-	unsigned char P_Shoulders = M5;
-	unsigned char P_Grabbers  = M6;
-};
+	unsigned char P_Elbows;
+	unsigned char P_Shoulders;
+	unsigned char P_Grabbers;
+}Motors;
 
-struct Motors motors;
+Motors motors={M1,M2,M3,M4,M5,M6};
 
 // Function definitions
 
@@ -115,7 +123,7 @@ void lockGrabbers(unsigned char motor_id)
 void closeGrabbers(unsigned char motor_id, unsigned long millis)
 {
 
-	static unsigned int timestamp = millis;
+	static unsigned long timestamp = 0;
 
 	unlockGrabbers(motor_id);
 
@@ -141,7 +149,7 @@ void closeGrabbers(unsigned char motor_id, unsigned long millis)
 void openGrabbers(unsigned char motor_id, unsigned long millis)
 {
 
-	static unsigned int timestamp = millis;
+	static unsigned int timestamp = 0;
 
 	unlockGrabbers(motor_id);
 
@@ -164,21 +172,13 @@ void openGrabbers(unsigned char motor_id, unsigned long millis)
 	lockGrabbers(motor_id);
 }
 
-double distanceBarGrabbers()
-{
 
-	double distanceToBar;
-
-	//read the sensors for the grabbers
-
-	return distanceToBar;
-}
 
 // Only moves the motor for a given time, 'time_on', and then stops the motor again.
 void timebasedRotation(unsigned char motor_id, int on_value, int time_on, unsigned long millis)
 {
 
-	static unsigned int timestamp = millis;
+	static unsigned int timestamp = 0;
 
 	// We turn on the motor
 	control_motor(motor_id, on_value);
@@ -275,9 +275,9 @@ int rps_to_speedValue(double rps, int motor_type)
 	}
 }
 
-void c_brachiation(int barDistance, int direction, int *bar_number){
+void c_brachiation(int barDistance, int direction, int *bar_number, unsigned long millis){
 
-	static unsigned int timestamp = millis;
+	static unsigned int timestamp = 0;
 	int offset = 10;
 
 	float angleOfRotation;
@@ -289,26 +289,26 @@ void c_brachiation(int barDistance, int direction, int *bar_number){
 
 	// We have to decide to either swing the "arms" or the "legs"
 
-	if (bar_number % 2 == 0){ // If the bar number is even, we swing the arms
+	if ((*bar_number % 2) == 0){ // If the bar number is even, we swing the arms
 		openGrabbers(motors.G_Grabbers, millis);
 
-		anglebasedRotation(motors.G_Elbows   , angleOfRotation, SWING_TIME, grabbingArms);
-		anglebasedRotation(motors.G_Shoulders, angleOfRotation, SWING_TIME, grabbingArms);
-		anglebasedRotation(motors.P_Elbows   , angleOfRotation, SWING_TIME, swingingArms);
-		anglebasedRotation(motors.P_Shoulders, angleOfRotation, SWING_TIME, swingingArms);
+		anglebasedRotation(motors.G_Elbows   , angleOfRotation, SWING_TIME, grabbingArms, millis);
+		anglebasedRotation(motors.G_Shoulders, angleOfRotation, SWING_TIME, grabbingArms, millis);
+		anglebasedRotation(motors.P_Elbows   , angleOfRotation, SWING_TIME, swingingArms, millis);
+		anglebasedRotation(motors.P_Shoulders, angleOfRotation, SWING_TIME, swingingArms, millis);
 
 		if(millis - timestamp > SWING_TIME - GRABBERS_TIME){ // We need to begin the closing protocol a little bit before the end of the swing
 			closeGrabbers(motors.G_Grabbers, millis);
 		}
 	}
 
-	if (bar_number % 2 == 1){ // If the bar number is uneven, we swing the arms
+	if (*bar_number % 2 == 1){ // If the bar number is uneven, we swing the arms
 		openGrabbers(motors.P_Grabbers, millis);
 
-		anglebasedRotation(motors.P_Elbows   , angleOfRotation, SWING_TIME, grabbingArms);
-		anglebasedRotation(motors.P_Shoulders, angleOfRotation, SWING_TIME, grabbingArms);
-		anglebasedRotation(motors.G_Elbows   , angleOfRotation, SWING_TIME, swingingArms);
-		anglebasedRotation(motors.G_Shoulders, angleOfRotation, SWING_TIME, swingingArms);
+		anglebasedRotation(motors.P_Elbows   , angleOfRotation, SWING_TIME, grabbingArms,millis);
+		anglebasedRotation(motors.P_Shoulders, angleOfRotation, SWING_TIME, grabbingArms,millis);
+		anglebasedRotation(motors.G_Elbows   , angleOfRotation, SWING_TIME, swingingArms,millis);
+		anglebasedRotation(motors.G_Shoulders, angleOfRotation, SWING_TIME, swingingArms,millis);
 
 		if(millis - timestamp > SWING_TIME- GRABBERS_TIME){ // We need to begin the opening protocol a little bit before the end of the swing
 			closeGrabbers(motors.P_Grabbers, millis);
@@ -320,9 +320,11 @@ void c_brachiation(int barDistance, int direction, int *bar_number){
 	}
 }
 
-void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_velocity, double tilt_angle)//y is the forward axis here
+void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_velocity, double tilt_angle, unsigned long millis, unsigned int pulse)//y is the forward axis here
 {
 	static int state = 0;
+	double ZheightToBar;
+	double XdistanceToBar;
 	switch (state)
 	{
 	case 0:
@@ -346,7 +348,8 @@ void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_veloci
 	case 2:
 		if (Z_acceleration >= 5 && Y_acceleration >= 4 && Y_velocity>=0.8)
 		{ //establishing two thresholds for Z and Y acceleration
-			distancesToBar(readUltrasonic(pulse), tilt_angle, &ZheightToBar, &XdistanceToBar) if (ZheightToBar <= 0.4 && XdistanceToBar <= 0.4)
+			distancesToBar(readUltrasonic(pulse), tilt_angle, &ZheightToBar, &XdistanceToBar);
+			 if (ZheightToBar <= 0.4 && XdistanceToBar <= 0.4)
 				state = 3;
 		}
 
@@ -354,7 +357,7 @@ void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_veloci
 	case 3: //Green grabbers on the next bar
 		timebasedRotation(motors.P_Elbows, conv_j30(-1.2), 150, millis);
 		openGrabbers(motors.G_Grabbers, millis);
-		if (readPSensor())
+		if (readPSensor(1))
 			closeGrabbers(motors.G_Grabbers, millis);
 		state = 4;
 
@@ -362,14 +365,14 @@ void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_veloci
 	}
 }
 
-void anglebasedRotation(unsigned char motor_id, int degrees, int time_interval, float coefficient)
+void anglebasedRotation(unsigned char motor_id, int degrees, int time_interval, float coefficient, unsigned long millis)
 {
 
 	int speedValue = 0;
 	float rps = 0;
 
 	rps = degrees / 360 / time_interval;								 // We calculate the rps
-	speedValue = rps_to_speedValue(JOINT_MOTOR, int(rps * coefficient)); // We convert the rps into a speed value
+	speedValue = rps_to_speedValue(JOINT_MOTOR, (int)(rps * coefficient)); // We convert the rps into a speed value
 
 	timebasedRotation(motor_id, speedValue, time_interval, millis);
 }
