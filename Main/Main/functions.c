@@ -132,17 +132,18 @@ void timebasedRotation(unsigned char motor_id, int on_value, int time_on, unsign
 }
 
 void control_motor(unsigned char motor_id, int on_value){
-	
-	if (on_value >= 0){ // If the run value (speed?) is greater than 0, make it run clockwise.
-		motor_set_state(motor_id, CW);
-		motor_set_pwm(motor_id, on_value, 0);
+	if (on_value >= -3800 && on_value <= 3800)
+	{
+		if (on_value >= 0){ // If the run value (speed?) is greater than 0, make it run clockwise.
+			motor_set_state(motor_id, CW);
+			motor_set_pwm(motor_id, on_value, 0);
+		}
+
+		if (on_value < 0){ // If speed is less than 0, make it run counter clockwise.
+			motor_set_state(motor_id, CCW);	
+			motor_set_pwm(motor_id, (-1) * on_value, 0); // Since 'on_value' is below 0, it is multiplied by (-1) to make it positive.
+		}
 	}
-	
-	if (on_value < 0){ // If speed is less than 0, make it run counter clockwise.
-		motor_set_state(motor_id, CCW);	
-		motor_set_pwm(motor_id, (-1) * on_value, 0); // Since 'on_value' is below 0, it is multiplied by (-1) to make it positive.
-	}
-	
 }
 
 double readUltrasonic(unsigned int pulse){
