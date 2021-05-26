@@ -3,6 +3,7 @@
 #include "functions.h"
 #include <util/delay.h>
 #include "PCA9685_ext.h"
+#include <avr/io.h>
 
 // Function definitions
 
@@ -24,7 +25,7 @@ void unlockGrabbers(unsigned char motor_id){
 		break;
 	}
 	
-	// We deactivate the two solenoids, setting their pins to zero
+	// To retract the solenoid we set the pin to one (setting)
 	
 	PORTD |= (1 << leftSolenoid) | (1 << rightSolenoid);
 	
@@ -48,9 +49,9 @@ void lockGrabbers(unsigned char motor_id){
 			break;
 	}
 	
-	// We activate the two solenoids, setting their pins to one
+	// To extend the solenoid we set the pin to zero (clearing)
 	
-	PORTD |= (1 << leftSolenoid) | (1 << rightSolenoid);
+	PORTD &= ~((1 << leftSolenoid) | (1 << rightSolenoid));
 	
 }
 
