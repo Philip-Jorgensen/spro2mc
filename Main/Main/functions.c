@@ -144,6 +144,9 @@ void control_motor(unsigned char motor_id, int on_value){
 			motor_set_pwm(motor_id, (-1) * on_value, 0); // Since 'on_value' is below 0, it is multiplied by (-1) to make it positive.
 		}
 	}
+	else{
+		motor_set_pwm(motor_id, 0, 0);
+	}
 }
 
 double readUltrasonic(unsigned int pulse){
