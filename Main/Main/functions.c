@@ -8,7 +8,20 @@
 
 #define JOINT_MOTOR 0; // 30RPS Worm gear motor
 
-#define SWING_TIME 1000; // TIme between each swing in the continuous brachiation
+#define SWING_TIME 1000; // Time between each swing in the continuous brachiation
+
+struct Motors {
+
+	// Motor IDs
+	
+	unsigned char G_Grabbers  = M1;
+	unsigned char G_Elbows    = M2;
+	unsigned char G_Shoulders = M3;
+	
+	unsigned char P_Elbows	  = M4;
+	unsigned char P_Shoulders = M5;
+	unsigned char P_Grabbers  = M6;
+};
 
 // Function definitions
 
@@ -206,10 +219,12 @@ int rps_to_speedValue(double rps, int motor_type){
 	
 }
 
-void c_brachiation(int barDistance){
+void c_brachiation(int barDistance, int *progress){
 
-	float angleOfRotation;
 	int grabBar = SWING_TIME - 40;
+	static unsigned int timestamp = millis;
+	
+	float angleOfRotation;
 
 	//We calculate the angle that the elbows have to rotate using maffs
 
@@ -228,9 +243,9 @@ void c_brachiation(int barDistance){
 		anglebasedRotation(PELBOWS, angleOfRotation, SWING_TIME);
 		anglebasedRotation(PSHOULDERS, angleOfRotation / 2, SWING_TIME);
 
-		if (generic_counter > grabBar)
-		{
+		if (generic_counter > grabBar){
 			closeGrabbers(GClaws, millis);
+			if (generic_counter > grabBar+4){
 		}
 	}
 
