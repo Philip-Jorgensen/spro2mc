@@ -31,31 +31,11 @@ struct Motors {
 	unsigned char P_Shoulders = M5;
 	unsigned char P_Grabbers  = M6;
 };
-=======
->>>>>>> 58ae9dedb48db258ba6458d14bc51b11f264a145
 
 struct Motors motors;
 
 // Function definitions
 
-<<<<<<< HEAD
-int readPSensor(unsigned int motor_id){
-	switch(motor_id){
-		case (1):
-			if(PINC == 0b00000011){
-				return 1;
-			} else {
-				return 0;
-			}
-			break;
-		case (6):
-			if(PINC == 0b00001100){
-				return 1;
-			} else {
-				return 0;
-			}
-			break;
-=======
 int readPSensor(unsigned int motor_id)
 {
 	switch (motor_id)
@@ -80,7 +60,6 @@ int readPSensor(unsigned int motor_id)
 			return 0;
 		}
 		break;
->>>>>>> 58ae9dedb48db258ba6458d14bc51b11f264a145
 	}
 }
 
@@ -91,18 +70,6 @@ void unlockGrabbers(unsigned char motor_id)
 
 	// Depending on what grabbers we want to close ("green" ones or "purple" ones)
 	// we need to choose different solenoids (the top ones or bottom ones)
-<<<<<<< HEAD
-	
-	switch(motor_id){
-		case (1): // Green grabbers
-			leftSolenoid  = 0;
-			rightSolenoid = 1;
-			break;
-		case (6): // Purple Grabbers
-			leftSolenoid  = 2;
-			rightSolenoid = 3;
-			break;
-=======
 
 	switch (motor_id)
 	{
@@ -114,7 +81,6 @@ void unlockGrabbers(unsigned char motor_id)
 		leftSolenoid = 2;
 		rightSolenoid = 3;
 		break;
->>>>>>> 58ae9dedb48db258ba6458d14bc51b11f264a145
 	}
 
 	// To retract the solenoid we set the pin to one (setting)
@@ -310,12 +276,7 @@ int rps_to_speedValue(double rps, int motor_type)
 	}
 }
 
-<<<<<<< HEAD
 void c_brachiation(int barDistance, int direction, int *bar_number){
-=======
-void c_brachiation(int barDistance, int direction, int *bar_progress)
-{
->>>>>>> 58ae9dedb48db258ba6458d14bc51b11f264a145
 
 	static unsigned int timestamp = millis;
 
@@ -328,7 +289,6 @@ void c_brachiation(int barDistance, int direction, int *bar_progress)
 
 	// We have to decide to either swing the "arms" or the "legs"
 
-<<<<<<< HEAD
 	if (bar_number % 2 == 0){ // If the bar number is even, we swing the arms
 		openGrabbers(motors.G_Grabbers, millis);
 
@@ -338,7 +298,6 @@ void c_brachiation(int barDistance, int direction, int *bar_progress)
 		anglebasedRotation(motors.P_Shoulders, angleOfRotation, SWING_TIME, swingingArms);
 
 		if(millis - timestamp > SWING_TIME - GRABBERS_TIME){ // We need to begin the closing protocol a little bit before the end of the swing
-=======
 	if (bar_progress % 2 == 0)
 	{ // We swing the arms
 		openGrabbers(motors.G_Grabbers, millis);
@@ -350,12 +309,10 @@ void c_brachiation(int barDistance, int direction, int *bar_progress)
 
 		if (millis - timestamp > SWING_TIME)
 		{
->>>>>>> 58ae9dedb48db258ba6458d14bc51b11f264a145
 			closeGrabbers(motors.G_Grabbers, millis);
 		}
 	}
 
-<<<<<<< HEAD
 	if (bar_number % 2 == 1){ // If the bar number is uneven, we swing the arms
 		openGrabbers(motors.P_Grabbers, millis);
 
@@ -371,28 +328,8 @@ void c_brachiation(int barDistance, int direction, int *bar_progress)
 	
 	if(millis - timestamp > SWING_TIME + GRABBERS_TIME){ // We have progressed to the next bar
 		*bar_number++;
-=======
-	if (bar_progress % 2 == 1)
-	{ // We swing the legs
-		openGrabbers(motors.P_Grabbers, millis);
-
-		anglebasedRotation(motors.G_Elbows, angleOfRotation, SWING_TIME);
-		anglebasedRotation(motors.G_Shoulders, angleOfRotation, SWING_TIME);
-		anglebasedRotation(motors.P_Elbows, angleOfRotation, SWING_TIME);
-		anglebasedRotation(motors.P_Shoulders, angleOfRotation, SWING_TIME);
-
-		if (millis - timestamp > SWING_TIME)
-		{
-			{
-				closeGrabbers(motors.P_Grabbers, millis);
-			}
-		}
-
-		if (millis - timestamp > SWING_TIME + GRABBERS_TIME)
-		{
-			*bar_progress++;
-		}
 	}
+}
 
 	void r_brachiation(double Zacceleration, double Yacceleration, double tilt_angle)
 	{
@@ -434,17 +371,16 @@ void c_brachiation(int barDistance, int direction, int *bar_progress)
 
 			break;
 		}
->>>>>>> 58ae9dedb48db258ba6458d14bc51b11f264a145
 	}
 
-	void anglebasedRotation(unsigned char motor_id, int degrees, int time_interval, float coefficient)
-	{
+void anglebasedRotation(unsigned char motor_id, int degrees, int time_interval, float coefficient)
+{
 
-		int speedValue = 0;
-		float rps = 0;
+	int speedValue = 0;
+	float rps = 0;
 
-		rps = degrees / 360 / time_interval;								 // We calculate the rps
-		speedValue = rps_to_speedValue(JOINT_MOTOR, int(rps * coefficient)); // We convert the rps into a speed value
+	rps = degrees / 360 / time_interval;								 // We calculate the rps
+	speedValue = rps_to_speedValue(JOINT_MOTOR, int(rps * coefficient)); // We convert the rps into a speed value
 
-		timebasedRotation(motor_id, speedValue, time_interval, millis);
-	}
+	timebasedRotation(motor_id, speedValue, time_interval, millis);
+}
