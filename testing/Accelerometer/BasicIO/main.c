@@ -36,12 +36,56 @@ float x_gravity, y_gravity, z_gravity;
 //Actual coordinates
 float X_Coordinate, Y_Coordinate, Z_Coordinate = 0;
 
+typedef struct  
+{
+	char X_bars[1];
+	char Y_bars[1];
+	char Z_bars[1];
+}Bars_t;
+Bars_t Bars_position[7];
+
 int main(void)
 {
 	i2c_init();
 	LCD_init();
 	MMA8451_init();
 	
+	for (int i=1;i<=7;i++)
+	{
+		Bars_position[i].X_bars[0] = -15;
+		Bars_position[i].Z_bars[0] = 33;
+		Bars_position[i].X_bars[1] = 15;
+		Bars_position[i].Z_bars[1] = 33;
+	}
+	
+	Bars_position[0].X_bars[0] = -15;
+	Bars_position[0].Y_bars[0] = 0;
+	Bars_position[0].Z_bars[0] = 33;
+	Bars_position[0].X_bars[1] = 15;
+	Bars_position[0].Y_bars[1] = 0;
+	Bars_position[0].Z_bars[1] = 33;
+
+	Bars_position[1].Y_bars[0] = 15;
+	Bars_position[1].Y_bars[1] = 15;
+
+	Bars_position[2].Y_bars[0] = 30;
+	Bars_position[2].Y_bars[1] = 30;
+
+	Bars_position[3].Y_bars[0] = 54;
+	Bars_position[3].Y_bars[1] = 54;
+
+	Bars_position[4].Y_bars[0] = 78;
+	Bars_position[4].Y_bars[1] = 78;
+
+	Bars_position[5].Y_bars[0] = 78+41;
+	Bars_position[5].Y_bars[1] = 78+41;
+
+	Bars_position[6].Y_bars[0] = 78+41*2;
+	Bars_position[6].Y_bars[1] = 78+41*2;
+
+	Bars_position[7].Y_bars[0] = 78+41*3;
+	Bars_position[7].Y_bars[1] = 78+41*3;
+
 	while (1)
 	 {
 		  //Reading the accelerometer's registers
