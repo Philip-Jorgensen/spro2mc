@@ -22,26 +22,7 @@ Remember to add proper comments and explanations when you make changes.
 #include "i2cmaster.h"
 #include "functions.h"
 
-// Function Prototypes
-
-void control_motor (unsigned char, int);
-void timebasedRotation	   (unsigned char, int, int, unsigned long);
-void rotateJMotor  (unsigned char, int, int);
-void openGrabbers  (unsigned char,unsigned long);
-void closeGrabbers (unsigned char,unsigned long);
-
-void start_c_brachiation  (void);
-void c_brachiation        (int);
-void start_r_brachiation  (void);
-void r_brachiation        (int);
-void finish_r_brachiation (void);
-void distancesToBar		  (double,double , double*, double*);
-
-int BarDetected();
-
-double detectBarGrabbers (void);
-double readUltrasonic    (unsigned int);
-double readAcceleration  (char);
+// Function prototypes are written in "functions.h"
 
 struct Motors {
 
