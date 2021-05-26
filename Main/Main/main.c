@@ -25,7 +25,7 @@ Remember to add proper comments and explanations when you make changes.
 // Function Prototypes
 
 void control_motor (unsigned char, int);
-void moveMotor	   (unsigned char, int, int, unsigned long);
+void timebasedRotation	   (unsigned char, int, int, unsigned long);
 void rotateJMotor  (unsigned char, int, int);
 void openGrabbers  (unsigned char,unsigned long);
 void closeGrabbers (unsigned char,unsigned long);

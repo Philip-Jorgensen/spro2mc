@@ -8,9 +8,9 @@ void control_motor(unsigned char, int);
 double distanceBarGrabbers(void);
 double readUltrasonic(unsigned int);
 void distancesToBar(double ,double, double*, double*);
-void moveMotor(unsigned char, int, int,unsigned long);
+void timebasedRotation(unsigned char, int, int,unsigned long);
 double readAccleration(char);
 int BarDetected(void);
-int conv_j30(double); // A function to convert rps to speed for the code. (Joint motor)
+int rps_to_speedValue(double); // A function to convert rps to speed for the code. (Joint motor)
 
 #endif
