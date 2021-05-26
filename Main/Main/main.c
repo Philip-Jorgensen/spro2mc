@@ -25,7 +25,7 @@ Remember to add proper comments and explanations when you make changes.
 // Function Prototypes
 
 void control_motor (unsigned char, int);
-void moveMotor	   (unsigned char, int, int, unsigned long);
+void timebasedRotation	   (unsigned char, int, int, unsigned long);
 void rotateJMotor  (unsigned char, int, int);
 void openGrabbers  (unsigned char,unsigned long);
 void closeGrabbers (unsigned char,unsigned long);
@@ -35,12 +35,12 @@ void c_brachiation        (int);
 void start_r_brachiation  (void);
 void r_brachiation        (int);
 void finish_r_brachiation (void);
+void distancesToBar		  (double,double , double*, double*);
 
 int BarDetected();
 
 double detectBarGrabbers (void);
 double readUltrasonic    (unsigned int);
-void distancesToBar(double,double , double*, double*);
 double readAcceleration  (char);
 
 struct Motors {
