@@ -35,12 +35,12 @@ void c_brachiation        (int);
 void start_r_brachiation  (void);
 void r_brachiation        (int);
 void finish_r_brachiation (void);
+void distancesToBar		  (double,double , double*, double*);
 
 int BarDetected();
 
 double detectBarGrabbers (void);
 double readUltrasonic    (unsigned int);
-void distancesToBar(double,double , double*, double*);
 double readAcceleration  (char);
 
 struct Motors {

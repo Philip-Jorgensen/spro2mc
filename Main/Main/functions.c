@@ -8,7 +8,8 @@
 
 #define JOINT_MOTOR 0; // 30RPS Worm gear motor
 
-#define SWING_TIME 1000; // Time between each swing in the continuous brachiation
+#define SWING_TIME    1000; // Time between each swing in the continuous brachiation
+#define GRABBERS_TIME  100; // The time it takes for the grabbers to open or close
 
 struct Motors {
 
@@ -23,7 +24,28 @@ struct Motors {
 	unsigned char P_Grabbers  = M6;
 };
 
+struct Motors motors;
+
 // Function definitions
+
+int readPSensor(unsigned int motor_id){
+	switch(motor_id){
+		case M1:
+			if(PINC == 0b00000011){
+				return 1;
+			} else {
+				return 0;
+			}
+			break;
+		case M6:
+			if(PINC == 0b00001100){
+				return 1;
+			} else {
+				return 0;
+			}
+			break;
+	}
+}
 
 void unlockGrabbers(unsigned char motor_id){
 	
@@ -34,13 +56,13 @@ void unlockGrabbers(unsigned char motor_id){
 	
 	switch(motor_id){
 		case (M1): // Green grabbers
-		leftSolenoid  = 0;
-		rightSolenoid = 1;
-		break;
+			leftSolenoid  = 0;
+			rightSolenoid = 1;
+			break;
 		case (M6): // Purple Grabbers
-		leftSolenoid  = 2;
-		rightSolenoid = 3;
-		break;
+			leftSolenoid  = 2;
+			rightSolenoid = 3;
+			break;
 	}
 	
 	// We deactivate the two solenoids, setting their pins to zero
@@ -219,49 +241,48 @@ int rps_to_speedValue(double rps, int motor_type){
 	
 }
 
-void c_brachiation(int barDistance, int *progress){
+void c_brachiation(int barDistance, int direction, int *bar_progress){
 
 	int grabBar = SWING_TIME - 40;
 	static unsigned int timestamp = millis;
 	
 	float angleOfRotation;
+	float grabbingArms = 1.000, swingingArms = 1.000;
 
-	//We calculate the angle that the elbows have to rotate using maffs
+	// We calculate the angle that the elbows have to rotate using maffs
 
 	angleOfRotation = asin((barDistance - BODY_LENGTH) / 2 / ARM_LENGTH);
 
-	//We either swing the "arms" or the "legs"
+	// We either swing the "arms" or the "legs"
 
-	//Start counter
+	if (bar_progress%2 == 0){ // We swing the arms
+		openGrabbers(motors.G_Grabbers, millis);
 
-	if (readPSensor(GClaws) == 1)
-	{
-		openGrabbers(GClaws, millis);
+		anglebasedRotation(motors.G_Elbows   , angleOfRotation, SWING_TIME, swingingArms);
+		anglebasedRotation(motors.G_Shoulders, angleOfRotation, SWING_TIME, swingingArms);
+		anglebasedRotation(motors.P_Elbows   , angleOfRotation, SWING_TIME, swingingArms);
+		anglebasedRotation(motors.P_Shoulders, angleOfRotation, SWING_TIME, swingingArms);
 
-		anglebasedRotation(GELBOWS, angleOfRotation, SWING_TIME);
-		anglebasedRotation(GSHOULDERS, angleOfRotation, SWING_TIME);
-		anglebasedRotation(PELBOWS, angleOfRotation, SWING_TIME);
-		anglebasedRotation(PSHOULDERS, angleOfRotation / 2, SWING_TIME);
-
-		if (generic_counter > grabBar){
-			closeGrabbers(GClaws, millis);
-			if (generic_counter > grabBar+4){
+		if(millis - timestamp > SWING_TIME){
+			closeGrabbers(motors.G_Grabbers, millis);
 		}
 	}
 
-	if (readPSensor(PClaws) == 1)
-	{
-		openGrabbers(PClaws, millis);
+	if (bar_progress%2 == 1){ // We swing the legs
+		openGrabbers(motors.P_Grabbers, millis);
 
-		anglebasedRotation(PELBOWS, angleOfRotation, SWING_TIME);
-		anglebasedRotation(PSHOULDERS, angleOfRotation, SWING_TIME);
-		anglebasedRotation(GELBOWS, angleOfRotation, SWING_TIME);
-		anglebasedRotation(GSHOULDERS, angleOfRotation, SWING_TIME);
+		anglebasedRotation(motors.G_Elbows   , angleOfRotation, SWING_TIME);
+		anglebasedRotation(motors.G_Shoulders, angleOfRotation, SWING_TIME);
+		anglebasedRotation(motors.P_Elbows   , angleOfRotation, SWING_TIME);
+		anglebasedRotation(motors.P_Shoulders, angleOfRotation, SWING_TIME);
 
-		if (generic_counter > grabBar)
-		{
-			closeGrabbers(PClaws, millis);
+		if(millis - timestamp > SWING_TIME){{
+			closeGrabbers(motors.P_Grabbers, millis);
 		}
+	}
+	
+	if(millis - timestamp > SWING_TIME + GRABBERS_TIME){
+		*bar_progress++;
 	}
 	
 }
@@ -270,12 +291,13 @@ void r_brachiation(){
 	
 }
 
-void anglebasedRotation(int motor_id, int degrees, int time_interval){
-
-	int rps = 0, speedValue = 0;
+void anglebasedRotation(unsigned char motor_id, int degrees, int time_interval, float coefficient){
+	
+	int speedValue = 0;
+	float rps = 0;
 	
 	rps = degrees / 360 / time_interval; // We calculate the rps
-	speedValue = rps_to_speedValue(JOINT_MOTOR, rps); // We convert the rps into a speed value
+	speedValue = rps_to_speedValue(JOINT_MOTOR, int(rps*coefficient)); // We convert the rps into a speed value
 
 	timebasedRotation(motor_id, speedValue, time_interval, millis);
 	
