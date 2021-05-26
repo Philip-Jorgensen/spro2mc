@@ -13,4 +13,13 @@ double readAccleration(char);
 int BarDetected(void);
 int rps_to_speedValue(double); // A function to convert rps to speed for the code. (Joint motor)
 
+// Motor IDs
+#define G_Grabbers 1;
+#define G_Elbows 2;
+#define G_Shoulders 3;
+
+#define P_Elbows 4;
+#define P_Shoulders 5;
+#define P_Grabbers 6;
+
 #endif
