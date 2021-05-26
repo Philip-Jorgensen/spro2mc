@@ -222,8 +222,45 @@ void c_brachiation(int barDistance)
 	}
 }
 
-void r_brachiation()
-{
+void r_brachiation(double Zacceleration, double Yacceleration, double tilt_angle){
+	static int state=0;
+	switch(state){
+		case 0:
+		openGrabbers(Gclaws,millis);//curling body up for first swing
+		moveMotor(GELBOWS, conv_j30(-1), 1000, millis);
+		moveMotor(PELBOWS, conv_j30(-1), 1000, millis);
+		moveMotor(GSHOULDERS, conv_j30(1), 400, millis);
+		state=1;
+		
+		break;
+		case 1:
+		//starting swing motion
+		moveMotor(PELBOWS, conv_j30(1.9), 1000, millis);
+		moveMotor(GELBOWS, conv_j30(2), 200, millis);
+		moveMotor(GSHOULDERS, conv_j30(-2), 500, millis);
+		moveMotor(PSHOULDERS, conv_j30(1.2), 300, millis);
+		if(Yacceleration<1&&Zacceleration<1)
+		state=2;
+		
+		break;
+		case 2:
+		if(Zacceleration>=5&&Yacceleration>=4){//establishing two thresholds for Z and Y acceleration
+			distancesToBar(readUltrasonic(pulse),tilt_angle, &ZheightToBar, &XdistanceToBar)
+			if(ZheightToBar<=0.4&&XdistanceToBar<=0.4)
+			state=3;
+		}
+		
+		break;
+		case 3://Green grabbers on the next bar
+		moveMotor(PELBOWS, conv_j30(-1.2), 150, millis);
+		openGrabbers(GClaws,millis);
+		if(readPsensor())
+		closeGrabbers(GClaws,millis);
+		state=4;
+		
+		break;
+		
+	}	
 }
 
 //very rough; change the variable names if you want to
