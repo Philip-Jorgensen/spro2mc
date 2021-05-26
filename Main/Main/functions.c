@@ -10,19 +10,6 @@
 
 #define SWING_TIME 1000; // Time between each swing in the continuous brachiation
 
-struct Motors {
-
-	// Motor IDs
-	
-	unsigned char G_Grabbers  = M1;
-	unsigned char G_Elbows    = M2;
-	unsigned char G_Shoulders = M3;
-	
-	unsigned char P_Elbows	  = M4;
-	unsigned char P_Shoulders = M5;
-	unsigned char P_Grabbers  = M6;
-};
-
 // Function definitions
 
 void unlockGrabbers(unsigned char motor_id){
@@ -33,11 +20,11 @@ void unlockGrabbers(unsigned char motor_id){
 	// we need to choose different solenoids (the top ones or bottom ones)
 	
 	switch(motor_id){
-		case (M1): // Green grabbers
+		case (1): // Green grabbers
 		leftSolenoid  = 0;
 		rightSolenoid = 1;
 		break;
-		case (M6): // Purple Grabbers
+		case (6): // Purple Grabbers
 		leftSolenoid  = 2;
 		rightSolenoid = 3;
 		break;
@@ -57,11 +44,11 @@ void lockGrabbers(unsigned char motor_id){
 	// we need to choose different solenoids (the top ones or bottom ones)
 	
 	switch(motor_id){
-		case (M1): // Green grabbers
+		case (1): // Green grabbers
 			leftSolenoid  = 0;
 			rightSolenoid = 1;
 			break;
-		case (M6): // Purple Grabbers
+		case (6): // Purple Grabbers
 			leftSolenoid  = 2;
 			rightSolenoid = 3;
 			break;
