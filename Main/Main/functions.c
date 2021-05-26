@@ -284,7 +284,7 @@ void c_brachiation(int barDistance, int direction, int *bar_number){
 
 	// We calculate the angle that the elbows have to rotate using maffs
 
-	angleOfRotation = asin((barDistance - SHOULDER_TO_SHOULDER) / 2 / SHOULDER_TO_ELBOW);
+	angleOfRotation = asin((barDistance - SHOULDER_TO_SHOULDER) / 2 / SHOULDER_TO_ELBOW) * direction;
 
 	// We have to decide to either swing the "arms" or the "legs"
 
