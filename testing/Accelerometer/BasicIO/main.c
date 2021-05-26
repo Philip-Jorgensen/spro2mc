@@ -22,7 +22,7 @@ void getPosition(void);
 
 //flag
 unsigned char a = 0;
-
+char low_pass_fix;
 unsigned char x, y,z,Xoffset,Yoffset,Zoffset;
 int x_val, y_val, z_val;
 float x_val_float, y_val_float, z_val_float;
@@ -100,8 +100,8 @@ int main(void)
 		 //LCD_set_cursor(0,1); printf("%f", y_val_float);
 		 
 		 // ***Printing the z-axis angle/acceleration***
-		 LCD_set_cursor(0,3); printf("Z:%6.2f [Deg]", z_angle); // Z ANGLE
-		 LCD_set_cursor(0,2); printf("Z:%f g", z_g);  // Z ACC
+		 //LCD_set_cursor(0,3); printf("Z:%6.2f [Deg]", z_angle); // Z ANGLE
+		 //LCD_set_cursor(0,2); printf("Z:%f g", z_g);  // Z ACC
 		 //LCD_set_cursor(0,2); printf("%7d", z_val);
 		 
 		 // ***Cycle counting***
@@ -117,14 +117,15 @@ int main(void)
 		 //LCD_set_cursor(4,0); printf("%d", data_array[5]);
 		 
 		 // Printing Coordinates
-		 //LCD_set_cursor(0,0); printf("X: %f", X_Coordinate);
-		 //LCD_set_cursor(0,1); printf("Y: %f", Y_Coordinate);
-		 //LCD_set_cursor(0,2); printf("Z: %f", Z_Coordinate);
+		 LCD_set_cursor(0,0); printf("X: %.1f", X_Coordinate);
+		 LCD_set_cursor(0,1); printf("Y: %.1f", Y_Coordinate);
+		 LCD_set_cursor(0,2); printf("Z: %.1f", Z_Coordinate);
 		 
 		 // Printing acceleration minus gravity
-		 LCD_set_cursor(0,0); printf("%f", x_acceleration);
-		 LCD_set_cursor(0,1); printf("%f", y_acceleration);
-		 //LCD_set_cursor(0,2); printf("%f", z_acceleration);
+		 //LCD_set_cursor(0,0); printf("%f", x_acceleration);
+		 //LCD_set_cursor(0,1); printf("%f", y_acceleration);
+		 //LCD_set_cursor(0,3); printf("%f", z_acceleration);
+
 	 }
 }
 
@@ -192,6 +193,7 @@ void Gravity(void)
 	
 	x_gravity = sin(x_angle*temp);
 	y_gravity = sin(y_angle*temp);
+	z_gravity = 0.9 * z_gravity + 0.1 * z_g;//Low pass filter for Z axis
 	
 	if (x_g > 0)
 	{
@@ -311,19 +313,49 @@ void Gravity(void)
 			y_acceleration = y_g - y_gravity;
 		}
 	}
+	
+	if (z_gravity > 0)
+	{
+		if (z_g > 0)
+		{
+			z_acceleration = z_g - z_gravity;
+		}
+		if (z_g < 0)
+		{
+			z_acceleration = z_g + z_gravity;
+		}
+	}
+		
+	else
+	{
+		if (z_g > 0)
+		{
+			z_acceleration = z_g + z_gravity;
+		}
+			
+		if (z_g < 0)
+		{
+			z_acceleration = z_g - z_gravity;
+		}
+	}
 }
 
 
 
 void getPosition(void)
 {
-
 	//calculating the distance traveled since last data received and changing the coordinate based on that change
 	//80ms between data
-	
-	X_Coordinate = X_Coordinate + (0.5*x_acceleration*0.0064);
-	Y_Coordinate = Y_Coordinate + (0.5*y_acceleration*0.0064);
-	//Z_Coordinate = Z_Coordinate + (0.5*z_acceleration*0.0064);
+	X_Coordinate = X_Coordinate + (0.5*x_acceleration*0.0064*981);
+	Y_Coordinate = Y_Coordinate + (0.5*y_acceleration*0.0064*981);
+	if (low_pass_fix == 50)
+	{
+		Z_Coordinate = Z_Coordinate + (0.5*z_acceleration*0.0064*981);
+	}
+	if (low_pass_fix < 50)
+	{
+		low_pass_fix++;
+	}
 }
 
 //Old unused functions, ignore them
