@@ -319,17 +319,12 @@ void c_brachiation(int barDistance, int direction, int *bar_number){
 	}
 }
 
-void r_brachiation(double Zacceleration, double Yacceleration, double tilt_angle)
 void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_velocity, double tilt_angle)//y is the forward axis here
 {
 	static int state = 0;
 	switch (state)
 	{
 	case 0:
-		openGrabbers(Gclaws, millis); //curling body up for first swing
-		moveMotor(GELBOWS, conv_j30(-1), 1000, millis);
-		moveMotor(PELBOWS, conv_j30(-1), 1000, millis);
-		moveMotor(GSHOULDERS, conv_j30(1), 400, millis);
 		openGrabbers(motors.G_Grabbers, millis); //curling body up for first swing
 		moveMotor(motors.G_Elbows, conv_j30(-1), 1000, millis);
 		moveMotor(motors.P_Elbows, conv_j30(-1), 1000, millis);
@@ -339,11 +334,6 @@ void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_veloci
 		break;
 	case 1:
 		//starting swing motion
-		moveMotor(PELBOWS, conv_j30(1.9), 1000, millis);
-		moveMotor(GELBOWS, conv_j30(2), 200, millis);
-		moveMotor(GSHOULDERS, conv_j30(-2), 500, millis);
-		moveMotor(PSHOULDERS, conv_j30(1.2), 300, millis);
-		if (Yacceleration < 1 && Zacceleration < 1)
 		moveMotor(motors.P_Elbows, conv_j30(1.9), 1000, millis);
 		moveMotor(motors.G_Elbows, conv_j30(2), 200, millis);
 		moveMotor(motors.G_Shoulders, conv_j30(-2), 500, millis);
