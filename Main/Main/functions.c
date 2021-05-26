@@ -3,6 +3,7 @@
 #include "functions.h"
 #include <util/delay.h>
 #include "PCA9685_ext.h"
+<<<<<<< HEAD
 
 // Definitions
 
@@ -23,6 +24,9 @@ struct Motors {
 	unsigned char P_Shoulders = M5;
 	unsigned char P_Grabbers  = M6;
 };
+=======
+#include <avr/io.h>
+>>>>>>> 9325505ff2cd408024b6a0459496042ec2223e6c
 
 struct Motors motors;
 
@@ -55,6 +59,7 @@ void unlockGrabbers(unsigned char motor_id){
 	// we need to choose different solenoids (the top ones or bottom ones)
 	
 	switch(motor_id){
+<<<<<<< HEAD
 		case (M1): // Green grabbers
 			leftSolenoid  = 0;
 			rightSolenoid = 1;
@@ -63,9 +68,20 @@ void unlockGrabbers(unsigned char motor_id){
 			leftSolenoid  = 2;
 			rightSolenoid = 3;
 			break;
+=======
+		case (1): // Green grabbers
+		leftSolenoid  = 0;
+		rightSolenoid = 1;
+		break;
+		case (6): // Purple Grabbers
+		leftSolenoid  = 2;
+		rightSolenoid = 3;
+		break;
+>>>>>>> 9325505ff2cd408024b6a0459496042ec2223e6c
 	}
 	
 	// We deactivate the two solenoids, setting their pins to zero
+	// To retract the solenoid we set the pin to one (setting)
 	
 	PORTD |= (1 << leftSolenoid) | (1 << rightSolenoid);
 	
@@ -80,18 +96,22 @@ void lockGrabbers(unsigned char motor_id){
 	
 	switch(motor_id){
 		case (M1): // Green grabbers
+		case (1): // Green grabbers
 			leftSolenoid  = 0;
 			rightSolenoid = 1;
 			break;
 		case (M6): // Purple Grabbers
+		case (6): // Purple Grabbers
 			leftSolenoid  = 2;
 			rightSolenoid = 3;
 			break;
 	}
 	
 	// We activate the two solenoids, setting their pins to one
+	// To extend the solenoid we set the pin to zero (clearing)
 	
 	PORTD |= (1 << leftSolenoid) | (1 << rightSolenoid);
+	PORTD &= ~((1 << leftSolenoid) | (1 << rightSolenoid));
 	
 }
 
@@ -181,6 +201,17 @@ void control_motor(unsigned char motor_id, int on_value){
 	if (on_value < 0){ // If speed is less than 0, make it run counter clockwise.
 		motor_set_state(motor_id, CCW);	
 		motor_set_pwm(motor_id, (-1) * on_value, 0); // Since 'on_value' is below 0, it is multiplied by (-1) to make it positive.
+	if (on_value >= -3800 && on_value <= 3800)
+	{
+		if (on_value >= 0){ // If the run value (speed?) is greater than 0, make it run clockwise.
+			motor_set_state(motor_id, CW);
+			motor_set_pwm(motor_id, on_value, 0);
+		}
+
+		if (on_value < 0){ // If speed is less than 0, make it run counter clockwise.
+			motor_set_state(motor_id, CCW);	
+			motor_set_pwm(motor_id, (-1) * on_value, 0); // Since 'on_value' is below 0, it is multiplied by (-1) to make it positive.
+		}
 	}
 	
 }
