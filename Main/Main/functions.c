@@ -325,7 +325,14 @@ void c_brachiation(int barDistance, int direction, int *bar_number, unsigned lon
 		*bar_number++;
 	}
 }
-
+void start_r_brachiation(){
+	openGrabbers(motors.G_Grabbers, millis); //curling body up for first swing
+	timebasedRotation(motors.G_Elbows, conv_j30(-1), 1000, millis);
+	timebasedRotation(motors.P_Elbows, conv_j30(-1), 1000, millis);
+	timebasedRotation(motors.G_Shoulders, conv_j30(1), 400, millis);
+	
+	timebasedRotation(motors.G_Elbows, conv_j30(2), 200, millis);
+}
 void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_velocity, double tilt_angle, unsigned long millis, unsigned int pulse)//y is the forward axis here
 {
 	static int state = 0;
@@ -334,39 +341,39 @@ void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_veloci
 	switch (state)
 	{
 	case 0:
-		openGrabbers(motors.G_Grabbers, millis); //curling body up for first swing
-		timebasedRotation(motors.G_Elbows, conv_j30(-1), 1000, millis);
-		timebasedRotation(motors.P_Elbows, conv_j30(-1), 1000, millis);
-		timebasedRotation(motors.G_Shoulders, conv_j30(1), 400, millis);
+		//starting the swing
+		anglebasedRotation(motors.P_Elbows, 65, 400, 1.0, millis);//at ca. 1.6s in NX motion
+		anglebasedRotation(motors.G_Shoulders,90,350,1.0,millis);//ca. 1.7s-2.05s in motion
+		anglebasedRotation(motors.P_Shoulders,75,400,1.0,millis);
 		state = 1;
 
 		break;
-	case 1:
-		//starting swing motion
-		timebasedRotation(motors.P_Elbows, conv_j30(1.9), 1000, millis);
-		timebasedRotation(motors.G_Elbows, conv_j30(2), 200, millis);
-		timebasedRotation(motors.G_Shoulders, conv_j30(-2), 500, millis);
-		timebasedRotation(motors.P_Shoulders, conv_j30(1.2), 300, millis);
-		if (Y_acceleration < 1 && Z_acceleration < 1)
-			state = 2;
-
-		break;
-	case 2:
-		if (Z_acceleration >= 5 && Y_acceleration >= 4 && Y_velocity>=0.8)
+	case 1://check acceleration, velocity 
+		if (Z_acceleration >= 5 && Y_acceleration >= 4 && Y_velocity>=0.8)//in m/s and m/s2
 		{ //establishing two thresholds for Z and Y acceleration
 			distancesToBar(readUltrasonic(pulse), tilt_angle, &ZheightToBar, &XdistanceToBar);
-			 if (ZheightToBar <= 0.4 && XdistanceToBar <= 0.4)
-				state = 3;
+			if (ZheightToBar <= 0.4 && XdistanceToBar <= 0.4)
+			state = 2;
 		}
 
 		break;
-	case 3: //Green grabbers on the next bar
-		timebasedRotation(motors.P_Elbows, conv_j30(-1.2), 150, millis);
+	case 2://close/open grabbers
 		openGrabbers(motors.G_Grabbers, millis);
-		if (readPSensor(1))
+		openGrabbers(motors.P_Grabbers,millis);
+		if(readPSensor(1)==1){//check for bar
 			closeGrabbers(motors.G_Grabbers, millis);
-		state = 4;
+			//maybe check if we it#s falling or not
+			state=3;
+		}
 
+		break;
+	case 3: //start the next swing
+		anglebasedRotation(motors.G_Elbows, 115, 450, 1.0, millis);//at ca. 2.2s in NX motion
+		anglebasedRotation(motors.P_Shoulders,75,350,1.0,millis);//at ca. 2.2s
+		anglebasedRotation(motors.G_Shoulders,55,300,1.0,millis);//ca. 2.3s in motion
+		anglebasedRotation(motors.P_Elbows,60,350,1.0,millis);//ca. 2.3s
+		//ready for next swing 
+		state=0;
 		break;
 	}
 }
