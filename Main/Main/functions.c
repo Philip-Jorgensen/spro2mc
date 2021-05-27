@@ -279,6 +279,8 @@ void start_c_brachiation(int barDistance, int direction, int *bar_number, unsign
 	
 	// Motion of the robot from the start position (
 	
+	// Motion of the robot from the start position (Green grabbers holding the first bar with the arms fully extended 
+	// and the body in a vertical position) to the next bar
 }
 
 void c_brachiation(int barDistance, int direction, int *bar_number, unsigned long millis){
@@ -325,6 +327,7 @@ void c_brachiation(int barDistance, int direction, int *bar_number, unsigned lon
 		*bar_number++;
 	}
 }
+<<<<<<< HEAD
 void start_r_brachiation(){
 	openGrabbers(motors.G_Grabbers, millis); //curling body up for first swing
 	timebasedRotation(motors.G_Elbows, conv_j30(-1), 1000, millis);
@@ -333,6 +336,17 @@ void start_r_brachiation(){
 	
 	timebasedRotation(motors.G_Elbows, conv_j30(2), 200, millis);
 }
+=======
+
+void start_r_brachiation(int barDistance, int direction, int *bar_number, unsigned long millis){
+	
+	/* Motion of the robot from the end position of the continuous brachiation (both arms holding the bars
+	   and the body in a horizontal position) to the start position of the first swing of the ricochetal
+	   brachiation (look at the simulation). */
+	
+}
+
+>>>>>>> 4b5c686e1f6bad86214c74a6c379b68c302f37f4
 void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_velocity, double tilt_angle, unsigned long millis, unsigned int pulse)//y is the forward axis here
 {
 	static int state = 0;
@@ -376,6 +390,11 @@ void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_veloci
 		state=0;
 		break;
 	}
+}
+
+void finish_r_brachiation(double Z_acceleration, double Y_acceleration, double Y_velocity, double tilt_angle, unsigned long millis, unsigned int pulse)//y is the forward axis here
+{
+	//  Make the robot stabilise itself after the completing the ricochetal brachiation
 }
 
 void anglebasedRotation(unsigned char motor_id, int degrees, int time_interval, float coefficient, unsigned long millis)
