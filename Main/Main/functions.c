@@ -235,18 +235,22 @@ void distancesToBar(double distance, double tilt_angle, double *p_ZheightToBar, 
 	*p_XdistanceToBar = cos(angle) * distance;
 }
 
-void trackArmPosition(float x_accelerometer, float z_accelerometer, float rot_angle){
-	float xpos[4] = 0, ypos[4] = 0, A = 110;
+void trackArmPosition(float x_accelerometer, float y_accelerometer, float angle_accelerometer, float angleOfRotation, float rps, unsigned long millis){
+	float x_arm[4] = 0, y_arm[4] = 0, A = SHOULDER_TO_ELBOW/2.0;
 	float x_shoulder[2], y_shoulder[2];
 	
+	double t = 0;
+	static unsigned int timestamp = 0;
+	
+	
 	for(int i=0;i<2;i++){
-		x_shoulder[i] = x_accelerometer + (i-1 + i)*(SHOULDER_TO_SHOULDER/2)*cos(-(90+rot_angle));
-		y_shoulder[i] = x_accelerometer - tan(rot_angle) * x_shoulder;
+		x_shoulder[i] = x_accelerometer + (i-1 + i)*(SHOULDER_TO_SHOULDER/2)*cos(angle_accelerometer);
+		y_shoulder[i] = y_accelerometer - tan(angle_accelerometer) * x_shoulder;
 	}
 
-	for(int i=0;i>4;i++){
-		xpos[i] = x_shoulder + (i-2 + int(i/2))* A*cos(-(90+rot_angle));
-		ypos[i] = y_shoulder + (i-2 + int(i/2))*(A*sin(-(90+rot_angle))+0.5*g*cos(rot_angle)*t*t);
+	for(int i=0;i<4;i++){
+		x_arm[i] = x_shoulder + (i-2 + int(i/2))* A*cos(-(90+angleOfRotation));
+		y_arm[i] = y_shoulder + (i-2 + int(i/2))*(A*sin(-(90+angleOfRotation))+0.5*g*cos(angleOfRotation)*t*t);
 	}
 }
 
