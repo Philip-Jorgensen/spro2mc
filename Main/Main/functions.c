@@ -45,8 +45,7 @@ Motors motors = {M1,M2,M3,M4,M5,M6};
 
 // Function definitions
 
-int readPSensor(unsigned int motor_id)
-{
+int readPSensor(unsigned int motor_id){
 	switch (motor_id)
 	{
 	case M1:
@@ -72,8 +71,7 @@ int readPSensor(unsigned int motor_id)
 	}
 }
 
-void unlockGrabbers(unsigned char motor_id)
-{
+void unlockGrabbers(unsigned char motor_id){
 
 	unsigned char leftSolenoid = 0, rightSolenoid = 0;
 
@@ -97,8 +95,7 @@ void unlockGrabbers(unsigned char motor_id)
 	PORTD |= (1 << leftSolenoid) | (1 << rightSolenoid);
 }
 
-void lockGrabbers(unsigned char motor_id)
-{
+void lockGrabbers(unsigned char motor_id){
 
 	unsigned char leftSolenoid = 0, rightSolenoid = 0;
 
@@ -122,8 +119,7 @@ void lockGrabbers(unsigned char motor_id)
 	PORTD &= ~((1 << leftSolenoid) | (1 << rightSolenoid));
 }
 
-void closeGrabbers(unsigned char motor_id, unsigned long millis)
-{
+void closeGrabbers(unsigned char motor_id, unsigned long millis){
 
 	static unsigned long timestamp = 0;
 
@@ -148,8 +144,7 @@ void closeGrabbers(unsigned char motor_id, unsigned long millis)
 	lockGrabbers(motor_id);
 }
 
-void openGrabbers(unsigned char motor_id, unsigned long millis)
-{
+void openGrabbers(unsigned char motor_id, unsigned long millis){
 
 	static unsigned int timestamp = 0;
 
@@ -177,8 +172,7 @@ void openGrabbers(unsigned char motor_id, unsigned long millis)
 
 
 // Only moves the motor for a given time, 'time_on', and then stops the motor again.
-void timebasedRotation(unsigned char motor_id, int on_value, int time_on, unsigned long millis)
-{
+void timebasedRotation(unsigned char motor_id, int on_value, int time_on, unsigned long millis){
 
 	static unsigned int timestamp = 0;
 
@@ -193,8 +187,7 @@ void timebasedRotation(unsigned char motor_id, int on_value, int time_on, unsign
 	}
 }
 
-void control_motor(unsigned char motor_id, int on_value)
-{
+void control_motor(unsigned char motor_id, int on_value){
 	if (on_value >= -3800 && on_value <= 3800)
 	{
 		if (on_value >= 0)
@@ -215,8 +208,7 @@ void control_motor(unsigned char motor_id, int on_value)
 	}
 }
 
-double readUltrasonic(unsigned int pulse)
-{
+double readUltrasonic(unsigned int pulse){
 
 	double distance = 0;
 
@@ -225,8 +217,7 @@ double readUltrasonic(unsigned int pulse)
 	return distance;
 }
 
-void distancesToBar(double distance, double tilt_angle, double *p_ZheightToBar, double *p_XdistanceToBar)
-{
+void distancesToBar(double distance, double tilt_angle, double *p_ZheightToBar, double *p_XdistanceToBar){
 
 	double angle = 180.0 - 90.0 - tilt_angle;
 
@@ -254,8 +245,7 @@ void trackArmPosition(float x_accelerometer, float y_accelerometer, float angle_
 	}
 }
 
-double readAccleration(char axis)
-{ //axis is 'y'or'x'or'z'
+double readAccleration(char axis){ //axis is 'y'or'x'or'z'
 
 	double acceleration;
 
@@ -275,8 +265,7 @@ double readAccleration(char axis)
 	return acceleration;
 }
 
-int rps_to_speedValue(double rps, int motor_type)
-{
+int rps_to_speedValue(double rps, int motor_type){
 	// This function only works for the 30 RPM Joint motor.
 	// A function for converting rps to the speed value the motor library needs.
 
@@ -300,6 +289,17 @@ void start_c_brachiation(int barDistance, int direction, int *bar_number, unsign
 	
 	// Motion of the robot from the start position (Green grabbers holding the first bar with the arms fully extended 
 	// and the body in a vertical position) to the next bar
+	
+	// FROM THE SIMULATION:
+	//  1. Grab the first bar with the green grabbers.
+	// 		1.1 Pull the body up behind, to make the robot ready for brachiating. (This can be seen in the c_simulation)
+	anglebasedRotation()
+	// 		1.2 Open the green grabbers
+	openGrabbers(motors.G_Grabbers, millis);
+	// 		1.3 Release the G_grabbers from Bar 0 and reach and grab Bar 1 with G_grabbers
+	// 	2. Grab the second bar with the purple grabbers.
+	// 		2.1 Open the purple grabbers
+	// 		2.2 Swing the robot to the next bar (Bar 2) and close the P_grabbers
 }
 
 void c_brachiation(int barDistance, int direction, int *bar_number, unsigned long millis){
@@ -366,8 +366,8 @@ void start_r_brachiation(int barDistance, int direction, int *bar_number, unsign
 }
 
 
-void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_velocity, double tilt_angle,int bar_number, unsigned long millis, unsigned int pulse)//y is the forward axis here
-{
+void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_velocity, double tilt_angle,int bar_number, unsigned long millis, unsigned int pulse){//y is the forward axis here
+
 	static int state = 0;
 	double ZheightToBar;
 	double XdistanceToBar;
@@ -430,13 +430,12 @@ void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_veloci
 	}
 }
 
-void finish_r_brachiation(double Z_acceleration, double Y_acceleration, double Y_velocity, double tilt_angle, unsigned long millis, unsigned int pulse)//y is the forward axis here
-{
+void finish_r_brachiation(double Z_acceleration, double Y_acceleration, double Y_velocity, double tilt_angle, unsigned long millis, unsigned int pulse){ //y is the forward axis here
+
 	//  Make the robot stabilise itself after the completing the ricochetal brachiation
 }
 
-void anglebasedRotation(unsigned char motor_id, int degrees, int time_interval, float coefficient, unsigned long millis)
-{
+void anglebasedRotation(unsigned char motor_id, int degrees, int time_interval, float coefficient, unsigned long millis){
 
 	int speedValue = 0;
 	float rps = 0;
