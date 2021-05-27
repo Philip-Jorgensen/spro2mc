@@ -346,6 +346,7 @@ void start_r_brachiation(int barDistance, int direction, int *bar_number, unsign
 
 >>>>>>> 4b5c686e1f6bad86214c74a6c379b68c302f37f4
 void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_velocity, double tilt_angle, unsigned long millis, unsigned int pulse)//y is the forward axis here
+void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_velocity, double tilt_angle,int bar_number, unsigned long millis, unsigned int pulse)//y is the forward axis here
 {
 	static int state = 0;
 	double ZheightToBar;
@@ -354,6 +355,12 @@ void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_veloci
 	{
 	case 0:
 		//starting the swing
+		int A_PElbows=65,A_GShoulders=90,A_PShoulders=75;
+		if (bar_number%2==0){
+			A_PElbows=-A_PElbows;
+			A_GShoulders=-A_GShoulders;
+			A_PShoulders=-A_PShoulders;
+		}
 		anglebasedRotation(motors.P_Elbows, 65, 400, 1.0, millis);//at ca. 1.6s in NX motion
 		anglebasedRotation(motors.G_Shoulders,90,350,1.0,millis);//ca. 1.7s-2.05s in motion
 		anglebasedRotation(motors.P_Shoulders,75,400,1.0,millis);
@@ -373,7 +380,10 @@ void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_veloci
 		openGrabbers(motors.G_Grabbers, millis);
 		openGrabbers(motors.P_Grabbers,millis);
 		if(readPSensor(1)==1){//check for bar
+			if (bar_number%2==1)
 			closeGrabbers(motors.G_Grabbers, millis);
+			else
+			closeGrabbers(motors.P_Grabbers, millis);
 			//maybe check if we it#s falling or not
 			state=3;
 		}
@@ -384,6 +394,17 @@ void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_veloci
 		anglebasedRotation(motors.P_Shoulders,75,350,1.0,millis);//at ca. 2.2s
 		anglebasedRotation(motors.G_Shoulders,55,300,1.0,millis);//ca. 2.3s in motion
 		anglebasedRotation(motors.P_Elbows,60,350,1.0,millis);//ca. 2.3s
+		int A_GElbows=-115,A_GShoulders=-55,A_PShoulders=-75,A_PElbows=-60;
+		if (bar_number%2==0){
+			A_PElbows=-A_PElbows;
+			A_GShoulders=-A_GShoulders;
+			A_PShoulders=-A_PShoulders;
+			A_GElbows=-A_GElbows;
+		}
+		anglebasedRotation(motors.G_Elbows, -115, 450, 1.0, millis);//at ca. 2.2s in NX motion
+		anglebasedRotation(motors.P_Shoulders,-75,350,1.0,millis);//at ca. 2.2s
+		anglebasedRotation(motors.G_Shoulders,-55,300,1.0,millis);//ca. 2.3s in motion
+		anglebasedRotation(motors.P_Elbows,-60,350,1.0,millis);//ca. 2.3s
 		//ready for next swing 
 		state=0;
 		break;
