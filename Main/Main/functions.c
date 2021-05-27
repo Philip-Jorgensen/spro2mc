@@ -379,6 +379,11 @@ void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_veloci
 	}
 }
 
+void finish_r_brachiation(double Z_acceleration, double Y_acceleration, double Y_velocity, double tilt_angle, unsigned long millis, unsigned int pulse)//y is the forward axis here
+{
+	//  Make the robot stabilise itself after the completing the ricochetal brachiation
+}
+
 void anglebasedRotation(unsigned char motor_id, int degrees, int time_interval, float coefficient, unsigned long millis)
 {
 
