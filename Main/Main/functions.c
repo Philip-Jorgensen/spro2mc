@@ -345,7 +345,6 @@ void start_r_brachiation(int barDistance, int direction, int *bar_number, unsign
 }
 
 >>>>>>> 4b5c686e1f6bad86214c74a6c379b68c302f37f4
-void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_velocity, double tilt_angle, unsigned long millis, unsigned int pulse)//y is the forward axis here
 void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_velocity, double tilt_angle,int bar_number, unsigned long millis, unsigned int pulse)//y is the forward axis here
 {
 	static int state = 0;
@@ -390,10 +389,6 @@ void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_veloci
 
 		break;
 	case 3: //start the next swing
-		anglebasedRotation(motors.G_Elbows, 115, 450, 1.0, millis);//at ca. 2.2s in NX motion
-		anglebasedRotation(motors.P_Shoulders,75,350,1.0,millis);//at ca. 2.2s
-		anglebasedRotation(motors.G_Shoulders,55,300,1.0,millis);//ca. 2.3s in motion
-		anglebasedRotation(motors.P_Elbows,60,350,1.0,millis);//ca. 2.3s
 		int A_GElbows=-115,A_GShoulders=-55,A_PShoulders=-75,A_PElbows=-60;
 		if (bar_number%2==0){
 			A_PElbows=-A_PElbows;
