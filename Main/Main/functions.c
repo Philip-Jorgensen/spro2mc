@@ -235,15 +235,19 @@ void distancesToBar(double distance, double tilt_angle, double *p_ZheightToBar, 
 	*p_XdistanceToBar = cos(angle) * distance;
 }
 
-void trackArmPosition(){
-	float xpos[4] = 0, ypos[4] = 0,  centerx = 0, centery = 0, m = 0;
+void trackArmPosition(float x_accelerometer, float z_accelerometer, float rot_angle){
+	float xpos[4] = 0, ypos[4] = 0, A = 110;
+	float x_shoulder[2], y_shoulder[2];
 	
-	for(int i=0;i>4;i++){
-		xpos = x_accelerometer + (i-2 + int(i/2))* A*cos(-(90+y_angle));
-		ypos = y_ccelerometer + (i-2 + int(i/2))*(A*sin(-(90+y_angle))*t+0.5*g*cos(y_angle)*t*t);
+	for(int i=0;i<2;i++){
+		x_shoulder[i] = x_accelerometer + (i-1 + i)*(SHOULDER_TO_SHOULDER/2)*cos(-(90+rot_angle));
+		y_shoulder[i] = x_accelerometer - tan(rot_angle) * x_shoulder;
 	}
-	
-	
+
+	for(int i=0;i>4;i++){
+		xpos[i] = x_shoulder + (i-2 + int(i/2))* A*cos(-(90+rot_angle));
+		ypos[i] = y_shoulder + (i-2 + int(i/2))*(A*sin(-(90+rot_angle))+0.5*g*cos(rot_angle)*t*t);
+	}
 }
 
 double readAccleration(char axis)
