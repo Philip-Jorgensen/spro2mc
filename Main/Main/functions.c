@@ -381,9 +381,9 @@ void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_veloci
 			A_GShoulders=-A_GShoulders;
 			A_PShoulders=-A_PShoulders;
 		}
-		anglebasedRotation(motors.P_Elbows, 65, 400, 1.0, millis);//at ca. 1.6s in NX motion
-		anglebasedRotation(motors.G_Shoulders,90,350,1.0,millis);//ca. 1.7s-2.05s in motion
-		anglebasedRotation(motors.P_Shoulders,75,400,1.0,millis);
+		anglebasedRotation(motors.P_Elbows, A_PElbows, 400, 1.0, millis);//at ca. 1.6s in NX motion
+		anglebasedRotation(motors.G_Shoulders,A_GShoulders,350,1.0,millis);//ca. 1.7s-2.05s in motion
+		anglebasedRotation(motors.P_Shoulders,A_PShoulders,400,1.0,millis);
 		state = 1;
 
 		break;
@@ -417,10 +417,10 @@ void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_veloci
 			A_PShoulders=-A_PShoulders;
 			A_GElbows=-A_GElbows;
 		}
-		anglebasedRotation(motors.G_Elbows, -115, 450, 1.0, millis);//at ca. 2.2s in NX motion
-		anglebasedRotation(motors.P_Shoulders,-75,350,1.0,millis);//at ca. 2.2s
-		anglebasedRotation(motors.G_Shoulders,-55,300,1.0,millis);//ca. 2.3s in motion
-		anglebasedRotation(motors.P_Elbows,-60,350,1.0,millis);//ca. 2.3s
+		anglebasedRotation(motors.G_Elbows,A_GElbows, 450, 1.0, millis);//at ca. 2.2s in NX motion
+		anglebasedRotation(motors.P_Shoulders,A_PShoulders,350,1.0,millis);//at ca. 2.2s
+		anglebasedRotation(motors.G_Shoulders,A_GShoulders,300,1.0,millis);//ca. 2.3s in motion
+		anglebasedRotation(motors.P_Elbows,A_PElbows,350,1.0,millis);//ca. 2.3s
 		//ready for next swing 
 		state=0;
 		break;
