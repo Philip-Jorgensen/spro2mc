@@ -2,8 +2,10 @@
 #define F_CPU 16E6
 #include <avr/io.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <util/delay.h>
 #include <math.h>
+#include <avr/interrupt.h>
 #include "i2cmaster.h"	// Enable communication to sensor (i2c_init())							(twimaster.c)
 #include "lcd.h"		// Enable the LCD (lcd_init(), lcd_clear(), lcd_gotoxy())				(lcd.c)
 #include "MMA8451.h"
@@ -18,7 +20,9 @@ unsigned char i2c_read_register8(unsigned char reg);
 unsigned char getOrientation(void);
 void Gravity(void);
 void getPosition(void);
-//void ignoreGravity(void);
+double AverageDistance(double);
+void Ultrasonic_Sensor(void);
+
 
 //flag
 unsigned char a = 0;
@@ -36,6 +40,14 @@ float x_gravity, y_gravity, z_gravity;
 //Actual coordinates
 float X_Coordinate, Y_Coordinate, Z_Coordinate = 0;
 
+volatile unsigned int pulse=0;//time echo pin signal is high
+volatile int i=0;//used for identifying edge type
+
+double distance=0;//distance measured
+unsigned long counter=0;//used with printfs to avoid delay
+unsigned long lstC=0;//used with printfs to avoid delay
+char Ultrasonic_Position[2]; // keeps coordinates of ultrasonic sensor itself [X,Y,Z]
+
 typedef struct  
 {
 	char X_bars[1];
@@ -46,9 +58,21 @@ Bars_t Bars_position[7];
 
 int main(void)
 {
+	uart_init(); // Open the communication to the micro controller
+	i2c_init(); // Initialize the i2c communication.
+	io_redirect(); // Redirect the input/output to the computer.
+	/*
 	i2c_init();
 	LCD_init();
 	MMA8451_init();
+	*/
+	DDRD=0xFB;//set PD2 input, rest as output
+	EICRA |= 1<<ISC00;//set INT0(PD2) to trigger on any logic change
+	EIMSK |=1<<INT0;//turn on interrupt
+	sei();//enable global interrups
+	PORTD|=1<<PIND4;//trig pin output to ultrasonic, set PD4 high
+	_delay_us(10);//needs 10us pulse to start
+	PORTD&=~(1<<PIND4);//set PD4 to low
 	
 	for (int i=1;i<=7;i++)
 	{
@@ -86,8 +110,10 @@ int main(void)
 	Bars_position[7].Y_bars[0] = 78+41*3;
 	Bars_position[7].Y_bars[1] = 78+41*3;
 
+	
 	while (1)
 	 {
+		 Ultrasonic_Sensor();
 		  //Reading the accelerometer's registers
 		 data_array[0] = i2c_read_register8(MMA8451_REG_OUT_X_MSB); 
 		 data_array[1] = i2c_read_register8(MMA8451_REG_OUT_X_LSB);
@@ -400,35 +426,53 @@ void getPosition(void)
 	{
 		low_pass_fix++;
 	}
+	Ultrasonic_Position[0] = X_Coordinate - 52;
+	Ultrasonic_Position[1] = Y_Coordinate;
+	Ultrasonic_Position[2] = Z_Coordinate;
 }
 
-//Old unused functions, ignore them
-/*
-void ignoreGravity(void)
+void Ultrasonic_Sensor(void)
 {
-	float saved_angle_x = 0;
-	float saved_angle_y = 0;
-	float saved_angle_z = 0;
-	if ((x_angle > 30 && x_angle > saved_angle_x) | (x_angle < -30 && x_angle < saved_angle_x))
+	distance=((double)pulse)*0.0000000625*342.2/2;//pulse*time for one tick (1/16mhz)*speed of sound(20C)/2
+	counter++;//just for printf
+	
+	//do the printfs every half a second or so
+	if(counter-lstC>50000)
 	{
-		saved_angle_x = x_angle;
-		x_gravity = x_g;
-		y_gravity = y_g;
-		z_gravity = z_g;
+		lstC=counter;
 	}
-	if ((y_angle > 30 && y_angle > saved_angle_y) | (y_angle < -30 && y_angle < saved_angle_y))
+	_delay_ms(60);
+}
+
+ISR(INT0_vect){//interrupt routine
+	if(i==0)// low to high
 	{
-		saved_angle_y = y_angle;
-		x_gravity = x_g;
-		y_gravity = y_g;
-		z_gravity = z_g;
+		
+		TCCR1B |= (1<<CS10);//start timer 1 (16bits) with no prescaler
+		i = 1;
 	}
-	if ((z_angle > 30 && z_angle > saved_angle_z) | (z_angle < -30 && z_angle < saved_angle_z))
+	else//high to low
 	{
-		saved_angle_z = z_angle;
-		x_gravity = x_g;
-		y_gravity = y_g;
-		z_gravity = z_g;
+		TCCR1B = 0;//stop timer1
+		pulse = TCNT1;//value from timer1
+		TCNT1 = 0;//reset
+		i = 0;
 	}
 }
-*/
+
+double AverageDistance(double distance){//just sth that i copied from last semester to get an average value, can be ignored
+	static double arrSpeedsForAvg[]={0,0,0,0,0,0,0,0,0,0};
+	const int arrSpeedsLength = 10;
+	static double arrAvg=0;
+	
+	for(int i=arrSpeedsLength;i>0;i--){
+		arrSpeedsForAvg[i]=arrSpeedsForAvg[i-1];
+	}
+	arrSpeedsForAvg[0]=distance;
+	
+	for(int i=0;i<arrSpeedsLength;i++){
+		arrAvg+=arrSpeedsForAvg[i];
+	}
+	arrAvg=arrAvg/(double)arrSpeedsLength;
+	return arrAvg;
+}
