@@ -19,7 +19,6 @@ Remember to add proper comments and explanations when you make changes.
 #include "PCA9685_ext.h"
 #include "i2cmaster.h"
 #include "functions.h"
-#include "accelerometer.h"
 
 // Function Prototypes
 void closeGrabbers(unsigned char);
