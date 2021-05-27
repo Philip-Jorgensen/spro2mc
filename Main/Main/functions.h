@@ -15,9 +15,7 @@ void c_brachiation		  (int, int, int*, unsigned long);
 void start_r_brachiation  (int, int, int*, unsigned long);
 void r_brachiation		  (double, double, double, double,int, unsigned long, unsigned int);
 void finish_r_brachiation (double, double, double, double, unsigned long, unsigned int);
-
-void distancesToBar	  (double, double , double*, double*);
-void trackArmPosition (float, float, float);
+void trackArmPosition     (float, float, float, float, float, unsigned long);
 
 int BarDetected(void);
 int readPSensor(unsigned int);
