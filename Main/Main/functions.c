@@ -342,7 +342,6 @@ void c_brachiation(int barDistance, int direction, int *bar_number, unsigned lon
 		*bar_number++;
 	}
 }
-<<<<<<< HEAD
 
 void start_r_brachiation(){
 	openGrabbers(motors.G_Grabbers, millis); //curling body up for first swing
@@ -362,7 +361,6 @@ void start_r_brachiation(int barDistance, int direction, int *bar_number, unsign
 	
 }
 
->>>>>>> 4b5c686e1f6bad86214c74a6c379b68c302f37f4
 
 void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_velocity, double tilt_angle,int bar_number, unsigned long millis, unsigned int pulse)//y is the forward axis here
 {
@@ -421,7 +419,6 @@ void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_veloci
 		anglebasedRotation(motors.P_Shoulders,A_PShoulders,350,1.0,millis);//at ca. 2.2s
 		anglebasedRotation(motors.G_Shoulders,A_GShoulders,300,1.0,millis);//ca. 2.3s in motion
 		anglebasedRotation(motors.P_Elbows,A_PElbows,350,1.0,millis);//ca. 2.3s
-		//ready for next swing 
 		//ready for next swing
 		if(barbuffer!=bar_number) 
 		state=0;
