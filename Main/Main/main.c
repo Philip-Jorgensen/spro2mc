@@ -63,6 +63,7 @@ int main(void){
 	double distance=0;		 // distance measured
 	unsigned long counter=0; // used with printfs to avoid delay
 	unsigned long lstC=0;	 // used with printfs to avoid delay
+	double Z_acceleration,  Y_acceleration,  Y_velocity,  tilt_angle;
 	
 	// ULTRASONIC SENSOR setup #2
 	EICRA |= 1<<ISC00; // set INT0(PD2) to trigger on any logic change
@@ -149,13 +150,13 @@ Motors motors={M1,M2,M3,M4,M5,M6};
 			//r_brachiation(406);
 			break;
 			case (5):
-			//r_brachiation(406);
+			r_brachiation(Z_acceleration,  Y_acceleration,  Y_velocity,tilt_angle,bar_number,millis,pulse);
 			break;
 			case (6):
-			//r_brachiation();
+			r_brachiation( Z_acceleration,  Y_acceleration,  Y_velocity,  tilt_angle, bar_number, millis, pulse);
 			break;
 			case (7):
-			//r_brachiation();
+			r_brachiation( Z_acceleration,  Y_acceleration,  Y_velocity,  tilt_angle, bar_number, millis, pulse);
 			//finish_r_brachiation();
 			break;																										
 		}
