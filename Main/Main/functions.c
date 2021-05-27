@@ -277,8 +277,8 @@ int rps_to_speedValue(double rps, int motor_type)
 
 void start_c_brachiation(int barDistance, int direction, int *bar_number, unsigned long millis){
 	
-	// Motion of the robot from the start position (
-	
+	// Motion of the robot from the start position (Green grabbers holding the first bar with the arms fully extended 
+	// and the body in a vertical position) to the next bar
 }
 
 void c_brachiation(int barDistance, int direction, int *bar_number, unsigned long millis){
@@ -324,6 +324,14 @@ void c_brachiation(int barDistance, int direction, int *bar_number, unsigned lon
 	if(millis - timestamp > SWING_TIME + GRABBERS_TIME){ // We have progressed to the next bar
 		*bar_number++;
 	}
+}
+
+void start_r_brachiation(int barDistance, int direction, int *bar_number, unsigned long millis){
+	
+	/* Motion of the robot from the end position of the continuous brachiation (both arms holding the bars
+	   and the body in a horizontal position) to the start position of the first swing of the ricochetal
+	   brachiation (look at the simulation). */
+	
 }
 
 void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_velocity, double tilt_angle, unsigned long millis, unsigned int pulse)//y is the forward axis here
