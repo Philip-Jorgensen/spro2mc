@@ -26,6 +26,8 @@
 #define ELBOW_TO_GRABBER     110 // Distance in millimetres from elbow to grabber
 #define GRABBER_TO_BAR        75 // Distance in millimetres from grabber to bar
 
+#define g 9.81
+
 typedef struct{
 
 	// Motor IDs
@@ -233,6 +235,17 @@ void distancesToBar(double distance, double tilt_angle, double *p_ZheightToBar, 
 	*p_XdistanceToBar = cos(angle) * distance;
 }
 
+void trackArmPosition(){
+	float xpos[4] = 0, ypos[4] = 0,  centerx = 0, centery = 0, m = 0;
+	
+	for(int i=0;i>4;i++){
+		xpos = x_accelerometer + (i-2 + int(i/2))* A*cos(-(90+y_angle));
+		ypos = y_ccelerometer + (i-2 + int(i/2))*(A*sin(-(90+y_angle))*t+0.5*g*cos(y_angle)*t*t);
+	}
+	
+	
+}
+
 double readAccleration(char axis)
 { //axis is 'y'or'x'or'z'
 
@@ -298,10 +311,10 @@ void c_brachiation(int barDistance, int direction, int *bar_number, unsigned lon
 	if (*bar_number % 2 == 0){ // If the bar number is even, we grab the next bar with the purple grabbers
 		openGrabbers(motors.P_Grabbers, millis);
 
-		anglebasedRotation(motors.P_Elbows   , angleOfRotation, SWING_TIME, grabbingArms, millis);
-		anglebasedRotation(motors.P_Shoulders, angleOfRotation, SWING_TIME, grabbingArms, millis);
-		anglebasedRotation(motors.G_Elbows   , angleOfRotation, SWING_TIME, swingingArms, millis);
-		anglebasedRotation(motors.G_Shoulders, angleOfRotation, SWING_TIME, swingingArms, millis);
+		anglebasedRotation(motors.P_Elbows   ,  angleOfRotation, SWING_TIME, grabbingArms, millis);
+		anglebasedRotation(motors.P_Shoulders,  angleOfRotation, SWING_TIME, grabbingArms, millis);
+		anglebasedRotation(motors.G_Elbows   , -angleOfRotation, SWING_TIME, swingingArms, millis);
+		anglebasedRotation(motors.G_Shoulders, -angleOfRotation, SWING_TIME, swingingArms, millis);
 
 		if(millis - timestamp > SWING_TIME- GRABBERS_TIME){ // We need to begin the opening protocol a little bit before the end of the swing
 			closeGrabbers(motors.P_Grabbers, millis);
@@ -311,10 +324,10 @@ void c_brachiation(int barDistance, int direction, int *bar_number, unsigned lon
 	if ((*bar_number % 2) == 1){ // If the bar number is uneven, we grab the next bar with the green grabbers
 		openGrabbers(motors.G_Grabbers, millis);
 
-		anglebasedRotation(motors.G_Elbows   , angleOfRotation, SWING_TIME, grabbingArms, millis);
-		anglebasedRotation(motors.G_Shoulders, angleOfRotation, SWING_TIME, grabbingArms, millis);
-		anglebasedRotation(motors.P_Elbows   , angleOfRotation, SWING_TIME, swingingArms, millis);
-		anglebasedRotation(motors.P_Shoulders, angleOfRotation, SWING_TIME, swingingArms, millis);
+		anglebasedRotation(motors.G_Elbows   ,  angleOfRotation, SWING_TIME, grabbingArms, millis);
+		anglebasedRotation(motors.G_Shoulders,  angleOfRotation, SWING_TIME, grabbingArms, millis);
+		anglebasedRotation(motors.P_Elbows   , -angleOfRotation, SWING_TIME, swingingArms, millis);
+		anglebasedRotation(motors.P_Shoulders, -angleOfRotation, SWING_TIME, swingingArms, millis);
 
 		if(millis - timestamp > SWING_TIME - GRABBERS_TIME){ // We need to begin the closing protocol a little bit before the end of the swing
 			closeGrabbers(motors.G_Grabbers, millis);
