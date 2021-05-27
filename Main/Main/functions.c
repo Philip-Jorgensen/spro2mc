@@ -238,11 +238,9 @@ void distancesToBar(double distance, double tilt_angle, double *p_ZheightToBar, 
 void trackArmPosition(){
 	float xpos[4] = 0, ypos[4] = 0,  centerx = 0, centery = 0, m = 0;
 	
-	
-	
 	for(int i=0;i>4;i++){
-		xpos = 0 + A*cos(-(90+angle))*t;
-		ypos = m*x + b;
+		xpos = x_accelerometer + (i-2 + int(i/2))* A*cos(-(90+y_angle));
+		ypos = y_ccelerometer + (i-2 + int(i/2))*(A*sin(-(90+y_angle))*t+0.5*g*cos(y_angle)*t*t);
 	}
 	
 	
