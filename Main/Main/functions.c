@@ -277,8 +277,6 @@ int rps_to_speedValue(double rps, int motor_type)
 
 void start_c_brachiation(int barDistance, int direction, int *bar_number, unsigned long millis){
 	
-	// Motion of the robot from the start position (
-	
 	// Motion of the robot from the start position (Green grabbers holding the first bar with the arms fully extended 
 	// and the body in a vertical position) to the next bar
 }
