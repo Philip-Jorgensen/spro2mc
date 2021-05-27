@@ -37,9 +37,9 @@ typedef struct{
 	unsigned char P_Elbows;
 	unsigned char P_Shoulders;
 	unsigned char P_Grabbers;
-}Motors;
+} Motors;
 
-Motors motors={M1,M2,M3,M4,M5,M6};
+Motors motors = {M1,M2,M3,M4,M5,M6};
 
 // Function definitions
 
@@ -275,6 +275,12 @@ int rps_to_speedValue(double rps, int motor_type)
 	}
 }
 
+void start_c_brachiation(int barDistance, int direction, int *bar_number, unsigned long millis){
+	
+	// Motion of the robot from the start position (
+	
+}
+
 void c_brachiation(int barDistance, int direction, int *bar_number, unsigned long millis){
 
 	static unsigned int timestamp = 0;
@@ -289,7 +295,20 @@ void c_brachiation(int barDistance, int direction, int *bar_number, unsigned lon
 
 	// We have to decide to either swing the "arms" or the "legs"
 
-	if ((*bar_number % 2) == 0){ // If the bar number is even, we swing the arms
+	if (*bar_number % 2 == 0){ // If the bar number is even, we grab the next bar with the purple grabbers
+		openGrabbers(motors.P_Grabbers, millis);
+
+		anglebasedRotation(motors.P_Elbows   , angleOfRotation, SWING_TIME, grabbingArms, millis);
+		anglebasedRotation(motors.P_Shoulders, angleOfRotation, SWING_TIME, grabbingArms, millis);
+		anglebasedRotation(motors.G_Elbows   , angleOfRotation, SWING_TIME, swingingArms, millis);
+		anglebasedRotation(motors.G_Shoulders, angleOfRotation, SWING_TIME, swingingArms, millis);
+
+		if(millis - timestamp > SWING_TIME- GRABBERS_TIME){ // We need to begin the opening protocol a little bit before the end of the swing
+			closeGrabbers(motors.P_Grabbers, millis);
+		}
+	}
+	
+	if ((*bar_number % 2) == 1){ // If the bar number is uneven, we grab the next bar with the green grabbers
 		openGrabbers(motors.G_Grabbers, millis);
 
 		anglebasedRotation(motors.G_Elbows   , angleOfRotation, SWING_TIME, grabbingArms, millis);
@@ -299,19 +318,6 @@ void c_brachiation(int barDistance, int direction, int *bar_number, unsigned lon
 
 		if(millis - timestamp > SWING_TIME - GRABBERS_TIME){ // We need to begin the closing protocol a little bit before the end of the swing
 			closeGrabbers(motors.G_Grabbers, millis);
-		}
-	}
-
-	if (*bar_number % 2 == 1){ // If the bar number is uneven, we swing the arms
-		openGrabbers(motors.P_Grabbers, millis);
-
-		anglebasedRotation(motors.P_Elbows   , angleOfRotation, SWING_TIME, grabbingArms,millis);
-		anglebasedRotation(motors.P_Shoulders, angleOfRotation, SWING_TIME, grabbingArms,millis);
-		anglebasedRotation(motors.G_Elbows   , angleOfRotation, SWING_TIME, swingingArms,millis);
-		anglebasedRotation(motors.G_Shoulders, angleOfRotation, SWING_TIME, swingingArms,millis);
-
-		if(millis - timestamp > SWING_TIME- GRABBERS_TIME){ // We need to begin the opening protocol a little bit before the end of the swing
-			closeGrabbers(motors.P_Grabbers, millis);
 		}
 	}
 	
