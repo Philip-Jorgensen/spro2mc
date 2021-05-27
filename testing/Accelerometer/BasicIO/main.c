@@ -9,19 +9,40 @@
 #include "MMA8451.h"
 
 
-#define SENSITIVITY_2G    1024   
+#define SENSITIVITY_2G    4096   
+#define PI 3.14159265
 
 void MMA8451_init();
 void i2c_write_register8(unsigned char reg, unsigned char value);
 unsigned char i2c_read_register8(unsigned char reg);
+unsigned char getOrientation(void);
+void Gravity(void);
+void getPosition(void);
+//void ignoreGravity(void);
 
+//flag
+unsigned char a = 0;
+char low_pass_fix;
 unsigned char x, y,z,Xoffset,Yoffset,Zoffset;
 int x_val, y_val, z_val;
 float x_val_float, y_val_float, z_val_float;
 float x_angle, y_angle,z_angle;
 float x_g, y_g,z_g;
+float x_acceleration, y_acceleration, z_acceleration;// they store acceleration minus gravity
 unsigned char data_array[10];
+unsigned char orientation;
+//variables used to subtract gravity acceleration from our results
+float x_gravity, y_gravity, z_gravity;
+//Actual coordinates
+float X_Coordinate, Y_Coordinate, Z_Coordinate = 0;
 
+typedef struct  
+{
+	char X_bars[1];
+	char Y_bars[1];
+	char Z_bars[1];
+}Bars_t;
+Bars_t Bars_position[7];
 
 int main(void)
 {
@@ -29,6 +50,42 @@ int main(void)
 	LCD_init();
 	MMA8451_init();
 	
+	for (int i=1;i<=7;i++)
+	{
+		Bars_position[i].X_bars[0] = -15;
+		Bars_position[i].Z_bars[0] = 33;
+		Bars_position[i].X_bars[1] = 15;
+		Bars_position[i].Z_bars[1] = 33;
+	}
+	
+	Bars_position[0].X_bars[0] = -15;
+	Bars_position[0].Y_bars[0] = 0;
+	Bars_position[0].Z_bars[0] = 33;
+	Bars_position[0].X_bars[1] = 15;
+	Bars_position[0].Y_bars[1] = 0;
+	Bars_position[0].Z_bars[1] = 33;
+
+	Bars_position[1].Y_bars[0] = 15;
+	Bars_position[1].Y_bars[1] = 15;
+
+	Bars_position[2].Y_bars[0] = 30;
+	Bars_position[2].Y_bars[1] = 30;
+
+	Bars_position[3].Y_bars[0] = 54;
+	Bars_position[3].Y_bars[1] = 54;
+
+	Bars_position[4].Y_bars[0] = 78;
+	Bars_position[4].Y_bars[1] = 78;
+
+	Bars_position[5].Y_bars[0] = 78+41;
+	Bars_position[5].Y_bars[1] = 78+41;
+
+	Bars_position[6].Y_bars[0] = 78+41*2;
+	Bars_position[6].Y_bars[1] = 78+41*2;
+
+	Bars_position[7].Y_bars[0] = 78+41*3;
+	Bars_position[7].Y_bars[1] = 78+41*3;
+
 	while (1)
 	 {
 		  //Reading the accelerometer's registers
@@ -66,40 +123,53 @@ int main(void)
 		 z_angle = atan(x_val_float/y_val_float);
 		 z_angle = z_angle*(180.0/3.141592);		
 		 
-		 //orientation = getOrientation(); //reading the detected orientation
-		 
+		 Gravity();//subtracting gravity
+		 orientation = getOrientation(); //reading the detected orientation
+		 getPosition();
 		 
 		 x_g = ((float) x_val) / SENSITIVITY_2G; //Calculating the x-axis acceleration
 		 y_g = ((float) y_val) / SENSITIVITY_2G; //Calculating the y-axis acceleration
 		 z_g = ((float) z_val) / SENSITIVITY_2G; //Calculating the z-axis acceleration
 		 
 		 // ***Printing the x-axis angle/acceleration***
-		 LCD_set_cursor(0,0); printf("X:%6.2f [Deg]", x_angle);  // X ANGLE
-		// LCD_set_cursor(0,0); printf("X:%7.2f [m/s^2]", x_g);  // X ACC
-		// LCD_set_cursor(0,0); printf("%7d", x_val);
-		// LCD_set_cursor(0,0); printf("%f", x_val_float);
-		 
+		 //LCD_set_cursor(0,0); printf("X:%6.2f [Deg]", x_angle);  // X ANGLE
+		 //LCD_set_cursor(0,3); printf("X:%f g", x_g);  // X ACC
+		 //LCD_set_cursor(0,0); printf("%7d", x_val);
+		 //LCD_set_cursor(0,0); printf("%f", x_val_float);
+
 		 // ***Printing the y-axis angle/acceleration***
-		 LCD_set_cursor(0,1); printf("Y:%6.2f", y_angle); // Y ANGLE
-		 //LCD_set_cursor(0,1); printf("Y:%7.2f [m/s^2]", y_g);  // Y ACC
-		 //LCD_set_cursor(0,1); printf("%7d", y_val);
+		 //LCD_set_cursor(0,1); printf("Y:%6.2f [Deg]", y_angle); // Y ANGLE
+		 //LCD_set_cursor(0,2); printf("Y:%f g", y_g);  // Y ACC
+		 //LCD_set_cursor(0,1); printf("%d", y_val);
 		 //LCD_set_cursor(0,1); printf("%f", y_val_float);
 		 
 		 // ***Printing the z-axis angle/acceleration***
-		 LCD_set_cursor(9,1);; printf("Z:%6.2f", z_angle); // Z ANGLE
-		//LCD_set_cursor(9,1); printf("Z:%7.2f [m/s^2]", z_g);  // Z ACC
+		 //LCD_set_cursor(0,3); printf("Z:%6.2f [Deg]", z_angle); // Z ANGLE
+		 //LCD_set_cursor(0,2); printf("Z:%f g", z_g);  // Z ACC
+		 //LCD_set_cursor(0,2); printf("%7d", z_val);
 		 
 		 // ***Cycle counting***
-		 //LCD_set_cursor(0,0); printf("%7d", iterations);
+		 //LCD_set_cursor(0,3); printf("%7d", iterations);
 		 
 		 // ***Printing the detected orientation***
-		 //LCD_set_cursor(0,0); printf("%d",orientation);
+		 //LCD_set_cursor(0,3); printf("%d",orientation);
 		 		 
 		 // ***Printing Registers***
 		 //LCD_set_cursor(0,0); printf("%d", data_array[0]);
 		 //LCD_set_cursor(2,0); printf("%d", data_array[1]);
 		 //LCD_set_cursor(3,0); printf("%d", data_array[4]);
 		 //LCD_set_cursor(4,0); printf("%d", data_array[5]);
+		 
+		 // Printing Coordinates
+		 LCD_set_cursor(0,0); printf("X: %.1f", X_Coordinate);
+		 LCD_set_cursor(0,1); printf("Y: %.1f", Y_Coordinate);
+		 LCD_set_cursor(0,2); printf("Z: %.1f", Z_Coordinate);
+		 
+		 // Printing acceleration minus gravity
+		 //LCD_set_cursor(0,0); printf("%f", x_acceleration);
+		 //LCD_set_cursor(0,1); printf("%f", y_acceleration);
+		 //LCD_set_cursor(0,3); printf("%f", z_acceleration);
+
 	 }
 }
 
@@ -160,3 +230,205 @@ unsigned char i2c_read_register8(unsigned char reg)
 unsigned char getOrientation(void) {
 	return i2c_read_register8(MMA8451_REG_PL_STATUS) & 0x07;
 }
+
+void Gravity(void)
+{
+	float temp =  PI/180;
+	
+	x_gravity = sin(x_angle*temp);
+	y_gravity = sin(y_angle*temp);
+	z_gravity = 0.9 * z_gravity + 0.1 * z_g;//Low pass filter for Z axis
+	
+	if (x_g > 0)
+	{
+		if (x_gravity > 0)
+		{
+			if (((x_gravity - x_g) < 0.1) && ((x_gravity - x_g) > -0.1))
+			{
+				x_gravity = x_g;
+			}
+		}
+		if (x_gravity < 0)
+		{
+			if (((x_gravity + x_g) < 0.1) && ((x_gravity + x_g) > -0.1))
+			{
+				x_gravity = x_g;
+			}
+		}
+	}
+	if (x_g < 0)
+	{
+		if (x_gravity > 0)
+		{
+			if (((x_gravity + x_g) < 0.1) && ((x_gravity + x_g) > -0.1))
+			{
+				x_gravity = x_g;
+			}
+		}
+		if (x_gravity < 0)
+		{
+			if (((x_gravity - x_g) < 0.1) && ((x_gravity - x_g) > -0.1))
+			{
+				x_gravity = x_g;
+			}
+		}
+	}
+	if (y_g > 0)
+	{
+		if (y_gravity > 0)
+		{
+			if (((y_gravity - y_g) < 0.1) && ((y_gravity - y_g) > -0.1))
+			{
+				y_gravity = y_g;
+			}
+		}
+		if (y_gravity < 0)
+		{
+			if (((y_gravity + y_g) < 0.1) && ((y_gravity + y_g) > -0.1))
+			{
+				y_gravity = y_g;
+			}
+		}
+	}
+	if (y_g < 0)
+	{
+		if (y_gravity > 0)
+		{
+			if (((y_gravity + y_g) < 0.1) && ((y_gravity + y_g) > -0.1))
+			{
+				y_gravity = y_g;
+			}
+		}
+		if (y_gravity < 0)
+		{
+			if (((y_gravity - y_g) < 0.1) && ((y_gravity - y_g) > -0.1))
+			{
+				y_gravity = y_g;
+			}
+		}
+	}
+	
+	if (x_gravity > 0)
+	{
+		if (x_g > 0)
+		{
+			x_acceleration = x_g - x_gravity;
+		}
+	
+		if (x_g < 0)
+		{
+			x_acceleration = x_g + x_gravity;
+		}
+	}
+	
+	else
+	{
+		if (x_g > 0)
+		{
+			x_acceleration = x_g + x_gravity;
+		}
+		if (x_g < 0)
+		{
+			x_acceleration = x_g - x_gravity;
+		}
+	}
+	
+	if (y_gravity > 0)
+	{
+		if (y_g > 0)
+		{
+			y_acceleration = y_g - y_gravity;
+		}
+		if (y_g < 0)
+		{
+			y_acceleration = y_g + y_gravity;
+		}
+	}
+	
+	else
+	{
+		if (y_g > 0)
+		{
+			y_acceleration = y_g + y_gravity;
+		}
+		
+		if (y_g < 0)
+		{
+			y_acceleration = y_g - y_gravity;
+		}
+	}
+	
+	if (z_gravity > 0)
+	{
+		if (z_g > 0)
+		{
+			z_acceleration = z_g - z_gravity;
+		}
+		if (z_g < 0)
+		{
+			z_acceleration = z_g + z_gravity;
+		}
+	}
+		
+	else
+	{
+		if (z_g > 0)
+		{
+			z_acceleration = z_g + z_gravity;
+		}
+			
+		if (z_g < 0)
+		{
+			z_acceleration = z_g - z_gravity;
+		}
+	}
+}
+
+
+
+void getPosition(void)
+{
+	//calculating the distance traveled since last data received and changing the coordinate based on that change
+	//80ms between data
+	X_Coordinate = X_Coordinate + (0.5*x_acceleration*0.0064*981);
+	Y_Coordinate = Y_Coordinate + (0.5*y_acceleration*0.0064*981);
+	if (low_pass_fix == 50)
+	{
+		Z_Coordinate = Z_Coordinate + (0.5*z_acceleration*0.0064*981);
+	}
+	if (low_pass_fix < 50)
+	{
+		low_pass_fix++;
+	}
+}
+
+//Old unused functions, ignore them
+/*
+void ignoreGravity(void)
+{
+	float saved_angle_x = 0;
+	float saved_angle_y = 0;
+	float saved_angle_z = 0;
+	if ((x_angle > 30 && x_angle > saved_angle_x) | (x_angle < -30 && x_angle < saved_angle_x))
+	{
+		saved_angle_x = x_angle;
+		x_gravity = x_g;
+		y_gravity = y_g;
+		z_gravity = z_g;
+	}
+	if ((y_angle > 30 && y_angle > saved_angle_y) | (y_angle < -30 && y_angle < saved_angle_y))
+	{
+		saved_angle_y = y_angle;
+		x_gravity = x_g;
+		y_gravity = y_g;
+		z_gravity = z_g;
+	}
+	if ((z_angle > 30 && z_angle > saved_angle_z) | (z_angle < -30 && z_angle < saved_angle_z))
+	{
+		saved_angle_z = z_angle;
+		x_gravity = x_g;
+		y_gravity = y_g;
+		z_gravity = z_g;
+	}
+}
+*/
