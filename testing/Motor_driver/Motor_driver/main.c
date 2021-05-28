@@ -24,6 +24,7 @@ void grabber_open(unsigned char);
 void grabber_close(unsigned char);
 int joint30_rps_spe(float);
 int conv_j30(double);
+void rotatebigMotor(int motor_id, int degrees, int timeInterval);
 
 int main(void)
 {
@@ -109,7 +110,7 @@ int main(void)
 		scanf("%d", &spe);
 		
 		// Runs motor (number: motor_n) with speed 'spe'
-		control_motor(motor_n, spe);
+		control_motor(motor_n, conv_j30(spe/100));
 		
 		
 		/*	
@@ -201,9 +202,18 @@ int joint30_rps_spe(float rps){
 	else{return out;} // Returns the value of the function.
 }
 int conv_j30(double x){
-	if(x<=0){printf("Output: %d\n", 0);}
+	if(x<=0){printf("Output: 0");}
 	if(x>0){
 		return (int)(-7930*x+4090);
 	}
 	return 0;
+}
+void rotatebigMotor(int motor_id, int degrees, int timeInterval){
+	
+	int rps;
+	
+	rps = degrees/360/timeInterval;
+	
+	control_motor(motor_id, conv_j30(rps));
+	
 }
