@@ -289,17 +289,29 @@ void start_c_brachiation(int barDistance, int direction, int *bar_number, unsign
 	
 	// Motion of the robot from the start position (Green grabbers holding the first bar with the arms fully extended 
 	// and the body in a vertical position) to the next bar
+
+	// Offsets for later fine adjustments.
+	float grabbingArms = 1.0, swingingArms = 1.0;
 	
 	// FROM THE SIMULATION:
 	//  1. Grab the first bar with the green grabbers.
 	// 		1.1 Pull the body up behind, to make the robot ready for brachiating. (This can be seen in the c_simulation)
-	anglebasedRotation()
+	// 				The shoulders don't rotate in this first part.
+	int time_1_1 = 1;
+	anglebasedRotation(motors.P_Elbows, -111, time_1_1, swingingArms, millis) // Purple elbow to -90 degrees. (delta = (-111))
+	anglebasedRotation(motors.G_Elbows, -109, time_1_1, swingingArms, millis) // Green elbow to -130 degrees. (delta = -109)
+
 	// 		1.2 Open the green grabbers
 	openGrabbers(motors.G_Grabbers, millis);
+
 	// 		1.3 Release the G_grabbers from Bar 0 and reach and grab Bar 1 with G_grabbers
+	
+
 	// 	2. Grab the second bar with the purple grabbers.
 	// 		2.1 Open the purple grabbers
+
 	// 		2.2 Swing the robot to the next bar (Bar 2) and close the P_grabbers
+
 }
 
 void c_brachiation(int barDistance, int direction, int *bar_number, unsigned long millis){
