@@ -49,7 +49,7 @@ int main(void) {
 		_delay_us(10);//needs 10us pulse to start
 		PORTD&=~(1<<PIND4);//set PD4 to low
 		distance=((double)pulse)*0.0000000625*342.2/2;//pulse*time for one tick (1/16mhz)*speed of sound(20C)/2 
-		
+		distance = distance*100;//distance in cm
 
 	_delay_ms(60);
 	}

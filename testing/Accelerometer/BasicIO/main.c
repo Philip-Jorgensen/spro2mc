@@ -2,6 +2,7 @@
 #define F_CPU 16E6
 #include <avr/io.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <util/delay.h>
 #include <math.h>
 #include "i2cmaster.h"	// Enable communication to sensor (i2c_init())							(twimaster.c)
