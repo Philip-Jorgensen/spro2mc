@@ -136,9 +136,6 @@ Motors motors={M1,M2,M3,M4,M5,M6};
 			case (0):
 			//start_c_brachiation();
 			break;
-			case (1):
-			c_brachiation(135, RIGHT, bar_number,millis);
-			break;
 			case (2):
 			c_brachiation(135, RIGHT, bar_number,millis);
 			break;
