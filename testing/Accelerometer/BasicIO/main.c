@@ -56,8 +56,10 @@ Bars_t Bars_position[7];
 
 int main(void)
 {
-	i2c_init();
-	LCD_init();
+	//i2c_init();
+	//LCD_init();
+	uart_init();
+	io_redirect();
 	MMA8451_init();
 	
 	DDRD=0xFB;//set PD2 input, rest as output
@@ -252,6 +254,7 @@ void MMA8451_init()
 
 void i2c_write_register8(unsigned char reg, unsigned char value)
 {
+	i2c_init();
 	i2c_start(MMA8451_DEFAULT_ADDRESS+I2C_WRITE);
 	i2c_write(reg);
 	i2c_write(value);
@@ -260,6 +263,7 @@ void i2c_write_register8(unsigned char reg, unsigned char value)
 
 unsigned char i2c_read_register8(unsigned char reg)
 {
+	i2c_init();
 	unsigned char ret_val=0;
 	i2c_start(MMA8451_DEFAULT_ADDRESS+I2C_WRITE);
 	i2c_write(reg);
