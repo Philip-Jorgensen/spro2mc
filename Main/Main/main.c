@@ -7,18 +7,19 @@ Remember to add proper comments and explanations when you make changes.
 */
 
 // Definitions
+
 #define F_CPU 16000000UL
 
-#define GRABBER_LENGTH 75  //distance between bar and grabber joint
-#define ARM_LENGTH     110 //distance between joints on each arm segment
-#define BODY_LENGTH    110 //distance between shoulder joints on body
-
-#define SWING_TIME 1000
+#define RIGHT 1
+#define LEFT -1
 
 // Imports
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
+#include <stdint.h>
+
 #include <stdlib.h>
 #include <util/delay.h>
 #include "usart.h"
@@ -26,82 +27,71 @@ Remember to add proper comments and explanations when you make changes.
 #include "i2cmaster.h"
 #include "functions.h"
 
-// Function Prototypes
+// Function prototypes are written in "functions.h"
 
-void control_motor (unsigned char, int);
-void moveMotor	   (unsigned char, int, int, unsigned long);
-void rotateJMotor  (unsigned char, int, int);
-void openGrabbers  (unsigned char,unsigned long);
-void closeGrabbers (unsigned char,unsigned long);
+typedef struct{
 
-void start_c_brachiation  (void);
-void c_brachiation        (int);
-void start_r_brachiation  (void);
-void r_brachiation        (int);
-void finish_r_brachiation (void);
+	// Motor IDs
+	
+	unsigned char G_Grabbers;
+	unsigned char G_Elbows;
+	unsigned char G_Shoulders;
+	
+	unsigned char P_Elbows;
+	unsigned char P_Shoulders;
+	unsigned char P_Grabbers;
+}Motors;
 
-int BarDetected();
-
-double detectBarGrabbers (void);
-double readUltrasonic    (unsigned int);
-double readAcceleration  (char);
-
-struct Motors {
-	//motor ids for the equivalent motors in the simulation
-
-	unsigned char G_Grabbers  = M1;
-	unsigned char G_Elbows    = M2;
-	unsigned char G_Shoulders = M3;
-
-	unsigned char P_Elbows	  = M4;
-	unsigned char P_Shoulders = M5;
-	unsigned char P_Grabbers  = M6;
-};
-
-//For ultrasonic
-volatile unsigned int pulse = 0; //time echo pin signal is high
-volatile int i=0;				 //used for identifying edge type
+// ULTRASONIC SENSOR setup #1
+volatile unsigned int pulse = 0; // time echo pin signal is high
+volatile int i = 0;				 // used for identifying edge type
+int bar_number = 0;
 
 volatile unsigned long millis = 0;
 
 int main(void){
-
-	uart_init(); // Open the communication to the micro controller
-	i2c_init(); // Initialize the i2c communication.
-	io_redirect(); // Redirect the input/output to the computer.
-
-	//SENSOR and INTERRUPT setup
+	
+	uart_init();   // open the communication to the micro controller
+	i2c_init();    // initialize the i2c communication.
+	io_redirect(); // redirect the input/output to the computer.
+	
+	// --------------------------- SENSOR and INTERRUPT setup ---------------------------
+	
 	DDRB = 0x00;
-	DDRD=0xFB;//set PD2 input, rest as output
-	double distance=0;//distance measured
-	unsigned long counter=0;//used with printfs to avoid delay
-	unsigned long lstC=0;//used with printfs to avoid delay
-
-	//for ultrasonic
-	EICRA |= 1<<ISC00;//set INT0(PD2) to trigger on any logic change
-	EIMSK |=1<<INT0;//turn on interrupt
-
-	//for 1ms counter
-	TCCR0A|=(1<<WGM01);//set timer to ctc
-	OCR0A=0xF9;//set value to count to
-	TIMSK0|=(1<<OCIE0A);//enable interrupt for on compare a for timer 0
-
-	sei();//enable global interrups
-	TCCR0B|=(1<<CS01)|(1<<CS00);//set prescaler to 64
-	PORTD|=1<<PIND4;//trig pin output to ultrasonic, set PD4 high
-	_delay_us(10);//needs 10us pulse to start
-	PORTD&=~(1<<PIND4);//set PD4 to low
-
-	//---------------------------------------------------
-
-	struct Motors motors;
-
+	DDRD = 0xFB;			 // set PD2 input, rest as output
+	
+	double distance=0;		 // distance measured
+	unsigned long counter=0; // used with printfs to avoid delay
+	unsigned long lstC=0;	 // used with printfs to avoid delay
+	double Z_acceleration,  Y_acceleration,  Y_velocity,  tilt_angle;
+	
+	// ULTRASONIC SENSOR setup #2
+	EICRA |= 1<<ISC00; // set INT0(PD2) to trigger on any logic change
+	EIMSK |=1<<INT0;   // turn on interrupt
+	
+	// COUNTER (1 ms)
+	TCCR0A|=(1<<WGM01);	 // set timer to ctc
+	OCR0A=0xF9;			 // set value to count to
+	TIMSK0|=(1<<OCIE0A); // enable interrupt for on compare a for timer 0
+	
+	sei();						 // enable global interrups
+	TCCR0B|=(1<<CS01)|(1<<CS00); // set prescaler to 64
+	PORTD|=1<<PIND4;			 // trig pin output to ultrasonic, set PD4 high
+	_delay_us(10);				 // needs 10us pulse to start
+	PORTD&=~(1<<PIND4);			 // set PD4 to low
+	
+	// --------------------------- MOTORS setup ---------------------------
+	
+Motors motors={M1,M2,M3,M4,M5,M6};
+	
 	// Make sure all the motors are stopped from the beginning (Initialization)
+	
 	motor_init_pwm(PWM_FREQUENCY_1500);
-
+	
 	printf("Adafruit 1438\n");
-
+	
 	// M1,..,M4 are ports on the "Adafruit 1438"
+	
 	motor_set_state(M1, STOP);
 	motor_set_state(M2, STOP);
 	motor_set_state(M3, STOP);
@@ -109,15 +99,17 @@ int main(void){
 	motor_set_state(M5, STOP);
 	motor_set_state(M6, STOP);
 	motor_set_state(M7, STOP);
-
+	
+	// ---------------------------------------------------------------------------------
+	
 	millis = 0;
-
+	
     while(1){
-
+		
 		//Frederik's code (time-based motion)
 		/*
 		//start with the movement
-
+		
 		moveMotor(motors.G_Elbow_L,-1,700,millis);// move the left green elbow motor counterclockwise with signal of 1 for 500ms
 		moveMotor(motors.GR_Elbow_R,-1,700,millis);
 		if(millis>1500)
@@ -135,39 +127,60 @@ int main(void){
 			closeGrabbers(motors.PR_Grabber,millis);
 		}
 		//now the green grabbers should be on the second bar and the purple grabbers on the first bar
-
+		
 		*/
-
+		
 		//New code (angle-based motion which also relies a bit on time)
-
-		start_c_brachiation();
-		c_brachiation(135);
-		c_brachiation(135);
-		c_brachiation(231);
-		c_brachiation(231);
-
-		start_r_brachiation();
-		r_brachiation(406);
-		r_brachiation(406);
-		finish_r_brachiation()
+		
+		switch(bar_number){
+			case (0):
+			//start_c_brachiation();
+			break;
+			case (1):
+			c_brachiation(135, RIGHT, bar_number,millis);
+			break;
+			case (2):
+			c_brachiation(135, RIGHT, bar_number,millis);
+			break;
+			case (3):
+			c_brachiation(231, RIGHT, bar_number,millis);
+			break;
+			case (4):
+			//start_r_brachiation();
+			//r_brachiation(406);
+			break;
+			case (5):
+			r_brachiation(Z_acceleration,  Y_acceleration,  Y_velocity,tilt_angle,bar_number,millis,pulse);
+			break;
+			case (6):
+			r_brachiation( Z_acceleration,  Y_acceleration,  Y_velocity,  tilt_angle, bar_number, millis, pulse);
+			break;
+			case (7):
+			r_brachiation( Z_acceleration,  Y_acceleration,  Y_velocity,  tilt_angle, bar_number, millis, pulse);
+			//finish_r_brachiation();
+			break;																										
+		}
 	}
 }
 
-ISR(INT0_vect){//interrupt routine for ultrasonic sensor
-	if(i==0)// low to high
-	{
+//INTERRUPT ROUTINE for ultrasonic sensor
 
-		TCCR1B |= (1<<CS10);//start timer 1 (16bits) with no prescaler
+ISR(INT0_vect){
+	
+	if(i==0){ // low to high
+		TCCR1B |= (1<<CS10); // start timer 1 (16bits) with no prescaler
 		i = 1;
-	}
-	else//high to low
-	{
-		TCCR1B = 0;//stop timer1
-		pulse = TCNT1;//value from timer1
-		TCNT1 = 0;//reset
+	} else { //high to low
+		
+		TCCR1B = 0;     //stop timer1
+		pulse  = TCNT1; //value from timer1
+		TCNT1  = 0;     //reset
 		i = 0;
 	}
 }
+
+//INTERRUPT ROUTINE for the COUNTER (1ms)
+
 ISR(TIMER0_COMPA_vect){
 	millis++;
 }
