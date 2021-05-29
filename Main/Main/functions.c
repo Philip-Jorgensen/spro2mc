@@ -291,6 +291,17 @@ void trackArmPosition(float x_accelerometer, float y_accelerometer, float angle_
 	y_arm[3] = y_accelerometer + tan(angle_accelerometer) * (x_accelerometer + x_arm[2]);
 }
 
+int fall_detection(float y_accelerometer, float z_accelerometer, float x_acceleromter){
+	float magnitude=sqrt(x_acceleromter*x_accelerometer+z_accelerometer*z_accelerometer+y_accelerometer*y_accelerometer);
+	const float threshold=2.0;//if the total acceleration drops below a certain value the robot is probably falling
+	if (magnitude<threshold)
+	return 1;
+	else
+	return 0;
+	
+	
+} 
+
 
 // Converts revolutions per second to a speed value for the MOTORS ("rps" needs to be positive and greater than zero)
 int rps_to_speedValue(double rps, int motor_type){
