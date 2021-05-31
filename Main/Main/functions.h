@@ -16,6 +16,7 @@ void start_r_brachiation  (int, int, int*, unsigned long);
 void r_brachiation		  (double, double, double, double,int, unsigned long, unsigned int);
 void finish_r_brachiation (double, double, double, double, unsigned long, unsigned int);
 void trackArmPosition     (float, float, float);
+int fall_detection(float, float, float);
 
 int BarDetected(void);
 int readPSensor(unsigned int);
