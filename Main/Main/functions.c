@@ -291,8 +291,8 @@ void trackArmPosition(float x_accelerometer, float y_accelerometer, float angle_
 	y_arm[3] = y_accelerometer + tan(angle_accelerometer) * (x_accelerometer + x_arm[2]);
 }
 
-int fall_detection(float y_accelerometer, float z_accelerometer, float x_acceleromter){
-	float magnitude=sqrt(x_acceleromter*x_accelerometer+z_accelerometer*z_accelerometer+y_accelerometer*y_accelerometer);
+int fall_detection(float y_accelerometer, float z_accelerometer, float x_accelerometer){
+	float magnitude=sqrt(x_accelerometer*x_accelerometer+z_accelerometer*z_accelerometer+y_accelerometer*y_accelerometer);
 	const float threshold=2.0;//if the total acceleration drops below a certain value the robot is probably falling
 	if (magnitude<threshold)
 	return 1;
@@ -472,15 +472,13 @@ void r_brachiation(double Z_acceleration, double Y_acceleration, double Y_veloci
 	case (2)://close/open grabbers
 		openGrabbers(motors.G_Grabbers, millis);
 		openGrabbers(motors.P_Grabbers,millis);
-		if(readPSensor(1)==1){//check for bar
-			if (bar_number%2==1)
+		
+		if(readPSensor(M1)==1)//check for bar
 			closeGrabbers(motors.G_Grabbers, millis);
-			else
+		if(readPSensor(M6)==1)
 			closeGrabbers(motors.P_Grabbers, millis);
 			//maybe check if we it#s falling or not
 			state=3;
-		}
-
 		break;
 	case (3): //start the next swing
 		int A_GElbows=-115,A_GShoulders=-55,A_PShoulders=-75,A_PElbows=-60;
