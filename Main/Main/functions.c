@@ -426,11 +426,30 @@ void start_r_brachiation(){
 	// curling body up for first swing
 	 
 	openGrabbers(motors.G_Grabbers, millis);
+	
+	timebasedRotation(motors.G_Elbows, - rps_to_speedValue(0.2, JOINT_MOTOR), 800, millis)    ;
+	timebasedRotation(motors.P_Elbows, - rps_to_speedValue(0.5, JOINT_MOTOR), 100, millis)    ;
+	timebasedRotation(motors.G_Shoulders, rps_to_speedValue(0.22, JOINT_MOTOR), 500, millis)  ;
+	
+	
+	timebasedRotation(motors.G_Elbows, rps_to_speedValue(0.0, JOINT_MOTOR), 500, millis)      ;
+	timebasedRotation(motors.G_Elbows, rps_to_speedValue(0.4, JOINT_MOTOR), 200, millis)      ;
+	
+	timebasedRotation(motors.P_Elbows, rps_to_speedValue(0.0, JOINT_MOTOR), 900, millis)      ;
+	timebasedRotation(motors.P_Elbows, rps_to_speedValue(0.35, JOINT_MOTOR), 500, millis)     ;
+			
+	timebasedRotation(motors.G_Shoulders, rps_to_speedValue(0.0, JOINT_MOTOR), 400, millis)   ;
+	timebasedRotation(motors.G_Shoulders, - rps_to_speedValue(0.4, JOINT_MOTOR), 1200, millis);	
+	
+	timebasedRotation(motors.P_Shoulders, rps_to_speedValue(0.3, JOINT_MOTOR), 1500, millis)  ;	
+	
+	
+	/* Frederik's old code
 	timebasedRotation(motors.G_Elbows, conv_j30(-1), 1000, millis);
 	timebasedRotation(motors.P_Elbows, conv_j30(-1), 1000, millis);
 	timebasedRotation(motors.G_Shoulders, conv_j30(1), 400, millis);
 	
-	timebasedRotation(motors.G_Elbows, conv_j30(2), 200, millis);
+	timebasedRotation(motors.G_Elbows, conv_j30(2), 200, millis);*/
 }
 
 
